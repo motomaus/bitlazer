@@ -7,6 +7,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install pnpm
+        run: |
+          curl -L https://unpkg.com/@pnpm/self-installer | node
+          echo 'export PATH=$HOME/.pnpm/bin:$PATH' >> $GITHUB_ENV
+
       - name: Read .nvmrc
         run: echo NVMRC=`cat .nvmrc` >> $GITHUB_ENV
 
