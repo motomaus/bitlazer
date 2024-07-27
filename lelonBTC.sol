@@ -5,12 +5,13 @@ pragma solidity 0.8.24;
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract lelonBTC is ERC20 {
+contract lelonBTC is ERC20, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     address public owner;
-    ERC20 public WBTC;
+    IERC20 public WBTC;
 
     constructor(address _owner, string memory name, string memory symbol) ERC20(name, symbol) {
         owner = _owner;
@@ -22,19 +23,19 @@ contract lelonBTC is ERC20 {
     }
 
     function setWBTCAddress(address _WBTC) public onlyOwner {
-        WBTC = ERC20(_WBTC);
+        WBTC = IERC20(_WBTC);
     }
 
     function getWBTCAddress() public view returns (address) {
         return address(WBTC);
     }
 
-    function mint(uint256 amount) public {
-        WBTC.transferFrom(msg.sender, address(this), amount);
+    function mint(uint256 amount) nonReentrant public {
+        WBTC.safeTransferFrom(msg.sender, address(this), amount);
         _mint(msg.sender, amount);
     }
 
-    function burn(uint256 amount) public {
+    function burn(uint256 amount) nonReentrant public {
         _burn(msg.sender, amount);
         WBTC.transfer(msg.sender, amount);
     }
