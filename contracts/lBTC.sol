@@ -31,8 +31,8 @@ contract lBTC is ERC20, ReentrancyGuard {
     }
 
     function mint(uint256 amount) nonReentrant public {
-        WBTC.safeTransferFrom(msg.sender, address(this), amount);
         _mint(msg.sender, amount);
+        WBTC.safeTransferFrom(msg.sender, address(this), amount);
     }
 
     function burn(uint256 amount) nonReentrant public {
