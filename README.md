@@ -1,6 +1,4 @@
-# Bitlazer: Lightpaper
-
-**Date:** August 11, 2024
+# Bitlazer
 
 ## Introduction
 
