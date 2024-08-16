@@ -8,8 +8,9 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 
 contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     uint256 public totalStaked;
+    uint256 public totalStakers;
 
-    mapping(address => address) private holders;  // Linked list of holders
+    mapping(address => address) private holders; // Linked list of holders
     address private firstHolder;
     address private lastHolder;
 
@@ -50,10 +51,8 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
             uint256 userStake = balanceOf(currentHolder);
             uint256 reward = (amount * userStake) / totalStaked;
 
-            if (reward > 0) {
-                _mint(currentHolder, reward);  // Mint additional LP tokens as rewards
-            }
-            currentHolder = holders[currentHolder];  // Move to the next holder in the list
+            _mint(currentHolder, reward); // Mint additional LP tokens as rewards
+            currentHolder = holders[currentHolder]; // Move to the next holder in the list
         }
     }
 
@@ -63,13 +62,13 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
 
     function mint(address account, uint256 amount) internal {
         _mint(account, amount);
-        _addHolder(account);  // Add the account to the holders list if not already present
+        _addHolder(account); // Add the account to the holders list if not already present
     }
 
     function burn(address account, uint256 amount) internal {
         _burn(account, amount);
         if (balanceOf(account) == 0) {
-            _removeHolder(account);  // Remove the account from the holders list if balance is zero
+            _removeHolder(account); // Remove the account from the holders list if balance is zero
         }
     }
 
@@ -79,25 +78,25 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
 
         totalStaked += amount;
 
-        mint(msg.sender, amount);  // Mint corresponding LP tokens to the staker
+        mint(msg.sender, amount); // Mint corresponding LP tokens to the staker
     }
 
     function unstake(uint256 amount) public nonReentrant {
         require(amount > 0, "Amount must be greater than 0");
         require(balanceOf(msg.sender) >= amount, "Insufficient balance to unstake");
 
-        require(totalStaked >= amount, "Insufficient totalStaked amount");
         totalStaked -= amount;
 
-        burn(msg.sender, amount);  // Burn the corresponding LP tokens
+        burn(msg.sender, amount); // Burn the corresponding LP tokens
 
-        require(address(this).balance >= amount, "Insufficient contract balance");
         (bool sent, ) = msg.sender.call{value: amount}("");
         require(sent, "Failed to send Native currency");
     }
 
     function _addHolder(address account) internal {
-        if (balanceOf(account) > 0 && holders[account] == address(0) && account != firstHolder && account != lastHolder) {
+        if (
+            balanceOf(account) > 0 && holders[account] == address(0) && account != firstHolder && account != lastHolder
+        ) {
             if (firstHolder == address(0)) {
                 // This is the first holder
                 firstHolder = account;
@@ -107,6 +106,7 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
                 holders[lastHolder] = account;
                 lastHolder = account;
             }
+            totalStakers += 1; // Increment total stakers when a new holder is added
         }
     }
 
@@ -115,7 +115,7 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
             // Account is the first holder
             firstHolder = holders[account];
             if (firstHolder == address(0)) {
-                lastHolder = address(0);  // No more holders left
+                lastHolder = address(0); // No more holders left
             }
         } else {
             // Traverse the list to find the previous holder
@@ -126,12 +126,27 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
             if (currentHolder != address(0)) {
                 holders[currentHolder] = holders[account];
                 if (lastHolder == account) {
-                    lastHolder = currentHolder;  // Update the last holder if necessary
+                    lastHolder = currentHolder; // Update the last holder if necessary
                 }
             }
         }
 
         // Remove from the list
         delete holders[account];
+        totalStakers -= 1; // Decrement total stakers when a holder is removed
+    }
+
+    function readHolders() public view returns (address[] memory) {
+        address[] memory holderArray = new address[](totalStakers);
+        address currentHolder = firstHolder;
+        uint256 index = 0;
+
+        while (currentHolder != address(0)) {
+            holderArray[index] = currentHolder;
+            currentHolder = holders[currentHolder];
+            index += 1;
+        }
+
+        return holderArray;
     }
 }
