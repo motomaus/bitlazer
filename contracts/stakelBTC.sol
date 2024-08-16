@@ -89,6 +89,7 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
 
         burn(msg.sender, amount); // Burn the corresponding LP tokens
 
+        // Ensure all state changes are done before transferring funds to prevent reentrancy
         (bool sent, ) = msg.sender.call{value: amount}("");
         require(sent, "Failed to send Native currency");
     }
