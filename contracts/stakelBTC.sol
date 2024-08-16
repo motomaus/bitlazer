@@ -86,10 +86,12 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
         require(amount > 0, "Amount must be greater than 0");
         require(balanceOf(msg.sender) >= amount, "Insufficient balance to unstake");
 
+        require(totalStaked >= amount, "Insufficient totalStaked amount");
         totalStaked -= amount;
 
         burn(msg.sender, amount);  // Burn the corresponding LP tokens
 
+        require(address(this).balance >= amount, "Insufficient contract balance");
         (bool sent, ) = msg.sender.call{value: amount}("");
         require(sent, "Failed to send Native currency");
     }
