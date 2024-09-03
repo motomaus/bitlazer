@@ -1,0 +1,171 @@
+@import './abstracts/_fonts';
+@import './abstracts/_variables';
+
+html {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+
+  font-size: 0.941175vw;
+
+  scrollbar-color: #3d8938 rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 991.98px) {
+    font-size: 3.75vw;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  -webkit-tap-highlight-color: transparent;
+
+  &.lock {
+    overflow: hidden;
+  }
+}
+
+input,
+textarea {
+  &:not([type='checkbox']) {
+    outline: none;
+    appearance: none;
+
+    border: none;
+    background-image: none;
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  &::placeholder {
+    transition: 0.3s;
+  }
+  &:focus {
+    &::placeholder {
+      opacity: 0;
+    }
+  }
+}
+
+button {
+  background-color: transparent;
+  border-width: 0;
+  font-family: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  padding: 0;
+  cursor: pointer;
+  transition: 0.3s;
+  outline: none;
+  appearance: none;
+}
+
+b {
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: 0.3s;
+
+  &:hover {
+    // color: var(--color-major);
+  }
+}
+
+select {
+  appearance: none;
+}
+
+ul,
+ol {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+main {
+  flex: 1 1 auto;
+}
+
+footer {
+  flex-shrink: 0;
+}
+
+/* Global styles */
+
+.iresponsive {
+  position: relative;
+
+  img,
+  video {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    object-fit: cover;
+    z-index: 1;
+  }
+
+  iframe {
+    border: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  svg {
+    width: 100%;
+    height: 100%;
+    transition: 0.3s;
+    fill: inherit;
+  }
+}
+
+.container {
+  max-width: 106.25rem;
+  width: 100%;
+  padding: 0 1.25rem;
+  margin: 0 auto;
+}
+@keyframes randomRotate {
+  0% {
+    transform: rotate(calc(var(--initial-rotate, 0deg)));
+  }
+  50% {
+    transform: rotate(calc(var(--initial-rotate, 0deg) + var(--random-offset, 2deg)));
+  }
+  100% {
+    transform: rotate(calc(var(--initial-rotate, 0deg)));
+  }
+}
+
+.rotate-line {
+  animation: randomRotate 3s ease-in-out infinite;
+}
+
+.scroller {
+  scrollbar-color: rgba(215, 38, 38, 0.5) rgba(215, 38, 38, 0.1);
+}
