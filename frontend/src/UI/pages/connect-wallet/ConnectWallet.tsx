@@ -5,7 +5,7 @@ interface IConnectWallet {}
 
 const ConnectWallet: FC<IConnectWallet> = () => {
   return (
-    <div className="w-full min-h-screen relative overflow-hidden flex flex-col justify-center py-24">
+    <div className="w-full min-h-screen relative overflow-hidden flex flex-col justify-center md:py-28 py-32 pt-28">
       <div className="container">
         <div className="flex flex-col items-center">
           <div className="max-w-[21.688rem] w-full flex flex-col gap-[0.031rem]">

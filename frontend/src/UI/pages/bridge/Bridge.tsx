@@ -35,57 +35,55 @@ const Bridge: FC<IBridge> = () => {
     <div className="w-full min-h-screen relative overflow-hidden flex flex-col justify-center py-32">
       <div className="container">
         <div className="flex flex-col items-center">
-          <section className="md:max-w-[62.919rem] w-full flex md:flex-row flex-col-reverse text-[1rem] text-white font-maison-neue-trial">
+          <section className="md:max-w-[62.919rem] w-full flex md:flex-row flex-col-reverse text-[1rem] text-white ">
             <div className="md:max-w-[30.95rem] w-full flex flex-col md:pt-10">
-              <div className="bg-black border-white border-[.075rem] border-dashed flex flex-col md:pt-[2.562rem] md:pb-[2.25rem] md:pl-[2.5rem] md:pr-[0.5rem] px-4 py-6 md:gap-[2.375rem] gap-6 md:min-h-[44.6875rem]">
-                <div className="w-[8.963rem] flex flex-row items-start justify-start py-[0rem] px-[0.062rem]">
-                  <div className="flex-1 relative tracking-[-0.06em] leading-[1.313rem]">
-                    ## HOW IT WORKS
-                  </div>
+              <div className="bg-black font-ocr-x-trial  border-white border-[.075rem] border-dashed flex flex-col md:pt-[2.562rem] md:pb-[2.25rem] md:pl-[2.5rem] md:pr-[0.5rem] px-4 py-6 md:gap-[2.375rem] gap-6 md:min-h-[44.6875rem]">
+                <div className="relative tracking-[-0.06em] leading-[1.313rem]">
+                  ## HOW IT WORKS
                 </div>
-                <div className="flex flex-col gap-10 font-ocr-x-trial max-w-[25.8125rem] flex-1">
+                <div className="flex flex-col gap-10 max-w-[25.8125rem] flex-1">
                   <div className="flex flex-col gap-[2.375rem]">
-                    <div className="flex flex-col gap-[1rem]">
+                    <div className="flex flex-col gap-4">
                       <div>
                         <span>[ Step 1 | </span>
                         <span className="text-fuchsia">CONNECT WALLET</span>
                         <span> ] </span>
                       </div>
-                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
+                      <div className="tracking-[-0.06em] leading-[1.313rem] ">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia
                         odio vitae vestibulum vestibulum cras venenatis.
                       </div>
                     </div>
-                    <div className="flex flex-col gap-[1rem]">
+                    <div className="flex flex-col gap-4">
                       <div>
                         <span>[ Step 2 | </span>
                         <span className="text-fuchsia">BRIDGE</span>
                         <span> ] </span>
                       </div>
-                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
+                      <div className="tracking-[-0.06em] leading-[1.313rem] ">
                         <p className="m-0">/ Bridge your WBTC to LBTC</p>
                         <p className="m-0">/ Wrap their WBTC to receive LBTC</p>
                         <p className="m-0">/ Bridge their LBTC to Bitlazer’s Arbitrum L3</p>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-[1rem]">
+                    <div className="flex flex-col gap-4">
                       <div>
                         <span>[ Step 3 | </span>
                         <span className="text-fuchsia">STAKE</span>
                         <span> ] </span>
                       </div>
-                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial ">
+                      <div className="tracking-[-0.06em] leading-[1.313rem] ">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia
                         odio vitae vestibulum vestibulum cras venenatis.
                       </div>
                     </div>
-                    <div className="flex flex-col gap-[1rem]">
+                    <div className="flex flex-col gap-4">
                       <div>
                         <span>[ Step 3 | </span>
                         <span className="uppercase text-fuchsia">Earn yield</span>
                         <span> ] </span>
                       </div>
-                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
+                      <div className="tracking-[-0.06em] leading-[1.313rem] ">
                         / Earn yield in LBTC and LZR tokens
                       </div>
                     </div>
@@ -94,7 +92,7 @@ const Bridge: FC<IBridge> = () => {
                     <div className="relative inline-block max-w-full">
                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
                     </div>
-                    <div className="tracking-[-0.06em] leading-[1.25rem] font-maison-neue-trial">
+                    <div className="tracking-[-0.06em] leading-[1.25rem] ">
                       CURRENT PROGRESS 0/2 [ 0% ]
                     </div>
                   </div>
