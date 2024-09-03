@@ -1,10 +1,11 @@
+import { Button } from '@components/index'
 import React, { FC } from 'react'
 
 interface IHome {}
 
 const Home: FC<IHome> = () => {
   return (
-    <div className="w-full min-h-screen relative overflow-hidden flex flex-col justify-center py-24">
+    <div className="w-full min-h-screen relative overflow-hidden flex flex-col justify-center md:py-28 py-32 pt-28">
       <div className="container">
         <section className="self-stretch relative z-10 gap-[1.875rem] flex flex-col items-center text-center text-[3rem] text-white font-ocr-x-trial">
           <div className="flex flex-col gap-[1.625rem]">
@@ -15,17 +16,13 @@ const Home: FC<IHome> = () => {
               Supercharged Bitcoin yield with Layer 3 speed and ultra-low transaction fees
             </div>
           </div>
-          <div className="flex items-center gap-[1.625rem] flex-wrap">
-            <button className="font-ocr-x-trial min-w-[11.75rem] cursor-pointer rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group">
-              <span className="px-[0.875rem] h-full bg-darkslategray-200 shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.18)_inset,_1.8px_1.8px_1.84px_rgba(0,_0,_0,_0.91)_inset] rounded-[.115rem] flex items-center justify-center text-center transition-all duration-300 group-hover:bg-dimgray-200 w-full">
-                LEARN MORE
-              </span>
-            </button>
-            <button className="font-ocr-x-trial min-w-[11.5rem] cursor-pointer rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-forestgreen flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group">
-              <span className="px-[0.875rem] h-full bg-darkolivegreen-200 shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.18)_inset,_1.8px_1.8px_1.84px_rgba(0,_0,_0,_0.91)_inset] rounded-[.115rem] flex items-center justify-center text-center transition-all duration-300 group-hover:bg-darkolivegreen-100 w-full">
-                BRIDGE & EARN
-              </span>
-            </button>
+          <div className="flex md:flex-row flex-col items-center gap-4 md:gap-[1.625rem] flex-wrap">
+            <Button variant={'dark'} className="md:!w-auto min-w-[11.75rem]">
+              LEARN MORE
+            </Button>
+            <Button link={'/bridge'} className="md:!w-auto min-w-[11.5rem]">
+              BRIDGE & EARN
+            </Button>
           </div>
         </section>
       </div>

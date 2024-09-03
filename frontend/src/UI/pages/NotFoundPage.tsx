@@ -5,7 +5,7 @@ export default function NotFoundPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    navigate('/home/main')
+    navigate('/')
   }, [])
 
   return null

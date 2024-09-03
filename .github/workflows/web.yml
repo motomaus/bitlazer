@@ -44,4 +44,4 @@ jobs:
   #       aws-region: us-east-1
 
   #   - name: "Deploy to AWS S3"
-  #     run: aws s3 sync ./web/app s3://app.bitlazer.io --acl public-read --delete --cache-control max-age=604800
+ #     run: aws s3 sync ./web/app s3://app.bitlazer.io --acl public-read --delete --cache-control max-age=604800

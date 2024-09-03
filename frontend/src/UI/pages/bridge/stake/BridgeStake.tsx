@@ -1,28 +1,67 @@
+import { Button, InputField } from '@components/index'
 import React, { FC } from 'react'
+import { useForm, Controller } from 'react-hook-form'
 
 interface IBridgeStake {}
 
 const BridgeStake: FC<IBridgeStake> = () => {
+  const {
+    handleSubmit: handleStakeSubmit,
+    control: stakeControl,
+    formState: { errors: stakeErrors, isValid: isStakeValid },
+  } = useForm({
+    defaultValues: {
+      stakeAmount: '',
+    },
+    mode: 'onChange',
+  })
+
+  const {
+    handleSubmit: handleUnstakeSubmit,
+    control: unstakeControl,
+    formState: { errors: unstakeErrors, isValid: isUnstakeValid },
+  } = useForm({
+    defaultValues: {
+      unstakeAmount: '',
+    },
+    mode: 'onChange',
+  })
+
+  const onStakeSubmit = (data: any) => {
+    console.log('Stake Data:', data)
+  }
+
+  const onUnstakeSubmit = (data: any) => {
+    console.log('Unstake Data:', data)
+  }
+
   return (
     <div className="flex flex-col gap-7">
-      <form className="flex flex-col gap-7">
+      <form onSubmit={handleStakeSubmit(onStakeSubmit)} className="flex flex-col gap-7">
         <div className="flex flex-col gap-[0.687rem] max-w-full">
           <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## STAKE</div>
-          <div className="relative tracking-[-0.06em] leading-[1.25rem]">ENTER AMOUNT</div>
-          <label className="shadow-[0px_0px_12px_#68d861] rounded-[.115rem] relative w-full  ">
-            <span className="shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.31)_inset,_1.8px_1.8px_1.84px_rgba(104,_216,_97,_0.22)_inset] rounded-[.115rem] w-full block h-full">
-              <input
-                type="text"
-                value={'0.00'}
-                className="placeholder:lightgreen-300 text-lightgreen-100 py-[0.812rem] px-[1.25rem] text-[1.25rem] rounded-[.115rem] w-full font-ocr-x-trial text-center "
+          <Controller
+            name="stakeAmount"
+            control={stakeControl}
+            rules={{
+              required: 'Amount is required',
+              min: { value: 0.01, message: 'Amount must be greater than 0' },
+            }}
+            render={({ field }) => (
+              <InputField
+                placeholder="0.00"
+                label="ENTER AMOUNT"
+                type="number"
+                {...field}
+                error={stakeErrors.stakeAmount ? stakeErrors.stakeAmount.message : null}
               />
-            </span>
-          </label>
+            )}
+          />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
               Balance: 2,321.99 WBTC
             </div>
-            <button className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100">
+            <button className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none">
               <span className="relative tracking-[-0.06em] leading-[0.563rem] inline-block [text-shadow:0.2px_0_0_#66d560,_0_0.2px_0_#66d560,_-0.2px_0_0_#66d560,_0_-0.2px_0_#66d560] min-w-[1.75rem]">
                 MAX
               </span>
@@ -35,32 +74,39 @@ const BridgeStake: FC<IBridgeStake> = () => {
               APY 2.8%
             </div>
           </div>
-          <button className="font-ocr-x-trial w-full cursor-pointer rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-forestgreen flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group">
-            <span className="px-[0.875rem] h-full bg-darkolivegreen-200 shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.18)_inset,_1.8px_1.8px_1.84px_rgba(0,_0,_0,_0.91)_inset] rounded-[.115rem] flex items-center justify-center text-center transition-all duration-300 group-hover:bg-darkolivegreen-100 w-full">
-              STAKE
-            </span>
-          </button>
+          <Button type="submit" disabled={!isStakeValid}>
+            STAKE
+          </Button>
         </div>
       </form>
+
       <div className="h-px w-full bg-[#6c6c6c]"></div>
-      <form className="flex flex-col gap-7">
+
+      <form onSubmit={handleUnstakeSubmit(onUnstakeSubmit)} className="flex flex-col gap-7">
         <div className="flex flex-col gap-[0.687rem] max-w-full">
           <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## UNSTAKE</div>
-          <div className="relative tracking-[-0.06em] leading-[1.25rem]">ENTER AMOUNT</div>
-          <label className="shadow-[0px_0px_12px_#68d861] rounded-[1.84px] relative w-full  ">
-            <span className="shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.31)_inset,_1.8px_1.8px_1.84px_rgba(104,_216,_97,_0.22)_inset] rounded-[.115rem] w-full block h-full">
-              <input
-                type="text"
-                value={'0.00'}
-                className="placeholder:lightgreen-300 text-lightgreen-100 py-[0.812rem] px-[1.25rem] text-[1.25rem] rounded-[.115rem] w-full font-ocr-x-trial text-center "
+          <Controller
+            name="unstakeAmount"
+            control={unstakeControl}
+            rules={{
+              required: 'Amount is required',
+              min: { value: 0.01, message: 'Amount must be greater than 0' },
+            }}
+            render={({ field }) => (
+              <InputField
+                placeholder="0.00"
+                label="ENTER AMOUNT"
+                type="number"
+                {...field}
+                error={unstakeErrors.unstakeAmount ? unstakeErrors.unstakeAmount.message : null}
               />
-            </span>
-          </label>
+            )}
+          />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
               Balance: 2,321.99 WBTC
             </div>
-            <button className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100">
+            <button className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none">
               <span className="relative tracking-[-0.06em] leading-[0.563rem] inline-block [text-shadow:0.2px_0_0_#66d560,_0_0.2px_0_#66d560,_-0.2px_0_0_#66d560,_0_-0.2px_0_#66d560] min-w-[1.75rem]">
                 MAX
               </span>
@@ -73,11 +119,9 @@ const BridgeStake: FC<IBridgeStake> = () => {
               APY 2.8%
             </div>
           </div>
-          <button className="font-ocr-x-trial w-full cursor-pointer rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-forestgreen flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group">
-            <span className="px-[0.875rem] h-full bg-darkolivegreen-200 shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.18)_inset,_1.8px_1.8px_1.84px_rgba(0,_0,_0,_0.91)_inset] rounded-[.115rem] flex items-center justify-center text-center transition-all duration-300 group-hover:bg-darkolivegreen-100 w-full">
-              UNSTAKE
-            </span>
-          </button>
+          <Button type="submit" disabled={!isUnstakeValid}>
+            UNSTAKE
+          </Button>
         </div>
       </form>
     </div>
