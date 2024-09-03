@@ -9,8 +9,28 @@ html {
 
   scrollbar-color: #3d8938 rgba(0, 0, 0, 0.1);
 
+  @media (max-width: 1299.98px) {
+    font-size: 1.5vw;
+  }
   @media (max-width: 991.98px) {
+    font-size: 2.5vw;
+  }
+  @media (orientation: landscape) and (max-width: 991.98px) {
+    font-size: 2vw;
+  }
+  @media (orientation: landscape) and (max-width: 699.98px) {
+    font-size: 2.5vw;
+  }
+
+  @media (max-width: 575.98px) {
     font-size: 3.75vw;
+  }
+
+  @media (min-height: 1000px) and (min-width: 2000px) {
+    font-size: 0.95vw;
+  }
+  @media (min-width: 3000px) {
+    font-size: 0.65vw;
   }
 }
 
@@ -167,5 +187,17 @@ footer {
 }
 
 .scroller {
-  scrollbar-color: rgba(215, 38, 38, 0.5) rgba(215, 38, 38, 0.1);
+  scrollbar-color: #3d8938 rgba(0, 0, 0, 0.1);
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
 }
