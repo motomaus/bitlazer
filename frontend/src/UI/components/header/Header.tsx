@@ -1,12 +1,13 @@
 import React, { FC, useState } from 'react'
 import logo from '../../../assets/images/logowhite.svg'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import Button from '@components/button/Button'
 
 interface IHeader {}
 
 const Header: FC<IHeader> = () => {
   const [isActive, setIsActive] = useState(false)
+  const location = useLocation()
 
   const toggleMenu = () => {
     setIsActive(!isActive)
@@ -60,7 +61,13 @@ const Header: FC<IHeader> = () => {
                 <ul className="flex md:flex-row flex-col items-center gap-8">
                   {navLinks.map((link, index) => (
                     <li key={index}>
-                      <Link to={link.path} onClick={closeMenu}>
+                      <Link
+                        to={link.path}
+                        className={`${
+                          location.pathname === link.path ? 'line-through pointer-events-none' : ''
+                        }`}
+                        onClick={closeMenu}
+                      >
                         {link.label}
                       </Link>
                     </li>
