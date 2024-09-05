@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { Link } from 'react-router-dom'
 
-interface IConnectWallet {}
+interface IConnectWallet { }
 
 const ConnectWallet: FC<IConnectWallet> = () => {
   return (
@@ -36,7 +36,8 @@ const ConnectWallet: FC<IConnectWallet> = () => {
                   </button>
                   <button className="font-ocr-x-trial w-full cursor-pointer rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group">
                     <span className="px-[0.875rem] h-full bg-darkslategray-200 shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.18)_inset,_1.8px_1.8px_1.84px_rgba(0,_0,_0,_0.91)_inset] rounded-[.115rem] flex items-center justify-center text-center transition-all duration-300 group-hover:bg-dimgray-200 w-full">
-                      WALLET CONNECT
+                      <w3m-button />
+                      {/* WALLET CONNECT */}
                     </span>
                   </button>
                 </div>
