@@ -3,7 +3,7 @@ import logo from '../../../assets/images/logowhite.svg'
 import { Link, useLocation } from 'react-router-dom'
 import Button from '@components/button/Button'
 
-interface IHeader {}
+interface IHeader { }
 
 const Header: FC<IHeader> = () => {
   const [isActive, setIsActive] = useState(false)
@@ -46,9 +46,8 @@ const Header: FC<IHeader> = () => {
             <span className="w-7 h-0.5 bg-lightgreen-100 rounded-[.1875rem]"></span>
           </button>
           <div
-            className={`flex h-screen flex-col text-white fixed transition-all md:p-0 px-4 py-8 pt-24 duration-300 z-[100] bg-black w-full top-0 overflow-y-auto md:overflow-visible md:top-auto md:w-auto md:h-auto md:bg-transparent md:static md:z-auto ${
-              isActive ? 'right-0' : '-right-[100vw]'
-            }`}
+            className={`flex h-screen flex-col text-white fixed transition-all md:p-0 px-4 py-8 pt-24 duration-300 z-[100] bg-black w-full top-0 overflow-y-auto md:overflow-visible md:top-auto md:w-auto md:h-auto md:bg-transparent md:static md:z-auto ${isActive ? 'right-0' : '-right-[100vw]'
+              }`}
           >
             <button
               onClick={closeMenu}
@@ -63,9 +62,8 @@ const Header: FC<IHeader> = () => {
                     <li key={index}>
                       <Link
                         to={link.path}
-                        className={`${
-                          location.pathname === link.path ? 'line-through pointer-events-none' : ''
-                        }`}
+                        className={`${location.pathname === link.path ? 'line-through pointer-events-none' : ''
+                          }`}
                         onClick={closeMenu}
                       >
                         {link.label}
@@ -74,8 +72,9 @@ const Header: FC<IHeader> = () => {
                   ))}
                 </ul>
               </nav>
-              <Button link={'/connect-wallet'} className="!w-auto">
-                CONNECT WALLET
+              <Button className="!w-auto">
+                <w3m-button />
+                {/* CONNECT WALLET */}
               </Button>
             </div>
           </div>
