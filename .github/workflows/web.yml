@@ -2,8 +2,6 @@ name: Deploy web
 
 on:
   push:
-    branches:
-      - main
 
 jobs:
   deploy-main:
@@ -22,7 +20,6 @@ jobs:
     - name: Build
       working-directory: ./frontend
       run: |
-        cd frontend
         yarn
         yarn build
         mv dist/* ../web/landing
