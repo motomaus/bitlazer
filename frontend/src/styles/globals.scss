@@ -201,3 +201,14 @@ input::-webkit-inner-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+
+.react-draggable {
+  @media (min-width: 992px) {
+    top: 50% !important;
+    left: 0 !important;
+    transform: translateX(-50%);
+    right: initial !important;
+    bottom: initial !important;
+    width: 100%;
+  }
+}
