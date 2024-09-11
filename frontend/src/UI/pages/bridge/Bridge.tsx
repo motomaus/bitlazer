@@ -1,9 +1,11 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import BridgeDeposit from './deposit/BridgeDeposit'
 import BridgeStake from './stake/BridgeStake'
 import BridgeWithdraw from './withdraw/BridgeWithdraw'
+import { useAccount } from 'wagmi'
+import BridgeConnect from './connect/BridgeConnect'
 
-interface IBridge {}
+interface IBridge { }
 interface BridgeTab {
   id: string
   name: string
@@ -14,9 +16,12 @@ const Bridge: FC<IBridge> = () => {
     { id: 'deposit', name: 'DEPOSIT' },
     { id: 'stake', name: 'STAKE' },
     { id: 'withdraw', name: 'WITHDRAW' },
+    { id: 'connect', name: 'CONNECT WALLET' },
   ]
 
-  const [activeTabId, setActiveTabId] = useState<string>('deposit')
+  const [activeTabId, setActiveTabId] = useState<string>('connect')
+
+  const { isConnected } = useAccount()
 
   const renderContent = () => {
     switch (activeTabId) {
@@ -26,10 +31,20 @@ const Bridge: FC<IBridge> = () => {
         return <BridgeStake />
       case 'withdraw':
         return <BridgeWithdraw />
+      case 'connect':
+        return <BridgeConnect />
       default:
         return null
     }
   }
+
+  useEffect(() => {
+    if (isConnected && activeTabId === 'connect') {
+      setActiveTabId('deposit')
+    } else if (!isConnected && activeTabId !== 'connect') {
+      setActiveTabId('connect')
+    }
+  }, [isConnected, activeTabId])
 
   return (
     <div className="w-full min-h-screen relative overflow-hidden flex flex-col justify-center py-32">
@@ -102,25 +117,25 @@ const Bridge: FC<IBridge> = () => {
             <div className="md:max-w-[31.75rem] w-full flex flex-col gap-[0.5px]">
               <div className="grid grid-cols-3">
                 {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTabId(tab.id)}
-                    className={`font-ocr-x-trial w-full cursor-pointer rounded-[.115rem] h-10 text-lightgreen-100 text-[1.25rem] whitespace-nowrap flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group ${
-                      activeTabId === tab.id
+                  tab.id !== 'connect' && (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTabId(tab.id)}
+                      className={`font-ocr-x-trial w-full cursor-pointer rounded-[.115rem] h-10 text-lightgreen-100 text-[1.25rem] whitespace-nowrap flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group ${activeTabId === tab.id
                         ? 'bg-forestgreen pointer-events-none touch-none'
                         : 'bg-darkslategray-200'
-                    }`}
-                  >
-                    <span
-                      className={`px-[0.875rem] h-full shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.18)_inset,_1.8px_1.8px_1.84px_rgba(0,_0,_0,_0.91)_inset] rounded-[.115rem] flex items-center justify-center text-center transition-all duration-300 w-full ${
-                        activeTabId === tab.id
+                        }`}
+                    >
+                      <span
+                        className={`px-[0.875rem] h-full shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.18)_inset,_1.8px_1.8px_1.84px_rgba(0,_0,_0,_0.91)_inset] rounded-[.115rem] flex items-center justify-center text-center transition-all duration-300 w-full ${activeTabId === tab.id
                           ? 'bg-darkolivegreen-200'
                           : 'bg-black group-hover:bg-dimgray-200'
-                      }`}
-                    >
-                      {tab.name}
-                    </span>
-                  </button>
+                          }`}
+                      >
+                        {tab.name}
+                      </span>
+                    </button>
+                  )
                 ))}
               </div>
 

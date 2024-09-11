@@ -1,8 +1,12 @@
 import { Button, InputField } from '@components/index'
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 
-interface IBridgeStake {}
+import { useWriteContract, useBalance, useAccount } from 'wagmi'
+import { stakeLBTC_abi } from 'src/assets/abi/stakeLBTC'
+import { arbitrum, sepolia } from 'wagmi/chains'
+
+interface IBridgeStake { }
 
 const BridgeStake: FC<IBridgeStake> = () => {
   const {
@@ -29,11 +33,31 @@ const BridgeStake: FC<IBridgeStake> = () => {
 
   const onStakeSubmit = (data: any) => {
     console.log('Stake Data:', data)
+    writeContract({
+      abi: stakeLBTC_abi,
+      address: '0xD9A158f561E0DfD1842DF7A5c1549cD3D065d319',
+      functionName: 'stake',
+      args: [
+        BigInt(data.stakeAmount * 10 ** 18),
+      ],
+      value: BigInt(data.stakeAmount * 10 ** 18),
+    })
   }
 
   const onUnstakeSubmit = (data: any) => {
     console.log('Unstake Data:', data)
+    writeContract({
+      abi: stakeLBTC_abi,
+      address: '0xD9A158f561E0DfD1842DF7A5c1549cD3D065d319',
+      functionName: 'unstake',
+      args: [
+        BigInt(data.unstakeAmount * 10 ** 18),
+      ]
+    })
   }
+
+  const { isConnected, address } = useAccount()
+  const { writeContract } = useWriteContract()
 
   return (
     <div className="flex flex-col gap-7">
@@ -45,7 +69,7 @@ const BridgeStake: FC<IBridgeStake> = () => {
             control={stakeControl}
             rules={{
               required: 'Amount is required',
-              min: { value: 0.01, message: 'Amount must be greater than 0' },
+              min: { value: 0.00001, message: 'Amount must be greater than 0.00001' },
             }}
             render={({ field }) => (
               <InputField
@@ -90,7 +114,7 @@ const BridgeStake: FC<IBridgeStake> = () => {
             control={unstakeControl}
             rules={{
               required: 'Amount is required',
-              min: { value: 0.01, message: 'Amount must be greater than 0' },
+              min: { value: 0.00001, message: 'Amount must be greater than 0.00001' },
             }}
             render={({ field }) => (
               <InputField
