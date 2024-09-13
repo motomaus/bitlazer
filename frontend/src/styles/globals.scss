@@ -184,6 +184,19 @@ footer {
 
 .rotate-line {
   animation: randomRotate 3s ease-in-out infinite;
+
+  div {
+    animation: widthLine 1.5s;
+  }
+}
+
+@keyframes widthLine {
+  from {
+    width: 0;
+  }
+  to {
+    width: 110vw;
+  }
 }
 
 .scroller {

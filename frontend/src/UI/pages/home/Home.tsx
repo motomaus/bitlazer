@@ -1,5 +1,6 @@
-import { Button } from '@components/index'
 import React, { FC } from 'react'
+import { Button } from '@components/index'
+import Typewriter from 'typewriter-effect'
 
 interface IHome {}
 
@@ -10,7 +11,18 @@ const Home: FC<IHome> = () => {
         <section className="self-stretch relative z-10 gap-[1.875rem] flex flex-col items-center text-center text-[3rem] text-white font-ocr-x-trial">
           <div className="flex flex-col gap-[1.625rem]">
             <h1 className="m-0 max-w-[32.1rem] w-full text-inherit uppercase font-normal">
-              Lazer fast Bitcoin yield
+              Lazer fast Bitcoin{' '}
+              <span className="inline-block">
+                <Typewriter
+                  options={{
+                    strings: ['earnings', 'yield', 'profits'],
+                    autoStart: true,
+                    loop: true,
+                    deleteSpeed: 50,
+                    delay: 100,
+                  }}
+                />
+              </span>
             </h1>
             <div className="max-w-[32.131rem] relative text-[1.25rem] tracking-[-0.06em] leading-[1.625rem] font-maison-neue-trial">
               Supercharged Bitcoin yield with Layer 3 speed and ultra-low transaction fees
