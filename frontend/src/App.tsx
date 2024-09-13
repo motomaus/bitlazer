@@ -12,7 +12,7 @@ import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
 import { WagmiProvider, useConnect, useAccount, CreateConnectorFn, createConfig, http } from 'wagmi'
 import { injected, walletConnect } from 'wagmi/connectors'
-import { arbitrum } from 'wagmi/chains'
+import { arbitrum, sepolia } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 // 0. Setup queryClient
@@ -29,7 +29,7 @@ const metadata = {
   icons: []
 }
 
-const chains = [arbitrum] as const
+const chains = [arbitrum, sepolia] as const
 const connectors: CreateConnectorFn[] = []
 connectors.push(walletConnect({ projectId, metadata, showQrModal: false }))
 connectors.push(injected({ shimDisconnect: true }))
@@ -38,6 +38,7 @@ const newConfig = createConfig({
   chains,
   transports: {
     [arbitrum.id]: http(),
+    [sepolia.id]: http(),
   },
   connectors
 })
