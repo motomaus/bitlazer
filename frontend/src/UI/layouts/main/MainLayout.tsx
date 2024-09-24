@@ -13,6 +13,7 @@ const MainLayout = () => {
       line.style.setProperty('--random-offset', `${randomOffset}deg`)
     })
   }, [])
+
   return (
     <div className="relative bg-black min-h-screen flex flex-col overflow-hidden ">
       <div className="w-full h-full absolute top-0 left-0">

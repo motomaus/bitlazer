@@ -26,7 +26,7 @@ const metadata = {
   name: 'Bitlazer',
   description: 'Bitlazer DApp',
   url: 'https://bitlazer.com', // origin must match your domain & subdomain
-  icons: []
+  icons: [],
 }
 
 const chains = [arbitrum, sepolia] as const
@@ -40,7 +40,7 @@ const newConfig = createConfig({
     [arbitrum.id]: http(),
     [sepolia.id]: http(),
   },
-  connectors
+  connectors,
 })
 
 const config = defaultWagmiConfig({
@@ -53,7 +53,7 @@ const config = defaultWagmiConfig({
     walletFeatures: false,
   },
   metadata,
-  connectors
+  connectors,
 })
 
 // 3. Create modal
@@ -66,7 +66,7 @@ createWeb3Modal({
     '--w3m-accent': '#00000000',
     '--w3m-border-radius-master': '0',
     '--w3m-color-mix-strength': 0,
-  }
+  },
 })
 // End of Web3
 
