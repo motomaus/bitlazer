@@ -45,7 +45,7 @@ const MyModal: FC<PropsWithChildren<IMyModal>> = ({
               className,
             )}
           >
-            <div className="relative md:h-auto h-full">
+            <div className="relative md:h-auto h-full font-ocr-x-trial">
               <div className="w-full flex flex-col gap-[0.031rem] md:h-auto h-full">
                 <div className="self-stretch rounded-[.115rem] bg-forestgreen flex flex-col  py-[0.187rem] px-[0.125rem] modal-header">
                   <div className="self-stretch shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.18)_inset,_1.8px_1.8px_1.84px_rgba(0,_0,_0,_0.91)_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-center justify-between py-[0.25rem] pl-[0.875rem] pr-[0.25rem] gap-[1.25rem] mq450:flex-wrap">
