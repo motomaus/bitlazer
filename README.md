@@ -64,3 +64,12 @@ This structure balances the need for early growth and development with long-term
 
 For more information, please visit our official website or join our community channels.
 
+
+## arbitrum sepolia deployed test ERC-20 & bitlazer contracts
+- "WBTC": "0xa655cc81abD4A475fba7E8Ef4511A9e7bcbd1688",
+- "TBTC": "0xd7c8e18B464E5ff9f968c8CAB8DED2F0DEBF52c8",
+- "ABTC": "0x418840Ca602B0fd492A79252e07e3B0cc797E2D9",
+- "lBTC": "0x9787F9E130B82A2F45C9690884f5585f471C463E"
+
+
+
