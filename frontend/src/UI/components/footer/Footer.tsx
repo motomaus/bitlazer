@@ -57,7 +57,7 @@ const Footer: FC<IFooter> = () => {
             <li>
               <a
                 className="text-gray-100 hover:text-white"
-                href="http://"
+                href="https://x.com/bitlazer"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -67,7 +67,7 @@ const Footer: FC<IFooter> = () => {
             <li>
               <a
                 className="text-gray-100 hover:text-white"
-                href="http://"
+                href="https://t.me/bitlazer_io"
                 target="_blank"
                 rel="noopener noreferrer"
               >
