@@ -13,7 +13,8 @@
     "fmt": "prettier --write test",
     "fmtsol": "prettier --write --plugin=prettier-plugin-solidity 'contracts/**/*.sol'",
     "fmtsol:check": "prettier --check --plugin=prettier-plugin-solidity 'contracts/**/*.sol'",
-    "contracts:compile": "hardhat compile"
+    "contracts:compile": "hardhat compile",
+    "scripts:wrap-1lbtc": "hardhat run scripts/wrap-1lbtc.ts --network arbitrum-sepolia"
   },
   "dependencies": {
     "@ethersproject/experimental": "^5.7.0",
