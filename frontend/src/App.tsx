@@ -41,19 +41,6 @@ const newConfig = createConfig({
   },
   connectors
 })
-
-const config = defaultWagmiConfig({
-  chains,
-  projectId,
-  auth: {
-    email: false,
-    socials: [],
-    showWallets: true,
-    walletFeatures: false,
-  },
-  metadata,
-  connectors
-})
 // End of Web3
 
 function App() {
