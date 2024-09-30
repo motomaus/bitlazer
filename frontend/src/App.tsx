@@ -25,14 +25,13 @@ const projectId = 'ae140b2d150397e3e8c039cc1debc614'
 const metadata = {
   name: 'Bitlazer',
   description: 'Bitlazer DApp',
-  url: 'https://bitlazer.com', // origin must match your domain & subdomain
+  url: 'http://localhost:3000', // origin must match your domain & subdomain
   icons: []
 }
 
 const chains = [arbitrum, sepolia] as const
 const connectors: CreateConnectorFn[] = []
-connectors.push(walletConnect({ projectId, metadata, showQrModal: false }))
-connectors.push(injected({ shimDisconnect: true }))
+connectors.push(walletConnect({ projectId, metadata, showQrModal: true }))
 
 const newConfig = createConfig({
   chains,
@@ -55,25 +54,12 @@ const config = defaultWagmiConfig({
   metadata,
   connectors
 })
-
-// 3. Create modal
-createWeb3Modal({
-  metadata,
-  wagmiConfig: config,
-  projectId,
-  enableAnalytics: true, // Optional - defaults to your Cloud configuration
-  themeVariables: {
-    '--w3m-accent': '#00000000',
-    '--w3m-border-radius-master': '0',
-    '--w3m-color-mix-strength': 0,
-  }
-})
 // End of Web3
 
 function App() {
   return (
     <I18nextProvider i18n={i18n}>
-      <WagmiProvider config={config}>
+      <WagmiProvider config={newConfig}>
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
 

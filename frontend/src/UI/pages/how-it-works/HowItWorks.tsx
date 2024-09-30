@@ -1,8 +1,10 @@
 import React, { FC } from 'react'
+import { useAccount } from 'wagmi'
 
-interface IHowItWorks {}
+interface IHowItWorks { }
 
 const HowItWorks: FC<IHowItWorks> = () => {
+
   return (
     <div className="flex-1 rounded-12xs bg-black font-ocr-x-trial border-forestgreen border-[.1875rem] border-solid box-border flex flex-col gap-[1.668rem] md:max-h-[40rem] scroller overflow-y-auto">
       <div className="flex flex-col gap-6 md:gap-[2.375rem] md:p-10 px-4 py-6 ">

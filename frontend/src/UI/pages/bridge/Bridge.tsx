@@ -108,7 +108,7 @@ const Bridge: FC<IBridge> = () => {
                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
                     </div>
                     <div className="tracking-[-0.06em] leading-[1.25rem] ">
-                      CURRENT PROGRESS 0/2 [ 0% ]
+                      CURRENT PROGRESS {isConnected ? 1 : 0}/3 [ {isConnected ? (Math.round(1 / 3 * 100)) : 0}% ]
                     </div>
                   </div>
                 </div>

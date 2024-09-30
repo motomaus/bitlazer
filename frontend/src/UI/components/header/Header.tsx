@@ -8,8 +8,10 @@ import ConnectWallet from '@pages/connect-wallet/ConnectWallet'
 import Roadmap from '@pages/roadmap/Roadmap'
 import Features from '@pages/features/Features'
 import clsx from 'clsx'
+import { useAccount } from 'wagmi'
+import { Account } from '@pages/connect-wallet/Account'
 
-interface IHeader {}
+interface IHeader { }
 
 const Header: FC<IHeader> = () => {
   const [isActive, setIsActive] = useState(false)
@@ -17,6 +19,7 @@ const Header: FC<IHeader> = () => {
   const [openConnectWalletModal, setOpenConnectWalletModal] = useState(false)
   const [openRoadmapModal, setOpenRoadmapModal] = useState(false)
   const [openFeaturesModal, setOpenFeaturesModal] = useState(false)
+  const { isConnected } = useAccount()
 
   const location = useLocation()
 
@@ -35,6 +38,12 @@ const Header: FC<IHeader> = () => {
     setOpenRoadmapModal(false)
     setOpenFeaturesModal(false)
   }, [location])
+
+  useEffect(() => {
+    if (isConnected) {
+      setOpenConnectWalletModal(false)
+    }
+  }, [isConnected])
 
   return (
     <>
@@ -57,9 +66,8 @@ const Header: FC<IHeader> = () => {
               <span className="w-7 h-0.5 bg-lightgreen-100 rounded-[.1875rem]"></span>
             </button>
             <div
-              className={`flex h-screen flex-col text-white fixed  md:flex-1 transition-all md:p-0 px-4 py-8 pt-24 duration-300 z-[100] bg-black w-full top-0 overflow-y-auto md:overflow-visible md:top-auto md:w-auto md:h-auto md:bg-transparent md:static md:z-auto ${
-                isActive ? 'right-0' : '-right-[100vw]'
-              }`}
+              className={`flex h-screen flex-col text-white fixed  md:flex-1 transition-all md:p-0 px-4 py-8 pt-24 duration-300 z-[100] bg-black w-full top-0 overflow-y-auto md:overflow-visible md:top-auto md:w-auto md:h-auto md:bg-transparent md:static md:z-auto ${isActive ? 'right-0' : '-right-[100vw]'
+                }`}
             >
               <button
                 onClick={closeMenu}
@@ -141,8 +149,17 @@ const Header: FC<IHeader> = () => {
                     </li>
                   </ul>
                 </nav>
-                <Button className="!w-auto">
-                  <w3m-button />
+                <Button onClick={() => {
+                  if (!isConnected) {
+                    setOpenConnectWalletModal(!openConnectWalletModal)
+                    closeMenu()
+                  }
+                }} className="!w-auto">
+                  {isConnected ? (
+                    <Account />
+                  ) : (
+                    "CONNECT WALLET"
+                  )}
                 </Button>
               </div>
             </div>
