@@ -21,6 +21,7 @@ const Bridge: FC<IBridge> = () => {
   ]
 
   const [activeTabId, setActiveTabId] = useState<string>('connect')
+  const [currentProgress, setCurrentProgress] = useState<number>(0)
 
   const { isConnected } = useAccount()
 
@@ -46,6 +47,12 @@ const Bridge: FC<IBridge> = () => {
       setActiveTabId('connect')
     }
   }, [isConnected, activeTabId])
+
+  useEffect(() => {
+    if (isConnected) {
+      setCurrentProgress(1)
+    }
+  }, [isConnected])
 
   return (
     <div className="w-full min-h-screen relative overflow-hidden flex flex-col justify-center py-32">
@@ -105,14 +112,16 @@ const Bridge: FC<IBridge> = () => {
                     </div>
                   </div>
                   <div className="flex flex-col gap-[0.312rem] mt-auto overflow-hidden">
-                    <div className="relative inline-block max-w-full text-base font-normal  font-arial ">
-                      ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+                    <div className="relative inline-flex flex-row max-w-full text-base font-normal  font-arial ">
+                      <div className={currentProgress > 0 ? "text-[#66d560]" : ""}>░░░░░░░░░░░</div>
+                      <div className={currentProgress > 1 ? "text-[#66d560]" : ""}>░░░░░░░░░░░</div>
+                      <div className={currentProgress > 2 ? "text-[#66d560]" : ""}>░░░░░░░░░░░</div>
                     </div>
                     <div className="tracking-[-0.06em] leading-[1.25rem] font-maison-neue-trial">
                       CURRENT PROGRESS{' '}
                       <span className="font-ocr-x-trial">
-                        {isConnected ? 1 : 0}/3 <span className="font-maison-neue-trial">[</span>{' '}
-                        {isConnected ? Math.round((1 / 3) * 100) : 0}%{' '}
+                        {currentProgress}/3 <span className="font-maison-neue-trial">[</span>{' '}
+                        {Math.round((currentProgress / 3) * 100)}%{' '}
                         <span className="font-maison-neue-trial">]</span>
                       </span>
                     </div>
