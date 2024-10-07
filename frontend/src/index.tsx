@@ -5,6 +5,7 @@ import '@styles/index.css'
 import '@styles/globals.scss'
 import 'react-toastify/dist/ReactToastify.css'
 import 'normalize.css'
+import 'overlayscrollbars/overlayscrollbars.css'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 

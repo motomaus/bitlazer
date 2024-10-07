@@ -48,6 +48,33 @@ body {
   &.lock {
     overflow: hidden;
   }
+
+  .os-theme-dark {
+    --os-handle-bg: #3d8938;
+    --os-handle-bg-hover: #3d8938;
+    --os-handle-bg-active: #3f2ddf;
+  }
+
+  .os-scrollbar {
+    border-radius: 0.1153rem;
+    border: 0.1875rem solid #3d8938;
+    background: #255322;
+    width: 2.2809rem;
+
+    padding-bottom: 0.4375rem;
+
+    margin: -0.1875rem 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+
+    .os-scrollbar-handle {
+      border-radius: 0.1153rem;
+      box-shadow: 0.1153rem 0.1153rem 0.1153rem 0rem rgba(0, 0, 0, 0.91) inset;
+
+      margin: 0.125rem;
+      width: calc(100% - 0.25rem) !important;
+    }
+  }
 }
 
 input,

@@ -6,7 +6,7 @@ import { useAccount } from 'wagmi'
 import BridgeConnect from './connect/BridgeConnect'
 import clsx from 'clsx'
 
-interface IBridge { }
+interface IBridge {}
 interface BridgeTab {
   id: string
   name: string
@@ -113,9 +113,9 @@ const Bridge: FC<IBridge> = () => {
                   </div>
                   <div className="flex flex-col gap-[0.312rem] mt-auto overflow-hidden">
                     <div className="relative inline-flex flex-row max-w-full text-base font-normal  font-arial ">
-                      <div className={currentProgress > 0 ? "text-[#66d560]" : ""}>░░░░░░░░░░░</div>
-                      <div className={currentProgress > 1 ? "text-[#66d560]" : ""}>░░░░░░░░░░░</div>
-                      <div className={currentProgress > 2 ? "text-[#66d560]" : ""}>░░░░░░░░░░░</div>
+                      <div className={currentProgress > 0 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
+                      <div className={currentProgress > 1 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
+                      <div className={currentProgress > 2 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
                     </div>
                     <div className="tracking-[-0.06em] leading-[1.25rem] font-maison-neue-trial">
                       CURRENT PROGRESS{' '}

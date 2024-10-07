@@ -79,7 +79,7 @@ const Footer: FC<IFooter> = () => {
       </div>
       <MyModal
         label={'HOW IT WORKS'}
-        width="39.375rem"
+        width="md:w-[39.375rem]"
         open={openHowItWorksModal}
         handleClose={() => setOpenHowItWorksModal(false)}
       >
@@ -87,7 +87,7 @@ const Footer: FC<IFooter> = () => {
       </MyModal>
       <MyModal
         label={'CONNECT WALLET'}
-        width="21.4375rem"
+        width="md:w-[21.4375rem]"
         open={openConnectWalletModal}
         handleClose={() => setOpenConnectWalletModal(false)}
       >
@@ -95,7 +95,7 @@ const Footer: FC<IFooter> = () => {
       </MyModal>
       <MyModal
         label={'ROADMAP'}
-        width="41.375rem"
+        width="md:w-[41.375rem]"
         open={openRoadmapModal}
         handleClose={() => setOpenRoadmapModal(false)}
       >
@@ -103,7 +103,7 @@ const Footer: FC<IFooter> = () => {
       </MyModal>
       <MyModal
         label={'KEY FEATURES'}
-        width="50rem"
+        width="md:w-[50rem]"
         open={openFeaturesModal}
         handleClose={() => setOpenFeaturesModal(false)}
       >
