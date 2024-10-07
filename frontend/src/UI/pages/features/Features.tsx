@@ -9,7 +9,7 @@ interface IFeatures {}
 
 const Features: FC<IFeatures> = () => {
   return (
-    <ul className="flex-1 rounded-12xs bg-black font-ocr-x-trial border-forestgreen border-[.1875rem] border-solid box-border flex flex-col md:max-h-[40rem] scroller overflow-y-auto">
+    <ul className="flex-1  rounded-12xs bg-black font-ocr-x-trial border-forestgreen border-[.1875rem] border-solid box-border flex flex-col md:max-h-[40rem] scroller overflow-y-auto">
       <li className="flex flex-col md:p-10 md:pl-20 px-4 py-6 border-forestgreen border-0 border-b-[.1875rem] border-solid last:!border-0">
         <div className="flex md:flex-row flex-col items-center gap-6 md:gap-[4.187rem]">
           <div className="md:h-[11.588rem] md:w-[10.763rem] h-[8rem] w-[8rem] flex-shrink-0">

@@ -44,9 +44,11 @@ const config = {
         sans: [
           '"Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
         ],
-        'maison-neue-trial': "'Nunito'",
-        'ocr-x-trial': "'Space Mono'",
-        arial: 'Roboto',
+        'maison-neue-trial':
+          '"Maison Neue Mono", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+        'ocr-x-trial':
+          '"OCR-X TTF", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+        arial: 'Arial',
       },
       borderRadius: {
         '12xs': '1px',
