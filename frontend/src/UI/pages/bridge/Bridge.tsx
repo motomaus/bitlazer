@@ -109,9 +109,10 @@ const Bridge: FC<IBridge> = () => {
                       ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
                     </div>
                     <div className="tracking-[-0.06em] leading-[1.25rem] font-maison-neue-trial">
-                      CURRENT PROGRESS  <span className="font-ocr-x-trial">
-{isConnected ? 1 : 0}/3 
-                        0/2 <span className="font-maison-neue-trial">[</span> {isConnected ? (Math.round(1 / 3 * 100)) : 0}%{' '}
+                      CURRENT PROGRESS{' '}
+                      <span className="font-ocr-x-trial">
+                        {isConnected ? 1 : 0}/3 <span className="font-maison-neue-trial">[</span>{' '}
+                        {isConnected ? Math.round((1 / 3) * 100) : 0}%{' '}
                         <span className="font-maison-neue-trial">]</span>
                       </span>
                     </div>
