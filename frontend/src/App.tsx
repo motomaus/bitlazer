@@ -7,46 +7,19 @@ import '@locales/index'
 import i18n from '@locales/index'
 
 // Web3
-import { createWeb3Modal } from '@web3modal/wagmi/react'
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
-
-import { WagmiProvider, useConnect, useAccount, CreateConnectorFn, createConfig, http } from 'wagmi'
-import { injected, walletConnect } from 'wagmi/connectors'
-import { arbitrum, sepolia } from 'wagmi/chains'
+import { WagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { config } from './web3/config'
 
 // 0. Setup queryClient
 const queryClient = new QueryClient()
 
-// 1. Get projectId from https://cloud.walletconnect.com
-const projectId = 'ae140b2d150397e3e8c039cc1debc614'
-
-// 2. Create wagmiConfig
-const metadata = {
-  name: 'Bitlazer',
-  description: 'Bitlazer DApp',
-  url: 'http://localhost:3000', // origin must match your domain & subdomain
-  icons: []
-}
-
-const chains = [arbitrum, sepolia] as const
-const connectors: CreateConnectorFn[] = []
-connectors.push(walletConnect({ projectId, metadata, showQrModal: true }))
-
-const newConfig = createConfig({
-  chains,
-  transports: {
-    [arbitrum.id]: http(),
-    [sepolia.id]: http(),
-  },
-  connectors
-})
 // End of Web3
 
 function App() {
   return (
     <I18nextProvider i18n={i18n}>
-      <WagmiProvider config={newConfig}>
+      <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
 

@@ -10,6 +10,10 @@ import Features from '@pages/features/Features'
 import clsx from 'clsx'
 import { useAccount } from 'wagmi'
 import { Account } from '@pages/connect-wallet/Account'
+import { devnet } from 'src/web3/chains'
+import { s } from 'vite/dist/node/types.d-aGj9QkWt'
+import { config } from 'src/web3/config'
+import { switchChain } from '@wagmi/core'
 
 interface IHeader { }
 
@@ -19,7 +23,7 @@ const Header: FC<IHeader> = () => {
   const [openConnectWalletModal, setOpenConnectWalletModal] = useState(false)
   const [openRoadmapModal, setOpenRoadmapModal] = useState(false)
   const [openFeaturesModal, setOpenFeaturesModal] = useState(false)
-  const { isConnected } = useAccount()
+  const { isConnected, chainId } = useAccount()
 
   const location = useLocation()
 
@@ -44,6 +48,15 @@ const Header: FC<IHeader> = () => {
       setOpenConnectWalletModal(false)
     }
   }, [isConnected])
+
+  useEffect(() => {
+    const _switchChain = async () => {
+      await switchChain(config, { chainId: devnet.id })
+    }
+    if (chainId && chainId !== devnet.id) {
+      _switchChain()
+    }
+  }, [chainId])
 
   return (
     <>
