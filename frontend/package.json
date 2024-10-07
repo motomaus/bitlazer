@@ -59,6 +59,7 @@
     "sass": "^1.77.2",
     "scss": "^0.2.4",
     "typescript": "^5.2.2",
+    "typewriter-effect": "^2.21.0",
     "viem": "^2.21.2",
     "vite-tsconfig-paths": "^4.3.2",
     "wagmi": "^2.12.8",

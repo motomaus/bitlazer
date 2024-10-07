@@ -1,5 +1,6 @@
 import React, { FC, useState, useEffect } from 'react'
 import logo from '../../../assets/images/logowhite.svg'
+import burger from '../../../assets/images/burger.jpeg'
 import { Link, useLocation } from 'react-router-dom'
 import Button from '@components/button/Button'
 import MyModal from '@components/modal/MyModal'
@@ -72,11 +73,9 @@ const Header: FC<IHeader> = () => {
             <button
               id="burger"
               onClick={toggleMenu}
-              className="w-7 h-7 flex-col justify-center items-center gap-[.3125rem] inline-flex flex-shrink-0 block md:hidden ml-auto"
+              className="w-12 h-12 -mr-2 flex-col justify-center items-center gap-[.3125rem] inline-flex flex-shrink-0 block md:hidden ml-auto"
             >
-              <span className="w-7 h-0.5 bg-lightgreen-100 rounded-[.1875rem]"></span>
-              <span className="w-7 h-0.5 bg-lightgreen-100 rounded-[.1875rem]"></span>
-              <span className="w-7 h-0.5 bg-lightgreen-100 rounded-[.1875rem]"></span>
+              <img className="w-full h-full object-contain" src={burger} alt="" />
             </button>
             <div
               className={`flex h-screen flex-col text-white fixed  md:flex-1 transition-all md:p-0 px-4 py-8 pt-24 duration-300 z-[100] bg-black w-full top-0 overflow-y-auto md:overflow-visible md:top-auto md:w-auto md:h-auto md:bg-transparent md:static md:z-auto ${isActive ? 'right-0' : '-right-[100vw]'
