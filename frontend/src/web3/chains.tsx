@@ -5,6 +5,6 @@ export const devnet = {
     name: 'Bitlazer Devnet',
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     rpcUrls: {
-        default: { http: ['https://cloudflare-eth.com'] },
+        default: { http: ['http://devnet.bitlazer.io:8449'] },
     },
 } as const satisfies Chain
