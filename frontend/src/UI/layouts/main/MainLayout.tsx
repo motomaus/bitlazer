@@ -1,6 +1,7 @@
 import { Loader, Header, Footer } from '@components/index'
 import React, { Suspense, useEffect, useRef, useState } from 'react'
 import { Outlet } from 'react-router-dom'
+import { throttle } from 'lodash'
 
 const MainLayout = () => {
   const linesRef = useRef<HTMLDivElement[]>([])
@@ -35,11 +36,10 @@ const MainLayout = () => {
     setShowDot({ visible: true, x: rect.left, y: rect.top, rotate })
   }
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, rotate: number) => {
+  const handleMouseMove = throttle((e: React.MouseEvent<HTMLDivElement>, rotate: number) => {
     const { clientX, clientY } = e
     setShowDot((prev) => ({ ...prev, x: clientX, y: clientY, rotate }))
-  }
-
+  }, 100) // ограничиваем обновление состояния каждые 100ms
   const handleMouseLeave = () => {
     setShowDot({ visible: false, x: 0, y: 0, rotate: 0 })
   }
@@ -49,7 +49,7 @@ const MainLayout = () => {
       <div className="w-full h-full absolute top-0 left-0">
         {showDot.visible && (
           <div
-            className="w-[.5713rem] h-[.5713rem] bg-[#90e38c] rounded-full blur-[.0938rem] absolute z-30 transition-all duration-200"
+            className="w-[.5713rem] h-[.5713rem] bg-[#90e38c] rounded-full blur-[.0938rem] absolute z-30 dot"
             style={{
               top: showDot.y - 6,
               left: showDot.x - 6,
