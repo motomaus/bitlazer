@@ -211,6 +211,20 @@ footer {
 
 .rotate-line {
   animation: randomRotate 3s ease-in-out infinite;
+  pointer-events: all !important;
+
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: -0.125rem;
+    bottom: -0.125rem;
+    left: 0;
+    right: 0;
+    background: transparent;
+    z-index: 10;
+  }
 
   div {
     animation: widthLine 1.5s;
@@ -254,4 +268,18 @@ input[type='number'] {
 }
 .modal-header {
   cursor: move;
+}
+
+@media (min-width: 992px) {
+  * {
+    a,
+    button {
+      &:not(:disabled) {
+        pointer-events: all;
+      }
+    }
+    form {
+      pointer-events: all;
+    }
+  }
 }
