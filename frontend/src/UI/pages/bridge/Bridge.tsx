@@ -31,7 +31,7 @@ const Bridge: FC<IBridge> = () => {
       case 'deposit':
         return <BridgeDeposit />
       case 'stake':
-        return <BridgeStake />
+        return <BridgeStake enabled={false} />
       case 'withdraw':
         return <BridgeWithdraw />
       case 'connect':

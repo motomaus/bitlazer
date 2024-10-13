@@ -91,6 +91,24 @@ const Header: FC<IHeader> = () => {
                 <nav className="whitespace-nowrap text-[1.25rem] text-lightgreen-100 font-ocr-x-trial md:mx-auto">
                   <ul className="flex md:flex-row flex-col items-center gap-8">
                     <li>
+                      <Link
+                        to="/about"
+                        className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/about' ? 'line-through pointer-events-none' : ''}`}
+                        onClick={closeMenu}
+                      >
+                        [ABOUT]
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/bridge"
+                        className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/bridge' ? 'line-through pointer-events-none' : ''}`}
+                        onClick={closeMenu}
+                      >
+                        [BRIDGE]
+                      </Link>
+                    </li>
+                    <li>
                       <button
                         className={clsx(
                           'text-lightgreen-100 hover:opacity-80',
@@ -103,15 +121,6 @@ const Header: FC<IHeader> = () => {
                       >
                         [HOW IT WORKS]
                       </button>
-                    </li>
-                    <li>
-                      <Link
-                        to="/about"
-                        className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/about' ? 'line-through pointer-events-none' : ''}`}
-                        onClick={closeMenu}
-                      >
-                        [ABOUT]
-                      </Link>
                     </li>
                     <li>
                       <button
@@ -128,15 +137,6 @@ const Header: FC<IHeader> = () => {
                       </button>
                     </li>
                     <li>
-                      <Link
-                        to="/bridge"
-                        className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/bridge' ? 'line-through pointer-events-none' : ''}`}
-                        onClick={closeMenu}
-                      >
-                        [BRIDGE]
-                      </Link>
-                    </li>
-                    <li>
                       <button
                         className={clsx(
                           'text-lightgreen-100 hover:opacity-80',
@@ -150,7 +150,7 @@ const Header: FC<IHeader> = () => {
                         [ROADMAP]
                       </button>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link
                         to="/faq"
                         className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/faq' ? 'line-through pointer-events-none' : ''}`}
@@ -158,7 +158,7 @@ const Header: FC<IHeader> = () => {
                       >
                         [FAQ]
                       </Link>
-                    </li>
+                    </li> */}
                   </ul>
                 </nav>
                 <Button
