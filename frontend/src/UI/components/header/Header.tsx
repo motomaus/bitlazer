@@ -89,7 +89,7 @@ const Header: FC<IHeader> = () => {
               </button>
               <div className="items-center gap-[4.875rem] flex md:flex-row flex-col">
                 <nav className="whitespace-nowrap text-[1.25rem] text-lightgreen-100 font-ocr-x-trial md:mx-auto">
-                  <ul className="flex md:flex-row flex-col items-center gap-8">
+                  <ul className="flex md:flex-row flex-col items-center gap-8 md:gap-12">
                     <li>
                       <button
                         className={clsx(
@@ -104,7 +104,7 @@ const Header: FC<IHeader> = () => {
                         [HOW IT WORKS]
                       </button>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link
                         to="/about"
                         className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/about' ? 'line-through pointer-events-none' : ''}`}
@@ -112,7 +112,7 @@ const Header: FC<IHeader> = () => {
                       >
                         [ABOUT]
                       </Link>
-                    </li>
+                    </li> */}
                     <li>
                       <button
                         className={clsx(
@@ -150,7 +150,7 @@ const Header: FC<IHeader> = () => {
                         [ROADMAP]
                       </button>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link
                         to="/faq"
                         className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/faq' ? 'line-through pointer-events-none' : ''}`}
@@ -158,7 +158,7 @@ const Header: FC<IHeader> = () => {
                       >
                         [FAQ]
                       </Link>
-                    </li>
+                    </li> */}
                   </ul>
                 </nav>
                 <Button
