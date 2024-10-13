@@ -1,6 +1,6 @@
 import { MyModal } from '@components/index'
 import { useState } from 'react'
-import { useAccount, useDisconnect, useEnsAvatar, useEnsName, useSwitchChain } from 'wagmi'
+import { useAccount } from 'wagmi'
 import ConnectWallet from './ConnectWallet'
 
 export function Account() {

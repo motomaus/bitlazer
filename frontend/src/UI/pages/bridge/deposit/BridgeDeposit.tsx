@@ -1,20 +1,14 @@
 import { Button, InputField } from '@components/index'
-import { ethers } from 'ethers'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { createPublicClient, http } from 'viem'
-import { getBalance } from '@wagmi/core'
-import { useAccount, useBalance, useReadContract, useSwitchChain } from 'wagmi'
+import { ERC20_CONTRACT_ADDRESS, TokenKeys } from 'src/web3/contracts'
+import { useAccount, useBalance, useSwitchChain } from 'wagmi'
 import { arbitrumSepolia } from 'wagmi/chains'
-import { config } from '../../../../web3/config'
 
 interface IBridgeDeposit {}
 
-const ERC20_CONTRACT_ADDRESS = '0xC62b0509B5C6F5747750A7D8ce5ff2efE87dA44E'
-const ERC20_ABI = ['function balanceOf(address owner) view returns (uint256)']
-
 const BridgeDeposit: FC<IBridgeDeposit> = () => {
-  const [selectedToken, setSelectedToken] = useState('wbtc')
+  const [selectedToken, setSelectedToken] = useState<TokenKeys>('wbtc')
   const { switchChain } = useSwitchChain()
 
   const {
@@ -28,7 +22,7 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
     mode: 'onChange',
   })
 
-  const { address, isConnected, chainId, chain } = useAccount()
+  const { address, isConnected, chainId } = useAccount()
 
   useEffect(() => {
     const switchToArbitrumSepolia = async () => {
@@ -46,11 +40,17 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
 
   const { data, isLoading } = useBalance({
     address,
-    token: ERC20_CONTRACT_ADDRESS,
+    token: ERC20_CONTRACT_ADDRESS[selectedToken],
   })
 
-  // Convert balance from wei to WBTC (assuming WBTC has 8 decimals)
-  // const balance = balanceData ? ethers.utils.formatUnits(balanceData, 8) : '0.00'
+  const handleMaxClick = () => {
+    if (data) {
+      // Check if data is defined
+      setAmount(data.value.toString()) // Set the amount to the full balance
+    } else {
+      console.error('Balance data is not available')
+    }
+  }
 
   const onSubmit = (data: any) => {
     console.log('Form Data:', data)
@@ -66,7 +66,7 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
           <div className="font-ocr-x-trial w-full rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex items-center">
             <select
               value={selectedToken}
-              onChange={(e) => setSelectedToken(e.target.value)}
+              onChange={(e) => setSelectedToken(e.target.value as TokenKeys)}
               className="bg-darkslategray-200 text-lightgreen-100 rounded-[.115rem] h-full text-[1.25rem] p-2 pr-8 appearance-none focus:outline-none focus:bg-gray-700 border border-lightgreen-100"
             >
               <option value="" disabled>
