@@ -70,6 +70,22 @@ const Bridge: FC<IBridge> = () => {
                     <div className="flex flex-col gap-4">
                       <div>
                         <span>[ Step 1 | </span>
+                        <span className="text-fuchsia">Wrap Bitcoin to Bitlazer BTC</span>
+                        <span> ] </span>
+                      </div>
+                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
+                        Embark on a secure and efficient journey as you transform your Bitcoin (BTC)
+                        into LBTC. This innovative process allows you to harness the power of
+                        Bitcoin while enjoying the benefits of enhanced liquidity and flexibility.
+                        By wrapping your BTC, you’re not just converting your assets; you’re
+                        entering a world of possibilities. Our platform ensures that this transition
+                        is not only safe but also straightforward, utilizing cutting-edge technology
+                        to protect your investments at every step.
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-4">
+                      <div>
+                        <span>[ Step 2 | </span>
                         <span className="text-fuchsia">Bridge Bitcoin to Bitlazer</span>
                         <span> ] </span>
                       </div>
@@ -83,7 +99,7 @@ const Bridge: FC<IBridge> = () => {
                     </div>
                     <div className="flex flex-col gap-4">
                       <div>
-                        <span>[ Step 2 | </span>
+                        <span>[ Step 3 | </span>
                         <span className="text-fuchsia">Stake L3 BTC or LZR Tokens</span>
                         <span> ] </span>
                       </div>
@@ -103,7 +119,7 @@ const Bridge: FC<IBridge> = () => {
                     </div>
                     <div className="flex flex-col gap-4">
                       <div>
-                        <span>[ Step 3 | </span>
+                        <span>[ Step 4 | </span>
                         <span className="text-fuchsia">Claim Airdrop and Earn Yield</span>
                         <span> ] </span>
                       </div>
@@ -128,12 +144,13 @@ const Bridge: FC<IBridge> = () => {
                       <div className={currentProgress > 0 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
                       <div className={currentProgress > 1 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
                       <div className={currentProgress > 2 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
+                      <div className={currentProgress > 3 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
                     </div>
                     <div className="tracking-[-0.06em] leading-[1.25rem] font-maison-neue-trial">
                       CURRENT PROGRESS{' '}
                       <span className="font-ocr-x-trial">
-                        {currentProgress}/3 <span className="font-maison-neue-trial">[</span>{' '}
-                        {Math.round((currentProgress / 3) * 100)}%{' '}
+                        {currentProgress}/4 <span className="font-maison-neue-trial">[</span>{' '}
+                        {Math.round((currentProgress / 4) * 100)}%{' '}
                         <span className="font-maison-neue-trial">]</span>
                       </span>
                     </div>
