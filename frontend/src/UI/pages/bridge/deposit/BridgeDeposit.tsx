@@ -6,7 +6,7 @@ import { simulateContract, waitForTransactionReceipt, writeContract } from '@wag
 import { arbitrumSepolia } from 'wagmi/chains'
 import { config } from 'src/web3/config'
 import { ERC20_CONTRACT_ADDRESS, TokenKeys, WRAP_CONTRACT } from 'src/web3/contracts'
-import { LBTC_abi } from 'src/assets/abi/lbtc2'
+import { LBTC_abi } from 'src/assets/abi/lbtc'
 
 interface IBridgeDeposit {}
 
