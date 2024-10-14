@@ -45,6 +45,8 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
     token: ERC20_CONTRACT_ADDRESS[selectedToken],
   })
 
+  // TODO: check for approval
+
   const onSubmit = async (data: any) => {
     const args = {
       abi: LBTC_abi,
