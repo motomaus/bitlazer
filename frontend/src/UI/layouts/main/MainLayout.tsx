@@ -58,8 +58,8 @@ const MainLayout = () => {
           <div
             className="w-[.5713rem] h-[.5713rem] bg-[#90e38c] rounded-full blur-[.0938rem] absolute z-30 dot"
             style={{
-              top: showDot.y - 6,
-              left: showDot.x - 6,
+              top: showDot.y - 5,
+              left: showDot.x - 5,
               transform: `rotate(${showDot.rotate}deg)`,
             }}
           >
