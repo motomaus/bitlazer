@@ -17,7 +17,7 @@ const Bridge: FC<IBridge> = () => {
   const tabs: BridgeTab[] = [
     { id: 'deposit', name: 'DEPOSIT' },
     { id: 'stake', name: 'STAKE' },
-    { id: 'withdraw', name: 'WITHDRAW' },
+    { id: 'withdraw', name: 'BRIDGE' },
     { id: 'connect', name: 'CONNECT WALLET' },
   ]
 
