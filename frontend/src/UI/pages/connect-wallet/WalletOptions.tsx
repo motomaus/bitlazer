@@ -5,11 +5,7 @@ export function WalletOptions() {
   const { connectors, connect } = useConnect()
 
   return connectors.map((connector) => (
-    <WalletOption
-      key={connector.uid}
-      connector={connector}
-      onClick={() => connect({ connector })}
-    />
+    <WalletOption key={connector.uid} connector={connector} onClick={() => connect({ connector })} />
   ))
 }
 

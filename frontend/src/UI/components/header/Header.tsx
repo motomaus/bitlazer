@@ -63,10 +63,7 @@ const Header: FC<IHeader> = () => {
       <header className="w-full fixed md:absolute top-0 left-0 z-50 bg-black md:bg-transparent md:pointer-events-auto md:[&_*]:pointer-events-auto">
         <div className="container">
           <div className="flex flex-row items-center justify-between gap-4">
-            <Link
-              to={'/'}
-              className="h-[5.625rem] w-[9.606rem] flex items-center justify-center flex-shrink-0"
-            >
+            <Link to={'/'} className="h-[5.625rem] w-[9.606rem] flex items-center justify-center flex-shrink-0">
               <img className="w-full h-full object-contain" loading="lazy" alt="" src={logo} />
             </Link>
             <button

@@ -59,9 +59,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
 
   return (
     <div className="flex flex-col gap-7">
-      <div className="text-2xl font-bold text-red-500 text-center mb-4">
-        Staking is not available yet
-      </div>
+      <div className="text-2xl font-bold text-red-500 text-center mb-4">Staking is not available yet</div>
 
       <form onSubmit={handleStakeSubmit(onStakeSubmit)} className="flex flex-col gap-7">
         <div className="flex flex-col gap-[0.687rem] max-w-full">
@@ -98,9 +96,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
         </div>
         <div className="flex flex-col gap-[0.687rem]">
           <div className="flex flex-row items-center justify-between gap-[1.25rem]">
-            <div className="relative tracking-[-0.06em] leading-[1.25rem] inline-block min-w-[4.188rem]">
-              APY TBD%
-            </div>
+            <div className="relative tracking-[-0.06em] leading-[1.25rem] inline-block min-w-[4.188rem]">APY TBD%</div>
           </div>
           <Button type="submit" disabled={!isStakeValid}>
             STAKE

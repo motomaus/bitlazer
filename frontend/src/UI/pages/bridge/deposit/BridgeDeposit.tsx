@@ -75,9 +75,7 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7">
       <div className="flex flex-col relative gap-[0.75rem]">
-        <label className="text-lightgreen-100">
-          ## BRIDGE {selectedToken.toUpperCase()} TO LBTC
-        </label>
+        <label className="text-lightgreen-100">## BRIDGE {selectedToken.toUpperCase()} TO LBTC</label>
         <div className="relative">
           <div className="font-ocr-x-trial w-full rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex items-center">
             <select
@@ -128,12 +126,8 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
       </div>
       <div className="flex flex-col gap-[0.687rem]">
         <div className="flex flex-row items-center justify-between gap-[1.25rem]">
-          <div className="relative tracking-[-0.06em] leading-[1.25rem] inline-block min-w-[4.188rem]">
-            GAS FEE
-          </div>
-          <div className="w-[2.75rem] relative tracking-[-0.06em] leading-[1.25rem] text-right inline-block">
-            00.00
-          </div>
+          <div className="relative tracking-[-0.06em] leading-[1.25rem] inline-block min-w-[4.188rem]">GAS FEE</div>
+          <div className="w-[2.75rem] relative tracking-[-0.06em] leading-[1.25rem] text-right inline-block">00.00</div>
         </div>
         <Button type="submit" disabled={!isValid}>
           WRAP
