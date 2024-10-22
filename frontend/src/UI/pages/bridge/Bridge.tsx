@@ -3,11 +3,15 @@ import React, { FC, useEffect, useState } from 'react'
 import BridgeDeposit from './deposit/BridgeDeposit'
 import BridgeStake from './stake/BridgeStake'
 import BridgeWithdraw from './withdraw/BridgeWithdraw'
-import { useAccount } from 'wagmi'
+import { useAccount, useReadContract } from 'wagmi'
 import BridgeConnect from './connect/BridgeConnect'
 import clsx from 'clsx'
+import { arbitrumSepolia } from 'viem/chains'
+import { LBTC_abi } from 'src/assets/abi/lbtc'
+import { ERC20_CONTRACT_ADDRESS } from 'src/web3/contracts'
+import Cookies from "universal-cookie";
 
-interface IBridge {}
+interface IBridge { }
 interface BridgeTab {
   id: string
   name: string
@@ -16,22 +20,22 @@ interface BridgeTab {
 const Bridge: FC<IBridge> = () => {
   const tabs: BridgeTab[] = [
     { id: 'deposit', name: 'DEPOSIT' },
+    { id: 'withdraw', name: 'BRIDGE' },
     { id: 'stake', name: 'STAKE' },
-    { id: 'withdraw', name: 'WITHDRAW' },
     { id: 'connect', name: 'CONNECT WALLET' },
   ]
 
   const [activeTabId, setActiveTabId] = useState<string>('connect')
   const [currentProgress, setCurrentProgress] = useState<number>(0)
 
-  const { isConnected } = useAccount()
+  const { address, isConnected, chainId } = useAccount()
 
   const renderContent = () => {
     switch (activeTabId) {
       case 'deposit':
         return <BridgeDeposit />
       case 'stake':
-        return <BridgeStake />
+        return <BridgeStake enabled={false} />
       case 'withdraw':
         return <BridgeWithdraw />
       case 'connect':
@@ -49,9 +53,37 @@ const Bridge: FC<IBridge> = () => {
     }
   }, [isConnected, activeTabId])
 
+  const { data: LBTCBalanceData } = useReadContract({
+    abi: LBTC_abi,
+    address: ERC20_CONTRACT_ADDRESS['lbtc'],
+    functionName: 'balanceOf',
+    args: [address],
+  })
+
   useEffect(() => {
     if (isConnected) {
-      setCurrentProgress(1)
+      const cookies = new Cookies();
+      const hasWrapped = (): boolean => {
+        return cookies.get('hasWrapped') === true
+      }
+
+      const hasBridged = (): boolean => {
+        return cookies.get('hasBridged') === true
+      }
+
+      const hasStaked = (): boolean => {
+        return cookies.get('hasStaked') === true
+      }
+
+      let progress = 0
+
+      if (hasWrapped()) {
+        progress = hasBridged() ? (hasStaked() ? 4 : 3) : (hasStaked() ? 4 : 2)
+      } else {
+        progress = hasBridged() ? (hasStaked() ? 4 : 3) : (hasStaked() ? 4 : 1)
+      }
+
+      setCurrentProgress(progress)
     }
   }, [isConnected])
 
@@ -70,71 +102,81 @@ const Bridge: FC<IBridge> = () => {
                     <div className="flex flex-col gap-4">
                       <div>
                         <span>[ Step 1 | </span>
-                        <span className="text-fuchsia">Bridge Bitcoin to Bitlazer</span>
+                        <span className="text-fuchsia">Wrap Bitcoin to Bitlazer BTC</span>
                         <span> ] </span>
                       </div>
                       <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
-                        Users can bridge their Wrapped Bitcoin (WBTC) from Ethereum to Bitlazer's
-                        Layer 3 (L3) network, or directly deposit native Bitcoin (BTC) using the
-                        BTC-native bridge, powered by light client technology. This process securely
-                        transfers assets to the L3 Bitlazer network, where they can participate in
-                        decentralized applications (dApps).
+                        Embark on a secure and efficient journey as you transform your Bitcoin (BTC) into LBTC. This
+                        innovative process allows you to harness the power of Bitcoin while enjoying the benefits of
+                        enhanced liquidity and flexibility. By wrapping your BTC, you’re not just converting your
+                        assets; you’re entering a world of possibilities. Our platform ensures that this transition is
+                        not only safe but also straightforward, utilizing cutting-edge technology to protect your
+                        investments at every step.
                       </div>
                     </div>
                     <div className="flex flex-col gap-4">
                       <div>
                         <span>[ Step 2 | </span>
-                        <span className="text-fuchsia">Stake L3 BTC or LZR Tokens</span>
+                        <span className="text-fuchsia">Bridge Bitcoin to Bitlazer</span>
                         <span> ] </span>
                       </div>
                       <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
-                        <p className="m-0">
-                          Once assets are bridged, users can participate in Bitlazer’s dual staking
-                          rewards program. They have the option to stake either:
-                        </p>
-                        <p className="m-0">
-                          / L3 BTC, earning rewards in Bitlazer's native token, LZR.
-                        </p>
-                        <p className="m-0">
-                          / LZR Tokens, earning both governance rights and a share of the gas fees
-                          generated by the platform, paid in BTC.
-                        </p>
+                        Users can bridge their Wrapped Bitcoin (WBTC) from Ethereum to Bitlazer's Layer 3 (L3) network,
+                        or directly deposit native Bitcoin (BTC) using the BTC-native bridge, powered by light client
+                        technology. This process securely transfers assets to the L3 Bitlazer network, where they can
+                        participate in decentralized applications (dApps).
                       </div>
                     </div>
                     <div className="flex flex-col gap-4">
                       <div>
                         <span>[ Step 3 | </span>
+                        <span className="text-fuchsia">Stake L3 BTC or LZR Tokens</span>
+                        <span> ] </span>
+                      </div>
+                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
+                        <p className="m-0">
+                          Once assets are bridged, users can participate in Bitlazer’s dual staking rewards program.
+                          They have the option to stake either:
+                        </p>
+                        <p className="m-0">/ L3 BTC, earning rewards in Bitlazer's native token, LZR.</p>
+                        <p className="m-0">
+                          / LZR Tokens, earning both governance rights and a share of the gas fees generated by the
+                          platform, paid in BTC.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-4">
+                      <div>
+                        <span>[ Step 4 | </span>
                         <span className="text-fuchsia">Claim Airdrop and Earn Yield</span>
                         <span> ] </span>
                       </div>
                       <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
                         <p className="m-0">
-                          Users who bridge their BTC and actively participate in staking can also
-                          qualify for the airdrop of LZR tokens. Early bridgers receive an
-                          additional 20% bonus from the total LZR supply allocated for the airdrop,
-                          incentivizing active engagement and early adoption of the Bitlazer
-                          ecosystem.
+                          Users who bridge their BTC and actively participate in staking can also qualify for the
+                          airdrop of LZR tokens. Early bridgers receive an additional 20% bonus from the total LZR
+                          supply allocated for the airdrop, incentivizing active engagement and early adoption of the
+                          Bitlazer ecosystem.
                         </p>
                         <p className="m-0">
-                          These steps ensure that users not only receive staking rewards but also
-                          benefit from the LZR airdrop, maximizing their participation in the
-                          Bitlazer network’s growth.
+                          These steps ensure that users not only receive staking rewards but also benefit from the LZR
+                          airdrop, maximizing their participation in the Bitlazer network’s growth.
                         </p>
                       </div>
                     </div>
                   </div>
                   <div className="flex flex-col gap-[0.312rem] mt-auto overflow-hidden">
                     <div className="relative inline-flex flex-row max-w-full text-base font-normal  font-arial ">
-                      <div className={currentProgress > 0 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
-                      <div className={currentProgress > 1 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
-                      <div className={currentProgress > 2 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
+                      <div className={currentProgress > 0 ? 'text-[#66d560]' : ''}>░░░░░░░░░</div>
+                      <div className={currentProgress > 1 ? 'text-[#66d560]' : ''}>░░░░░░░░░</div>
+                      <div className={currentProgress > 2 ? 'text-[#66d560]' : ''}>░░░░░░░░░</div>
+                      <div className={currentProgress > 3 ? 'text-[#66d560]' : ''}>░░░░░░░░░</div>
                     </div>
                     <div className="tracking-[-0.06em] leading-[1.25rem] font-maison-neue-trial">
                       CURRENT PROGRESS{' '}
                       <span className="font-ocr-x-trial">
-                        {currentProgress}/3 <span className="font-maison-neue-trial">[</span>{' '}
-                        {Math.round((currentProgress / 3) * 100)}%{' '}
-                        <span className="font-maison-neue-trial">]</span>
+                        {currentProgress}/4 <span className="font-maison-neue-trial">[</span>{' '}
+                        {Math.round((currentProgress / 4) * 100)}% <span className="font-maison-neue-trial">]</span>
                       </span>
                     </div>
                   </div>
@@ -159,9 +201,7 @@ const Bridge: FC<IBridge> = () => {
                         <span
                           className={clsx(
                             'px-[0.875rem] h-full shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.18)_inset,_1.8px_1.8px_1.84px_rgba(0,_0,_0,_0.91)_inset] rounded-[.115rem] flex items-center justify-center text-center transition-all duration-300 w-full',
-                            activeTabId === tab.id
-                              ? 'bg-darkolivegreen-200'
-                              : 'bg-black group-hover:bg-dimgray-200',
+                            activeTabId === tab.id ? 'bg-darkolivegreen-200' : 'bg-black group-hover:bg-dimgray-200',
                           )}
                         >
                           {tab.name}
