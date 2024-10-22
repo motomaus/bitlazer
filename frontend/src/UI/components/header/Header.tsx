@@ -73,7 +73,7 @@ const Header: FC<IHeader> = () => {
               </button>
               <div className="items-center gap-[4.875rem] flex md:flex-row flex-col">
                 <nav className="whitespace-nowrap text-[1.25rem] text-lightgreen-100 font-ocr-x-trial md:mx-auto">
-                  <ul className="flex md:flex-row flex-col items-center gap-8">
+                  <ul className="flex md:flex-row flex-col items-center gap-8 md:gap-12">
                     <li>
                       <Link
                         to="/about"
