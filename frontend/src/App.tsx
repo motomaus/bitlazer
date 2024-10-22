@@ -4,6 +4,7 @@ import { RouterProvider } from 'react-router-dom'
 import { router } from './router'
 import '@locales/index'
 import i18n from '@locales/index'
+import 'react-toastify/dist/ReactToastify.css';
 
 // Web3
 import { WagmiProvider } from 'wagmi'
@@ -24,6 +25,7 @@ function App() {
 
           <ToastContainer
             autoClose={3000}
+            position={'bottom-right'}
             theme="dark"
             hideProgressBar={true}
             newestOnTop={false}

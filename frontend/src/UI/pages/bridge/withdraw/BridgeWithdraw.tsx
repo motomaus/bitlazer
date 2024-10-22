@@ -3,15 +3,24 @@ import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { arbitrumSepolia } from 'wagmi/chains'
 import { ERC20_CONTRACT_ADDRESS, L2_GATEWAY_ROUTER, TokenKeys } from '../../../../web3/contracts'
-import { useAccount, useBalance, useSwitchChain } from 'wagmi'
-import { ethers } from 'ethers'
+import { useAccount, useBalance, useReadContract, useSwitchChain } from 'wagmi'
+import { writeContract, waitForTransactionReceipt, simulateContract } from '@wagmi/core'
+import { BigNumber, ethers } from 'ethers'
+import { toast } from 'react-toastify'
+import { formatEther, parseEther } from 'ethers/lib/utils'
+import { config } from 'src/web3/config'
+import { LBTC_abi } from 'src/assets/abi/lbtc'
+import Cookies from 'universal-cookie'
 
-interface IBridgeWithdraw {}
+interface IBridgeWithdraw { }
 
 const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
   const {
     handleSubmit,
     control,
+    watch,
+    getValues,
+    setValue,
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
@@ -23,106 +32,111 @@ const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
   const [selectedToken, setSelectedToken] = useState<TokenKeys>('lbtc')
   const { switchChain } = useSwitchChain()
   const { address, isConnected, chainId, connector } = useAccount()
+  const [approval, setApproval] = useState<boolean>(false)
+
+  const { data: approvalData } = useReadContract({
+    abi: LBTC_abi,
+    address: ERC20_CONTRACT_ADDRESS['lbtc'],
+    functionName: 'allowance',
+    args: [address, L2_GATEWAY_ROUTER],
+  })
+
+  useEffect(() => {
+    if (approvalData) {
+      const approvalAmount = approvalData as unknown as string;
+      if (BigNumber.from(approvalAmount).gte(parseEther(getValues("amount") || '0'))) {
+        setApproval(true);
+      } else {
+        setApproval(false);
+      }
+    } else {
+      console.log('Approval data not found')
+    }
+  }, [approvalData, watch('amount')])
+
+  const handleApprove = async () => {
+    const approvalArgs = {
+      abi: LBTC_abi,
+      address: ERC20_CONTRACT_ADDRESS['lbtc'],
+      functionName: 'approve',
+      args: [L2_GATEWAY_ROUTER, parseEther(getValues("amount"))],
+    }
+    const approvalTransactionHash = await writeContract(config, approvalArgs);
+    const approvalReceipt = await waitForTransactionReceipt(config, {
+      hash: approvalTransactionHash,
+    })
+    if (approvalReceipt.status === "success") {
+      toast.success('Approval successful');
+    } else {
+      toast.error('Approval failed');
+    }
+  }
+
+  const handleDeposit = async () => {
+    if (!connector) {
+      return
+    }
+    const provider = await connector.getProvider()
+    if (!provider) {
+      return
+    }
+    const web3Provider = new ethers.providers.Web3Provider(provider)
+    const signer = web3Provider.getSigner()
+    const L2GatewayRouterABI = ['function depositERC20(uint256 amount)']
+    const l2GatewayRouterContract = new ethers.Contract(L2_GATEWAY_ROUTER, L2GatewayRouterABI, signer)
+    try {
+      // Perform the outbound transfer via L2 Gateway Router
+      const tx = await l2GatewayRouterContract.depositERC20(parseEther(getValues("amount")))
+      const receipt = await tx.wait()
+
+      if (receipt.status === 1) {
+        toast.success('Bridge successful');
+        const cookies = new Cookies();
+        cookies.set('hasBridged', 'true', { path: '/' })
+      } else {
+        toast.error('Bridge failed');
+      }
+    } catch (error) {
+      console.error('Failed to Bridge:', error)
+    }
+
+    // const depositArgs = {
+    //   abi: ['function depositERC20(uint256 amount)'],
+    //   address: L2_GATEWAY_ROUTER,
+    //   functionName: 'depositERC20',
+    //   args: [parseEther(getValues("amount"))],
+    // } as any;
+
+    // try {
+    //   simulateContract(config, depositArgs)
+    // } catch (error) {
+    //   console.error('Failed to simulate:', error)
+    // }
+
+    // try {
+    //   const transactionHash = await writeContract(config, depositArgs)
+    //   const receipt = await waitForTransactionReceipt(config, {
+    //     hash: transactionHash,
+    //   })
+    //   if (receipt.status === "success") {
+    //     toast.success('Bridge successful');
+    //   } else {
+    //     toast.error('Bridge failed');
+    //   }
+    // } catch (error) {
+    //   toast.error('Failed to bridge:', error as any)
+    // }
+  }
 
   // Inside your onSubmit function:
   const onSubmit = async (data: any) => {
-    console.log('Form Data:', data)
-
-    const amountFormatted = data.amount
-    console.log('Amount:', amountFormatted)
-
-    // Parse from string to BigNumber with ethers library
-    const amountBN = ethers.utils.parseUnits(amountFormatted, 18)
-    console.log('AmountBN:', amountBN.toString())
-
-    // ABI of L2 Gateway Router
-    const L2GatewayRouterABI = ['function depositERC20(uint256 amount)']
-
-    if (!connector) {
-      console.error('MetaMask connector is not available')
-      return
-    }
-
-    const provider = await connector.getProvider()
-
-    if (!provider) {
-      console.error('Provider deliverd via Wagmi is not available')
-      return
-    }
-
-    // Initialize ethers.js provider with MetaMask
-    const web3Provider = new ethers.providers.Web3Provider(provider)
-
-    // Request account access from MetaMask
-    try {
-      await web3Provider.send('eth_requestAccounts', [])
-    } catch (error) {
-      console.error('User denied MetaMask account access:', error)
-      return
-    }
-
-    // Get the MetaMask signer (account) to send transactions
-    const signer = web3Provider.getSigner()
-
-    // Retrieve the selected MetaMask account (public address)
-    const selectedAccount = await signer.getAddress()
-    console.log(`Selected MetaMask account: ${selectedAccount}`)
-
-    // Optionally, you can retrieve all accounts using web3Provider.listAccounts()
-    const allAccounts = await web3Provider.listAccounts()
-    console.log('All connected accounts:', allAccounts)
-
-    // Create contract instances with the MetaMask signer
-    const l2GatewayRouterContract = new ethers.Contract(L2_GATEWAY_ROUTER, L2GatewayRouterABI, signer)
-    const l2ERC20Contract = new ethers.Contract(
-      ERC20_CONTRACT_ADDRESS.lbtc,
-      ['function approve(address spender, uint256 amount)'],
-      signer,
-    )
-
-    try {
-      // Approve L2 Gateway Router to spend tokens
-      const approvalTx = await l2ERC20Contract.approve(L2_GATEWAY_ROUTER, amountBN)
-      await approvalTx.wait()
-      console.log('Approval successful')
-    } catch (error) {
-      console.error('Failed to approve:', error)
-      return
-    }
-
-    try {
-      // Perform the outbound transfer via L2 Gateway Router
-      const tx = await l2GatewayRouterContract.depositERC20(amountBN)
-      console.log(`Transaction hash: ${tx.hash}`)
-      const receipt = await tx.wait()
-      console.log(`Transaction was mined in block ${receipt.blockNumber}`)
-
-      if (receipt.status === 1) {
-        console.log('Transaction successful')
-      }
-    } catch (error) {
-      console.error('Failed to perform transfer:', error)
-    }
+    approval ? handleDeposit() : handleApprove()
   }
 
   const { data, isLoading } = useBalance({
     address,
-    token: ERC20_CONTRACT_ADDRESS[selectedToken],
+    token: ERC20_CONTRACT_ADDRESS['lbtc'],
   })
-
-  useEffect(() => {
-    const switchToArbitrumSepolia = async () => {
-      if (isConnected && chainId !== arbitrumSepolia.id) {
-        try {
-          await switchChain({ chainId: arbitrumSepolia.id })
-        } catch (error) {
-          console.error('Failed to switch chains:', error)
-        }
-      }
-    }
-
-    switchToArbitrumSepolia()
-  }, [chainId, isConnected, switchChain])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7">
@@ -147,9 +161,15 @@ const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
         />
         <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
           <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-            Balance: {isLoading ? 'Loading...' : `${data?.formatted.toString()} ${data?.symbol}`}
+            Balance: {isLoading ? 'Loading...' : `${formatEther(data?.value.toString() || "0")} ${data?.symbol}`}
           </div>
-          <button className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none">
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              setValue('amount', formatEther(data?.value.toString() || '0'))
+            }}
+            className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
+          >
             <span className="relative tracking-[-0.06em] leading-[0.563rem] inline-block [text-shadow:0.2px_0_0_#66d560,_0_0.2px_0_#66d560,_-0.2px_0_0_#66d560,_0_-0.2px_0_#66d560] min-w-[1.75rem]">
               MAX
             </span>
@@ -157,9 +177,30 @@ const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
         </div>
       </div>
       <div className="flex flex-col gap-[0.687rem]">
-        <Button type="submit" disabled={!isValid}>
-          BRIDGE
-        </Button>
+        {
+          chainId === arbitrumSepolia.id ? (
+            <>
+              {
+                approval ? (
+                  <Button type="submit" disabled={!isValid}>
+                    BRIDGE
+                  </Button>
+                ) : (
+                  <Button type="submit">
+                    APPROVE
+                  </Button>
+                )
+              }
+            </>
+          ) : (
+            <Button type="submit" onClick={(e) => {
+              e.preventDefault()
+              switchChain({ chainId: arbitrumSepolia.id })
+            }}>
+              SWITCH CHAIN
+            </Button>
+          )
+        }
       </div>
     </form>
   )
