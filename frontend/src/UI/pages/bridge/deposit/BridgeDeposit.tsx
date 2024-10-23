@@ -1,8 +1,9 @@
-import { Button, InputField } from '@components/index'
+import { Button, InputField, TXToast } from '@components/index'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useAccount, useBalance, useReadContract, useSwitchChain } from 'wagmi'
-import { simulateContract, waitForTransactionReceipt, writeContract } from '@wagmi/core'
+import { erc20Abi } from 'viem'
+import { waitForTransactionReceipt, writeContract } from '@wagmi/core'
 import { arbitrumSepolia } from 'wagmi/chains'
 import { config } from 'src/web3/config'
 import { ERC20_CONTRACT_ADDRESS, TokenKeys, WRAP_CONTRACT } from 'src/web3/contracts'
@@ -40,10 +41,10 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
   })
 
   const { data: approvalData } = useReadContract({
-    abi: LBTC_abi,
+    abi: erc20Abi,
     address: ERC20_CONTRACT_ADDRESS[selectedToken],
     functionName: 'allowance',
-    args: [address, WRAP_CONTRACT],
+    args: [address || '0x', WRAP_CONTRACT],
   })
 
   useEffect(() => {
@@ -64,16 +65,20 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
       abi: LBTC_abi,
       address: ERC20_CONTRACT_ADDRESS[selectedToken],
       functionName: 'approve',
-      args: [WRAP_CONTRACT, parseEther(getValues("amount"))],
+      args: [
+        WRAP_CONTRACT,
+        parseEther(getValues("amount"))
+      ],
     }
     const approvalTransactionHash = await writeContract(config, approvalArgs);
     const approvalReceipt = await waitForTransactionReceipt(config, {
       hash: approvalTransactionHash,
     })
     if (approvalReceipt.status === "success") {
-      toast.success('Approval successful');
+      const txHash = approvalReceipt.transactionHash;
+      toast(<TXToast {...{ message: "Approval successful", txHash }} />);
     } else {
-      toast.error('Approval failed');
+      toast(<TXToast {... { message: "Transaction failed" }} />);
     }
   }
 
@@ -82,14 +87,11 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
       abi: LBTC_abi,
       address: WRAP_CONTRACT,
       functionName: 'mint',
-      args: [parseEther(getValues("amount"))],
+      args: [
+        parseEther(getValues("amount")),
+        ERC20_CONTRACT_ADDRESS[selectedToken],
+      ],
     } as any
-
-    try {
-      simulateContract(config, args)
-    } catch (error) {
-      console.error('Failed to simulate:', error)
-    }
 
     try {
       const transactionHash = await writeContract(config, args)
@@ -97,14 +99,15 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
         hash: transactionHash,
       })
       if (receipt.status === "success") {
-        toast.success('Deposit successful');
+        const txHash = receipt.transactionHash;
+        toast(<TXToast {...{ message: "Deposit successful", txHash }} />);
         const cookies = new Cookies();
         cookies.set('hasWrapped', 'true', { path: '/' })
       } else {
-        toast.error('Deposit failed');
+        toast(<TXToast {... { message: "Deposit failed" }} />);
       }
     } catch (error) {
-      console.error('Failed to wrap:', error)
+      toast(<TXToast {... { message: "Failed to Deposit" }} />);
     }
   }
 
