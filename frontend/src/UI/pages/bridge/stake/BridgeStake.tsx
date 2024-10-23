@@ -28,6 +28,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
     handleSubmit: handleStakeSubmit,
     control: stakeControl,
     setValue: stakeSetValue,
+    trigger: stakeTrigger,
     formState: { errors: stakeErrors, isValid: isStakeValid },
   } = useForm({
     defaultValues: {
@@ -40,6 +41,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
     handleSubmit: handleUnstakeSubmit,
     control: unstakeControl,
     setValue: unstakeSetValue,
+    trigger: unstakeTrigger,
     formState: { errors: unstakeErrors, isValid: isUnstakeValid },
   } = useForm({
     defaultValues: {
@@ -126,6 +128,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
               onClick={(e) => {
                 e.preventDefault()
                 stakeSetValue('stakeAmount', formatEther(userBalance.data?.value || '0'))
+                stakeTrigger('stakeAmount')
               }}
             >
               <span className="relative tracking-[-0.06em] leading-[0.563rem] inline-block [text-shadow:0.2px_0_0_#66d560,_0_0.2px_0_#66d560,_-0.2px_0_0_#66d560,_0_-0.2px_0_#66d560] min-w-[1.75rem]">
@@ -186,6 +189,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
               onClick={(e) => {
                 e.preventDefault()
                 unstakeSetValue('unstakeAmount', formatEther(userBalance.data?.value || '0'))
+                unstakeTrigger('unstakeAmount')
               }}
             >
               <span className="relative tracking-[-0.06em] leading-[0.563rem] inline-block [text-shadow:0.2px_0_0_#66d560,_0_0.2px_0_#66d560,_-0.2px_0_0_#66d560,_0_-0.2px_0_#66d560] min-w-[1.75rem]">

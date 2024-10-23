@@ -6,7 +6,6 @@ import BridgeWithdraw from './withdraw/BridgeWithdraw'
 import { useAccount, useReadContract } from 'wagmi'
 import BridgeConnect from './connect/BridgeConnect'
 import clsx from 'clsx'
-import { arbitrumSepolia } from 'viem/chains'
 import { LBTC_abi } from 'src/assets/abi/lbtc'
 import { ERC20_CONTRACT_ADDRESS } from 'src/web3/contracts'
 import Cookies from "universal-cookie";
@@ -19,7 +18,7 @@ interface BridgeTab {
 
 const Bridge: FC<IBridge> = () => {
   const tabs: BridgeTab[] = [
-    { id: 'deposit', name: 'DEPOSIT' },
+    { id: 'deposit', name: 'WRAP' },
     { id: 'withdraw', name: 'BRIDGE' },
     { id: 'stake', name: 'STAKE' },
     { id: 'connect', name: 'CONNECT WALLET' },
