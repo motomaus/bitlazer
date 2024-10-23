@@ -1,4 +1,4 @@
-import { Button, InputField } from '@components/index'
+import { Button, InputField, TXToast } from '@components/index'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -62,11 +62,12 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
       hash: txHash,
     })
     if (receipt.status === "success") {
-      toast.success('Stake successful');
+      const txHash = receipt.transactionHash;
+      toast(<TXToast {...{ message: "Stake successful", txHash }} />);
       const cookies = new Cookies();
       cookies.set('hasStaked', 'true', { path: '/' })
     } else {
-      toast.error('Stake failed');
+      toast(<TXToast {... { message: "Stake failed" }} />);
     }
   }
 
@@ -85,9 +86,10 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
       hash: txHash,
     })
     if (receipt.status === "success") {
-      toast.success('Unstake successful');
+      const txHash = receipt.transactionHash;
+      toast(<TXToast {...{ message: "Unstake successful", txHash }} />);
     } else {
-      toast.error('Unstake failed');
+      toast(<TXToast {... { message: "Unstake failed" }} />);
     }
   }
 

@@ -1,4 +1,4 @@
-import { Button, InputField } from '@components/index'
+import { Button, InputField, TXToast } from '@components/index'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { arbitrumSepolia } from 'wagmi/chains'
@@ -66,9 +66,10 @@ const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
       hash: approvalTransactionHash,
     })
     if (approvalReceipt.status === "success") {
-      toast.success('Approval successful');
+      const txHash = approvalReceipt.transactionHash;
+      toast(<TXToast {...{ message: "Approval successful", txHash }} />);
     } else {
-      toast.error('Approval failed');
+      toast(<TXToast {... { message: "Approval failed" }} />);
     }
   }
 
@@ -90,14 +91,15 @@ const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
       const receipt = await tx.wait()
 
       if (receipt.status === 1) {
-        toast.success('Bridge successful');
+        const txHash = receipt.transactionHash;
+        toast(<TXToast {...{ message: "Bridge successful", txHash }} />);
         const cookies = new Cookies();
         cookies.set('hasBridged', 'true', { path: '/' })
       } else {
-        toast.error('Bridge failed');
+        toast(<TXToast {... { message: "Bridge failed" }} />);
       }
     } catch (error) {
-      console.error('Failed to Bridge:', error)
+      toast(<TXToast {... { message: "Failed to Bridge tokens" }} />);
     }
 
     // const depositArgs = {
