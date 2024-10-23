@@ -25,12 +25,12 @@ function App() {
 
           <ToastContainer
             autoClose={3000}
-            position={'bottom-right'}
+            position={'top-right'}
             theme="dark"
             hideProgressBar={true}
             newestOnTop={false}
             closeOnClick
-            limit={1}
+            z-index={9999}
           />
         </QueryClientProvider>
       </WagmiProvider>

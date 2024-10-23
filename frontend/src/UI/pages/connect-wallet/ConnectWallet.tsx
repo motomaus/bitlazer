@@ -2,8 +2,9 @@ import React, { FC, useEffect } from 'react'
 import { useAccount, useBalance, useDisconnect } from 'wagmi'
 import { switchChain } from '@wagmi/core'
 import { WalletOptions } from './WalletOptions'
-import { testnet } from 'src/web3/chains'
+import { devnet } from 'src/web3/chains'
 import { config } from 'src/web3/config'
+import { formatEther } from 'ethers/lib/utils'
 
 interface IConnectWallet { }
 
@@ -14,14 +15,8 @@ const ConnectWallet: FC<IConnectWallet> = () => {
 
   const userBalance = useBalance({
     address: address,
-    chainId: testnet.id,
+    chainId: devnet.id,
   })
-
-  useEffect(() => {
-    if (chainId !== testnet.id) {
-      switchChain(config, { chainId: testnet.id })
-    }
-  }, [chainId])
 
   return (
     <div className="flex-1 rounded-12xs bg-black border-forestgreen border-[.1875rem] border-solid box-border flex flex-col py-[1.25rem] px-[0.562rem] gap-[1.668rem] ">
@@ -33,7 +28,7 @@ const ConnectWallet: FC<IConnectWallet> = () => {
           <>
             {address}
             <div className="tracking-[-0.06em] leading-[1.25rem] mt-[1rem] mb-[1rem]">
-              Balance: {userBalance.isLoading ? 'Loading...' : `${userBalance.data?.value.toString()} ${userBalance.data?.symbol}`}
+              Balance: {userBalance.isLoading ? 'Loading...' : `${formatEther(userBalance.data?.value.toString() || "0")} ${userBalance.data?.symbol}`}
             </div>
             <button
               className="font-ocr-x-trial w-full cursor-pointer rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group"

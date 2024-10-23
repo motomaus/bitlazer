@@ -11,6 +11,7 @@ import { formatEther, parseEther } from 'ethers/lib/utils'
 import { config } from 'src/web3/config'
 import { LBTC_abi } from 'src/assets/abi/lbtc'
 import Cookies from 'universal-cookie'
+import { devnet } from 'src/web3/chains'
 
 interface IBridgeWithdraw { }
 
@@ -21,7 +22,23 @@ const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
     watch,
     getValues,
     setValue,
+    trigger,
     formState: { errors, isValid },
+  } = useForm({
+    defaultValues: {
+      amount: '',
+    },
+    mode: 'onChange',
+  })
+
+  const {
+    handleSubmit: handleUnstakeSubmit,
+    control: unstakeControl,
+    watch: unstakeWatch,
+    getValues: unstakeGetValues,
+    setValue: unstakeSetValue,
+    trigger: unstakeTrigger,
+    formState: { errors: unstakeErrors, isValid: unstakeIsValid },
   } = useForm({
     defaultValues: {
       amount: '',
@@ -39,6 +56,7 @@ const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
     address: ERC20_CONTRACT_ADDRESS['lbtc'],
     functionName: 'allowance',
     args: [address, L2_GATEWAY_ROUTER],
+    chainId: arbitrumSepolia.id,
   })
 
   useEffect(() => {
@@ -135,76 +153,148 @@ const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
     approval ? handleDeposit() : handleApprove()
   }
 
+  const handleBridgeBack = async () => {
+    await handleDeposit();
+  }
+
   const { data, isLoading } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['lbtc'],
+    chainId: arbitrumSepolia.id,
+  })
+
+  const { data: l3Data, isLoading: l3isLoading } = useBalance({
+    address,
+    chainId: devnet.id,
   })
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7">
-      <div className="flex flex-col gap-[0.687rem] max-w-full">
-        <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## BRIDGE</div>
-        <Controller
-          name="amount"
-          control={control}
-          rules={{
-            required: 'Amount is required',
-            min: { value: 0.0001, message: 'Amount must be greater than 0' },
-          }}
-          render={({ field }) => (
-            <InputField
-              placeholder="0.00"
-              label="ENTER AMOUNT"
-              type="number"
-              {...field}
-              error={errors.amount ? errors.amount.message : null}
-            />
-          )}
-        />
-        <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
-          <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-            Balance: {isLoading ? 'Loading...' : `${formatEther(data?.value.toString() || "0")} ${data?.symbol}`}
-          </div>
-          <button
-            onClick={(e) => {
-              e.preventDefault()
-              setValue('amount', formatEther(data?.value.toString() || '0'))
+    <div className="flex flex-col gap-7">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7">
+        <div className="flex flex-col gap-[0.687rem] max-w-full">
+          <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## BRIDGE</div>
+          <Controller
+            name="amount"
+            control={control}
+            rules={{
+              required: 'Amount is required',
+              min: { value: 0.0001, message: 'Amount must be greater than 0' },
             }}
-            className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
-          >
-            <span className="relative tracking-[-0.06em] leading-[0.563rem] inline-block [text-shadow:0.2px_0_0_#66d560,_0_0.2px_0_#66d560,_-0.2px_0_0_#66d560,_0_-0.2px_0_#66d560] min-w-[1.75rem]">
-              MAX
-            </span>
-          </button>
+            render={({ field }) => (
+              <InputField
+                placeholder="0.00"
+                label="ENTER AMOUNT"
+                type="number"
+                {...field}
+                error={errors.amount ? errors.amount.message : null}
+              />
+            )}
+          />
+          <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
+            <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
+              Balance: {isLoading ? 'Loading...' : `${formatEther(data?.value.toString() || "0")} ${data?.symbol}`}
+            </div>
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                setValue('amount', formatEther(data?.value.toString() || '0'))
+                trigger('amount')
+              }}
+              className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
+            >
+              <span className="relative tracking-[-0.06em] leading-[0.563rem] inline-block [text-shadow:0.2px_0_0_#66d560,_0_0.2px_0_#66d560,_-0.2px_0_0_#66d560,_0_-0.2px_0_#66d560] min-w-[1.75rem]">
+                MAX
+              </span>
+            </button>
+          </div>
         </div>
-      </div>
-      <div className="flex flex-col gap-[0.687rem]">
-        {
-          chainId === arbitrumSepolia.id ? (
-            <>
-              {
-                approval ? (
-                  <Button type="submit" disabled={!isValid}>
-                    BRIDGE
-                  </Button>
-                ) : (
-                  <Button type="submit">
-                    APPROVE
-                  </Button>
-                )
-              }
-            </>
-          ) : (
-            <Button type="submit" onClick={(e) => {
-              e.preventDefault()
-              switchChain({ chainId: arbitrumSepolia.id })
-            }}>
-              SWITCH CHAIN
-            </Button>
-          )
-        }
-      </div>
-    </form>
+        <div className="flex flex-col gap-[0.687rem]">
+          {
+            chainId === arbitrumSepolia.id ? (
+              <>
+                {
+                  approval ? (
+                    <Button type="submit" disabled={!isValid}>
+                      BRIDGE
+                    </Button>
+                  ) : (
+                    <Button type="submit">
+                      APPROVE
+                    </Button>
+                  )
+                }
+              </>
+            ) : (
+              <Button type="submit" onClick={(e) => {
+                e.preventDefault()
+                switchChain({ chainId: arbitrumSepolia.id })
+              }}>
+                SWITCH CHAIN
+              </Button>
+            )
+          }
+        </div>
+      </form>
+      <div className="h-px w-full bg-[#6c6c6c]"></div>
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        handleBridgeBack();
+      }} className="flex flex-col gap-7">
+        <div className="flex flex-col gap-[0.687rem] max-w-full">
+          <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## BRIDGE BACK</div>
+          <Controller
+            name="amount"
+            control={unstakeControl}
+            rules={{
+              required: 'Amount is required',
+              min: { value: 0.0001, message: 'Amount must be greater than 0' },
+            }}
+            render={({ field }) => (
+              <InputField
+                placeholder="0.00"
+                label="ENTER AMOUNT"
+                type="number"
+                {...field}
+                error={unstakeErrors.amount ? unstakeErrors.amount.message : null}
+              />
+            )}
+          />
+          <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
+            <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
+              Balance: {l3isLoading ? 'Loading...' : `${formatEther(l3Data?.value.toString() || "0")} ${l3Data?.symbol}`}
+            </div>
+            <button
+              onClick={(e) => {
+                e.preventDefault()
+                unstakeSetValue('amount', formatEther(l3Data?.value.toString() || '0'))
+                unstakeTrigger('amount')
+              }}
+              className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
+            >
+              <span className="relative tracking-[-0.06em] leading-[0.563rem] inline-block [text-shadow:0.2px_0_0_#66d560,_0_0.2px_0_#66d560,_-0.2px_0_0_#66d560,_0_-0.2px_0_#66d560] min-w-[1.75rem]">
+                MAX
+              </span>
+            </button>
+          </div>
+        </div>
+        <div className="flex flex-col gap-[0.687rem]">
+          {
+            chainId === devnet.id ? (
+              <Button type="submit" disabled={!unstakeIsValid}>
+                BRIDGE
+              </Button>
+            ) : (
+              <Button type="submit" onClick={(e) => {
+                e.preventDefault()
+                switchChain({ chainId: devnet.id })
+              }}>
+                SWITCH CHAIN
+              </Button>
+            )
+          }
+        </div>
+      </form>
+    </div>
   )
 }
 
