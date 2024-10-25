@@ -1073,6 +1073,117 @@
         },
         "solcVersion": "0.8.24"
       },
+      "contracts/WBTC.sol:WBTC": {
+        "src": "contracts/WBTC.sol:8",
+        "version": {
+          "withMetadata": "410c0bba449509831f105e12324a056568688254b7b94a459b423e085e5676a3",
+          "withoutMetadata": "1ee3251f96110c442e00cad4daae0da0cdfa3cc365f52846e3dd40d34b91287e",
+          "linkedWithoutMetadata": "1ee3251f96110c442e00cad4daae0da0cdfa3cc365f52846e3dd40d34b91287e"
+        },
+        "inherit": [
+          "@openzeppelin/contracts/token/ERC20/ERC20.sol:ERC20",
+          "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol:IERC20Metadata",
+          "@openzeppelin/contracts/token/ERC20/IERC20.sol:IERC20",
+          "@openzeppelin/contracts/utils/Context.sol:Context"
+        ],
+        "libraries": [],
+        "methods": [
+          "(address,string,string)",
+          "mint(address,uint256)"
+        ],
+        "linkReferences": [],
+        "errors": [
+          {
+            "kind": "constructor",
+            "contract": "WBTC",
+            "src": "contracts/WBTC.sol:11"
+          }
+        ],
+        "layout": {
+          "storage": [
+            {
+              "label": "_balances",
+              "offset": 0,
+              "slot": "0",
+              "type": "t_mapping(t_address,t_uint256)",
+              "contract": "ERC20",
+              "src": "@openzeppelin/contracts/token/ERC20/ERC20.sol:39"
+            },
+            {
+              "label": "_allowances",
+              "offset": 0,
+              "slot": "1",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
+              "contract": "ERC20",
+              "src": "@openzeppelin/contracts/token/ERC20/ERC20.sol:41"
+            },
+            {
+              "label": "_totalSupply",
+              "offset": 0,
+              "slot": "2",
+              "type": "t_uint256",
+              "contract": "ERC20",
+              "src": "@openzeppelin/contracts/token/ERC20/ERC20.sol:43"
+            },
+            {
+              "label": "_name",
+              "offset": 0,
+              "slot": "3",
+              "type": "t_string_storage",
+              "contract": "ERC20",
+              "src": "@openzeppelin/contracts/token/ERC20/ERC20.sol:45"
+            },
+            {
+              "label": "_symbol",
+              "offset": 0,
+              "slot": "4",
+              "type": "t_string_storage",
+              "contract": "ERC20",
+              "src": "@openzeppelin/contracts/token/ERC20/ERC20.sol:46"
+            },
+            {
+              "label": "owner",
+              "offset": 0,
+              "slot": "5",
+              "type": "t_address",
+              "contract": "WBTC",
+              "src": "contracts/WBTC.sol:9"
+            }
+          ],
+          "types": {
+            "t_address": {
+              "label": "address",
+              "numberOfBytes": "20"
+            },
+            "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
+              "label": "mapping(address => mapping(address => uint256))",
+              "numberOfBytes": "32"
+            },
+            "t_mapping(t_address,t_uint256)": {
+              "label": "mapping(address => uint256)",
+              "numberOfBytes": "32"
+            },
+            "t_string_storage": {
+              "label": "string",
+              "numberOfBytes": "32"
+            },
+            "t_uint256": {
+              "label": "uint256",
+              "numberOfBytes": "32"
+            }
+          },
+          "layoutVersion": "1.2",
+          "flat": true,
+          "namespaces": {}
+        },
+        "solcVersion": "0.8.24"
+      },
+      "contracts/lBTC.sol:lBTC": {
+        "src": "contracts/lBTC.sol:10",
+        "version": {
+          "withMetadata": "2870138d0d1f67f985236dbfb98ef233d096f392da09c6ca466a50b6722681c7",
+          "withoutMetadata": "40d6f050e417ef4bc235e156ccfae91a60e8f232649883c6e386c495a4c4c6ff",
+          "linkedWithoutMetadata": "40d6f050e417ef4bc235e156ccfae91a60e8f232649883c6e386c495a4c4c6ff"
       "contracts/lBTC.sol:lBTC": {
         "src": "contracts/lBTC.sol:10",
         "version": {
@@ -1093,16 +1204,17 @@
         "methods": [
           "(address,string,string)",
           "setWBTCAddress(address)",
-          "getWBTCAddress()",
-          "mint(uint256)",
-          "burn(uint256)"
+          "getWBTCAddress(address)",
+          "mint(uint256,address)",
+          "burn(uint256,address)",
+          "getHolderBalance(address,address)"
         ],
         "linkReferences": [],
         "errors": [
           {
             "kind": "constructor",
             "contract": "lBTC",
-            "src": "contracts/lBTC.sol:16"
+            "src": "contracts/lBTC.sol:18"
           }
         ],
         "layout": {
@@ -1164,12 +1276,20 @@
               "src": "contracts/lBTC.sol:13"
             },
             {
-              "label": "WBTC",
+              "label": "supportedWrappers",
               "offset": 0,
               "slot": "7",
-              "type": "t_contract(IERC20)3880",
+              "type": "t_mapping(t_address,t_contract(IERC20)3880)",
               "contract": "lBTC",
-              "src": "contracts/lBTC.sol:14"
+              "src": "contracts/lBTC.sol:15"
+            },
+            {
+              "label": "holderBalances",
+              "offset": 0,
+              "slot": "8",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
+              "contract": "lBTC",
+              "src": "contracts/lBTC.sol:16"
             }
           ],
           "types": {
@@ -1180,6 +1300,10 @@
             "t_contract(IERC20)3880": {
               "label": "contract IERC20",
               "numberOfBytes": "20"
+            },
+            "t_mapping(t_address,t_contract(IERC20)3880)": {
+              "label": "mapping(address => contract IERC20)",
+              "numberOfBytes": "32"
             },
             "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
               "label": "mapping(address => mapping(address => uint256))",
@@ -1207,9 +1331,9 @@
       "contracts/stakelBTC.sol:StakeLBTC": {
         "src": "contracts/stakelBTC.sol:9",
         "version": {
-          "withMetadata": "702a2b708ba15aec5d42d1a382b1df9627b9e61ed82e0b3795182a6f7d19856c",
-          "withoutMetadata": "6097ccb5a4baa3324d86279a6ad4fdbaa603ce5fcbf9844b4629bd49acc8b941",
-          "linkedWithoutMetadata": "6097ccb5a4baa3324d86279a6ad4fdbaa603ce5fcbf9844b4629bd49acc8b941"
+          "withMetadata": "c6a6b8d900fb19ea2a902d5bd90f4d3db630bae6006b26f48a62206077d18f05",
+          "withoutMetadata": "d770d7e30ecf5f0cba40c837129ece144abf631447f847b81671e311fa850363",
+          "linkedWithoutMetadata": "d770d7e30ecf5f0cba40c837129ece144abf631447f847b81671e311fa850363"
         },
         "inherit": [
           "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:ReentrancyGuardUpgradeable",
