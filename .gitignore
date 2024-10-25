@@ -13,6 +13,10 @@ contracts/.deps
 
 # Hardhat files
 cache
+cache/**/*
+
+pnpm-lock.yaml
+
 artifacts
 
 # TypeScript files
