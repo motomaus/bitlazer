@@ -15,8 +15,6 @@ contracts/.deps
 cache
 cache/**/*
 
-pnpm-lock.yaml
-
 artifacts
 
 # TypeScript files
