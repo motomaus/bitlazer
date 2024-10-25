@@ -13,6 +13,8 @@ contracts/.deps
 
 # Hardhat files
 cache
+cache/**/*
+
 artifacts
 
 # TypeScript files
