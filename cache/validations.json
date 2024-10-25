@@ -1184,6 +1184,12 @@
           "withMetadata": "2870138d0d1f67f985236dbfb98ef233d096f392da09c6ca466a50b6722681c7",
           "withoutMetadata": "40d6f050e417ef4bc235e156ccfae91a60e8f232649883c6e386c495a4c4c6ff",
           "linkedWithoutMetadata": "40d6f050e417ef4bc235e156ccfae91a60e8f232649883c6e386c495a4c4c6ff"
+      "contracts/lBTC.sol:lBTC": {
+        "src": "contracts/lBTC.sol:10",
+        "version": {
+          "withMetadata": "7938bffb1a8f98272bd1731c6f05cb52a8402dbafca759a650641e10782604ff",
+          "withoutMetadata": "2eff4e0c0a155e8ea3421cbac0d862ffefed7726cbdc363bc6053908168b8277",
+          "linkedWithoutMetadata": "2eff4e0c0a155e8ea3421cbac0d862ffefed7726cbdc363bc6053908168b8277"
         },
         "inherit": [
           "@openzeppelin/contracts/security/ReentrancyGuard.sol:ReentrancyGuard",
