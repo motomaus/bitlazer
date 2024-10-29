@@ -135,7 +135,7 @@ const Header: FC<IHeader> = () => {
                         [ROADMAP]
                       </button>
                     </li>
-                    <li>
+                    {/* <li>
                       <Link
                         to="/ecosystem"
                         className={`text-lightgreen-100 uppercase hover:opacity-80 ${location.pathname === '/ecosystem' ? 'line-through pointer-events-none' : ''}`}
@@ -143,7 +143,7 @@ const Header: FC<IHeader> = () => {
                       >
                         [ecosystem]
                       </Link>
-                    </li>
+                    </li> */}
                     {/* <li>
                       <Link
                         to="/faq"
