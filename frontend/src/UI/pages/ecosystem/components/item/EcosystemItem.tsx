@@ -27,7 +27,7 @@ const EcosystemItem: React.FC<IEcosystemItem> = ({
   liveness,
 }) => {
   return (
-    <article className="overflow-hidden rounded-xl bg-neutral-800 flex max-md:flex-col">
+    <article className="overflow-hidden rounded-[0.1153rem] bg-neutral-800 flex max-md:flex-col">
       <div className="flex flex-col md:max-w-[48.875rem] w-full relative">
         <img loading="lazy" src={imageSrc} alt="" className="object-cover size-full aspect-[1.72]" />
 
@@ -44,7 +44,7 @@ const EcosystemItem: React.FC<IEcosystemItem> = ({
       </div>
       <div className="flex flex-col gap-5 p-8 md:max-w-[25.5rem] w-full">
         <div className="flex flex-col gap-5">
-          <div className="h-16 w-16 rounded-xl overflow-hidden">
+          <div className="h-16 w-16 rounded-[0.1153rem] overflow-hidden">
             <img
               loading="lazy"
               src={logoSrc}
