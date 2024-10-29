@@ -38,6 +38,7 @@ const config = {
         },
         fuchsia: '#ff00ff',
         darkgreen: 'rgba(30, 101, 27, 0.3)',
+        'neutral-800': '#393a3a',
       },
       spacing: {},
       fontFamily: {
