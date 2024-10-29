@@ -12,7 +12,7 @@ import clsx from 'clsx'
 import { useAccount } from 'wagmi'
 import { Account } from '@pages/connect-wallet/Account'
 
-interface IHeader { }
+interface IHeader {}
 
 const Header: FC<IHeader> = () => {
   const [isActive, setIsActive] = useState(false)
@@ -20,7 +20,7 @@ const Header: FC<IHeader> = () => {
   const [openConnectWalletModal, setOpenConnectWalletModal] = useState(false)
   const [openRoadmapModal, setOpenRoadmapModal] = useState(false)
   const [openFeaturesModal, setOpenFeaturesModal] = useState(false)
-  const { isConnected, chainId } = useAccount()
+  const { isConnected } = useAccount()
 
   const location = useLocation()
 
@@ -62,8 +62,9 @@ const Header: FC<IHeader> = () => {
               <img className="w-full h-full object-contain" src={burger} alt="" />
             </button>
             <div
-              className={`flex h-screen flex-col text-white fixed  md:flex-1 transition-all md:p-0 px-4 py-8 pt-24 duration-300 z-[100] bg-black w-full top-0 overflow-y-auto md:overflow-visible md:top-auto md:w-auto md:h-auto md:bg-transparent md:static md:z-auto ${isActive ? 'right-0' : '-right-[100vw]'
-                }`}
+              className={`flex h-screen flex-col text-white fixed  md:flex-1 transition-all md:p-0 px-4 py-8 pt-24 duration-300 z-[100] bg-black w-full top-0 overflow-y-auto md:overflow-visible md:top-auto md:w-auto md:h-auto md:bg-transparent md:static md:z-auto ${
+                isActive ? 'right-0' : '-right-[100vw]'
+              }`}
             >
               <button
                 onClick={closeMenu}
@@ -73,7 +74,7 @@ const Header: FC<IHeader> = () => {
               </button>
               <div className="items-center gap-[4.875rem] flex md:flex-row flex-col">
                 <nav className="whitespace-nowrap text-[1.25rem] text-lightgreen-100 font-ocr-x-trial md:mx-auto">
-                  <ul className="flex md:flex-row flex-col items-center gap-8 md:gap-12">
+                  <ul className="flex md:flex-row flex-col items-center gap-8 md:gap-8">
                     <li>
                       <Link
                         to="/about"
@@ -133,6 +134,15 @@ const Header: FC<IHeader> = () => {
                       >
                         [ROADMAP]
                       </button>
+                    </li>
+                    <li>
+                      <Link
+                        to="/ecosystem"
+                        className={`text-lightgreen-100 uppercase hover:opacity-80 ${location.pathname === '/ecosystem' ? 'line-through pointer-events-none' : ''}`}
+                        onClick={closeMenu}
+                      >
+                        [ecosystem]
+                      </Link>
                     </li>
                     {/* <li>
                       <Link
