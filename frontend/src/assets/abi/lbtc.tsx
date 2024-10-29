@@ -224,6 +224,30 @@ export const LBTC_abi: Abi = [
     inputs: [
       {
         internalType: 'address',
+        name: '_holder',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_WBTC',
+        type: 'address',
+      },
+    ],
+    name: 'getHolderBalance',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
         name: 'spender',
         type: 'address',
       },

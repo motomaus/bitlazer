@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { FC, useEffect, useState } from 'react'
-import BridgeDeposit from './deposit/BridgeDeposit'
+import BridgeDeposit from './wrap/BridgeWrap'
 import BridgeStake from './stake/BridgeStake'
-import BridgeWithdraw from './withdraw/BridgeWithdraw'
+import BridgeWithdraw from './crosschain/BridgeCrosschain'
 import { useAccount, useReadContract } from 'wagmi'
 import BridgeConnect from './connect/BridgeConnect'
 import clsx from 'clsx'
@@ -24,7 +24,7 @@ const Bridge: FC<IBridge> = () => {
     { id: 'connect', name: 'CONNECT WALLET' },
   ]
 
-  const [activeTabId, setActiveTabId] = useState<string>('connect')
+  const [activeTabId, setActiveTabId] = useState<string | null>(null)
   const [currentProgress, setCurrentProgress] = useState<number>(0)
 
   const { address, isConnected, chainId } = useAccount()
@@ -45,19 +45,29 @@ const Bridge: FC<IBridge> = () => {
   }
 
   useEffect(() => {
+    const cookies = new Cookies();
+    const cookie = cookies.get('bridgeTab')
+    if (cookie && cookie !== 'connect') {
+      console.log("Setting active tab to: ", cookie)
+      setActiveTabId(cookie)
+    }
+  }, [])
+
+  useEffect(() => {
+    const cookies = new Cookies();
+    if (activeTabId !== "connect") {
+      console.log("Setting cookie tab to: ", activeTabId)
+      cookies.set('bridgeTab', activeTabId)
+    }
+  }, [activeTabId])
+
+  useEffect(() => {
     if (isConnected && activeTabId === 'connect') {
       setActiveTabId('deposit')
     } else if (!isConnected && activeTabId !== 'connect') {
       setActiveTabId('connect')
     }
   }, [isConnected, activeTabId])
-
-  const { data: LBTCBalanceData } = useReadContract({
-    abi: LBTC_abi,
-    address: ERC20_CONTRACT_ADDRESS['lbtc'],
-    functionName: 'balanceOf',
-    args: [address],
-  })
 
   useEffect(() => {
     if (isConnected) {
