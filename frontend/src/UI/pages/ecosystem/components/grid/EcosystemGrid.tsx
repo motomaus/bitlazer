@@ -1,97 +1,260 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import EcosystemGridItem from '../item/EcosystemGridItem'
 
-const ecosystemData = [
+import { useMediaQuery } from 'react-responsive'
+
+import image0 from '@images/ecosystem/image0.jpg'
+import image1 from '@images/ecosystem/image1.jpg'
+import image2 from '@images/ecosystem/image2.jpg'
+import image3 from '@images/ecosystem/image3.jpg'
+import image4 from '@images/ecosystem/image4.jpg'
+import image5 from '@images/ecosystem/image5.jpg'
+import image6 from '@images/ecosystem/image6.png'
+
+import logo0 from '@images/ecosystem/logo0.png'
+import logo1 from '@images/ecosystem/logo1.png'
+import logo2 from '@images/ecosystem/logo2.png'
+import logo3 from '@images/ecosystem/logo3.png'
+import logo4 from '@images/ecosystem/logo4.png'
+import logo5 from '@images/ecosystem/logo5.png'
+import logo6 from '@images/ecosystem/logo6.png'
+import EcosystemItem, { IEcosystemItem, TypeEcosystemLiveness, TypeEcosystemTag } from '../item/EcosystemItem'
+import { DiscordIcon, LinkIcon, XIcon } from '@svgs'
+import { InputField, MySelect } from '@components/index'
+
+const ecosystemData: IEcosystemItem[] = [
   {
-    imageSrc:
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/cb3ff285c3cc61f55daf5ea70a94d550cc1a5215f7d2a6e0e108fbf40c2010b2?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-    logoSrc:
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/6d398283ba44b01dd5ebc955b4096ea69656ae4231b745dc9206162305a2a9b9?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-    title: 'Airpuff',
-    description: 'AirPuff emerges as the leading one-stop solution for airdrop leveraging',
+    imageSrc: image0,
+    logoSrc: logo0,
+    title: 'Mode Bridge',
+    description: 'The Mode Bridge allows you to transfer your assets between L1 and Mode',
     socialIcons: [
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/2eb9eac6089750e6482e56dbec3861f21bfca1976ec050431192fa3b8efbcb7c?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/2579ff35e3647bce0f0596ddde4aef188653bb39d53fb29557087d7c4b52b505?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/940d80b2a3d5b3c0776a23bea3461fc1c8796b0e552eb6c2a6a2d089d6a8a331?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
+      {
+        icon: <LinkIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <XIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <DiscordIcon />,
+        href: 'http://',
+      },
     ],
   },
   {
-    imageSrc:
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/dc3e1a722d1e582676be0f1b0e2877fa7202737fe34f8b1e738b37a6a57fd3b2?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-    logoSrc:
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/91ea31bb9caa7fdce65d97844a8c3eafcbf0ae23f28d9744687c581083cd4aa7?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
+    imageSrc: image1,
+    logoSrc: logo1,
+    title: 'Airpuff',
+    description: 'AirPuff emerges as the leading one-stop solution for airdrop leveraging',
+    tag: 'bridge',
+    liveness: 'live',
+    socialIcons: [
+      {
+        icon: <LinkIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <XIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <DiscordIcon />,
+        href: 'http://',
+      },
+    ],
+  },
+  {
+    imageSrc: image2,
+    logoSrc: logo2,
     title: 'Aori',
     description:
       'Build institutional grade defi applications for decentralized options trading, spot trading, and otc settlement',
+    tag: 'defi',
+    liveness: 'live',
     socialIcons: [
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/3dc88ff82cc68bc5974f31bf795a4db059c91d9bcc0f9bddf25fcb4cc2cc65a0?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/80936c85e0ce80e390519cc5653f2970439b482dd1a8f17aedd82230d8145623?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/5798e56d9048145365dbb05e09624f041bc4f4f41510f265e758a8cce0923542?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
+      {
+        icon: <LinkIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <XIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <DiscordIcon />,
+        href: 'http://',
+      },
     ],
   },
   {
-    imageSrc:
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/dc81dbd1751b2f5081e824398817a2b21dd308b92176d07db42d9d6ccb89f427?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-    logoSrc:
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/6e81f39b8054cd09724dbad9cf22a2a346efaf9fe7a54c301340f94ebe9b52f9?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
+    imageSrc: image3,
+    logoSrc: logo3,
     title: 'Astaria',
     description: 'Astaria allows permissionless leverage for any asset.',
+    tag: 'gaming',
+    liveness: 'upcoming',
     socialIcons: [
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/c5941706cf5d4ab1f9a0a2d7a69dcfb4870cc27883a50c6835b3f6862dcffbf0?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/f02dd6ee7a40e8295b4478ead307bbe0faadb8e0e4e14e183f4fa7d27d9cfe59?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/deceae9aca88d3f3ccf05258a14d3d1bb76a6ec60b1d63d501427b5eb4c10ba1?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
+      {
+        icon: <LinkIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <XIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <DiscordIcon />,
+        href: 'http://',
+      },
     ],
   },
   {
-    imageSrc:
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/c4877c30a480f713a6886d58382a481cf149b59f1c510ea3051444b1af3e2888?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-    logoSrc:
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/e56e8031f8182bb1f1c6a3d0cd6285b61d01bfb283b1007903ae418db44a299d?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
+    imageSrc: image4,
+    logoSrc: logo4,
     title: 'Atlendis',
     description: 'First RWA Lending Protocol',
+    tag: 'infra',
+    liveness: 'live',
     socialIcons: [
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/953a37bb074fb288bf186d6b8a9e26b540689bbdb8c3f851fb7fd6371c549c17?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/3be8c5fed15eabf035781819477546226df57b2b13f7269688c231dc78b19801?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/f94f15e5d5ac43e3a38964b601ada7e079c181fc2a938d110a1530b682c878d8?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
+      {
+        icon: <LinkIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <XIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <DiscordIcon />,
+        href: 'http://',
+      },
     ],
   },
   {
-    imageSrc:
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/9ee3190e36e73cfdbbda46b222e219eed2d9808251a9ce69e36156eec4ca10d4?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-    logoSrc:
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/53e0bc04097a2dbed714f1a3de98d0c6c905be6014063326fcaa1e32c0bf0125?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
+    imageSrc: image5,
+    logoSrc: logo5,
     title: 'Bebop',
     description: 'Bebop is a trading app and a suite of APIs that finds the best route for your trades.',
+    tag: 'infra',
     socialIcons: [
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/4875d2911abe29e289e33931d2500a30a533ef167edabb1fc97a86c7b363f40b?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/1a831af50b2d54b8fb0b3165faafbbdefdc41fabdbdd7f67611e058df7a5792c?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/5d3bff4c2a0c5d55ff9d693fca894a39ad0c91d8b639d01f14af776cb41b9b8a?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
+      {
+        icon: <LinkIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <XIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <DiscordIcon />,
+        href: 'http://',
+      },
     ],
   },
   {
-    imageSrc:
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/b33b8bca965aac75464ad9661d915b1ca74af2d07833e3942ad1bd5d085d3c74?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-    logoSrc:
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/9af6a2c6982726fa011d791cc1cd127b740c4db201e41d4fb8cb6ab4ff94768d?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
+    imageSrc: image6,
+    logoSrc: logo6,
     title: 'Beefy',
     description: 'Beefy automates yield farming to make DeFi easy, safe and efficient for all.',
+    tag: 'bridge',
+    liveness: 'upcoming',
     socialIcons: [
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/df3543679a7c1e42c1ea44fc84283109fc4c945501debff32bb20c9448c01eb5?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/6c6a34520099b3f0f066bf809fba8ccb2a75a85541f3ce1c6217829d53493cc2?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
-      'https://cdn.builder.io/api/v1/image/assets/TEMP/60194fc63c26674b63551bd7ef7572844b6b0d292a8f049a9211675d7f4f08c6?placeholderIfAbsent=true&apiKey=2d69966dae52443ca1418044351bbca9',
+      {
+        icon: <LinkIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <XIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <DiscordIcon />,
+        href: 'http://',
+      },
     ],
   },
+]
+
+const tagOptions = [
+  { value: 'defi', label: 'DeFi' },
+  { value: 'bridge', label: 'Bridge' },
+  { value: 'infra', label: 'Infra' },
+  { value: 'gaming', label: 'Gaming' },
+]
+
+const livenessOptions = [
+  { value: 'live', label: 'Live' },
+  { value: 'upcoming', label: 'Upcoming' },
 ]
 
 interface IEcosystemGrid {}
 
 const EcosystemGrid: FC<IEcosystemGrid> = () => {
+  const isDesktop = useMediaQuery({ minWidth: 992 })
+
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedTag, setSelectedTag] = useState<TypeEcosystemTag | null>(null)
+  const [selectedLiveness, setSelectedLiveness] = useState<TypeEcosystemLiveness | null>(null)
+
+  const filteredData = ecosystemData.filter((item) => {
+    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesTag = selectedTag ? item.tag === selectedTag : true
+    const matchesLiveness = selectedLiveness ? item.liveness === selectedLiveness : true
+    return matchesSearch && matchesTag && matchesLiveness
+  })
+
+  const handleResetFilters = () => {
+    setSearchTerm('')
+    setSelectedTag(null)
+    setSelectedLiveness(null)
+  }
+
   return (
-    <div className="">
-      <div className="grid md:grid-cols-3 gap-5">
-        {ecosystemData.map((item, index) => (
-          <EcosystemGridItem key={index} {...item} />
-        ))}
+    <div className="flex flex-col gap-10 md:gap-20">
+      <div className="w-full flex flex-col gap-2 md:gap-4 [&_*]:!pointer-events-auto">
+        <div className="flex items-center justify-between gap-2 md:gap-4">
+          <div className="grid grid-cols-2 gap-2 md:gap-4 flex-1">
+            <MySelect
+              placeholder="Filter by tags"
+              options={tagOptions}
+              value={selectedTag ? { value: selectedTag, label: selectedTag } : null}
+              onChange={(option) => setSelectedTag(option?.value as TypeEcosystemTag)}
+            />
+            <MySelect
+              placeholder="Filter by liveness"
+              options={livenessOptions}
+              value={selectedLiveness ? { value: selectedLiveness, label: selectedLiveness } : null}
+              onChange={(option) => setSelectedLiveness(option?.value as TypeEcosystemLiveness)}
+            />
+          </div>
+          <button onClick={handleResetFilters} className="h-[2.875rem] w-[2.875rem] custom-button">
+            X
+          </button>
+        </div>
+        <InputField
+          withoutShadow
+          placeholder="Search..."
+          className="custom-input h-[2.875rem] min-h-[2.875rem]"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      <div className="flex flex-col gap-10 md:gap-20">
+        {filteredData.length > 0 ? (
+          <>
+            {isDesktop && <EcosystemItem {...filteredData[0]} />}
+            <div className={`grid gap-5 ${isDesktop ? 'md:grid-cols-3' : 'grid-cols-1'}`}>
+              {isDesktop
+                ? filteredData.slice(1).map((item, index) => <EcosystemGridItem key={index} {...item} />)
+                : filteredData.map((item, index) => <EcosystemGridItem key={index} {...item} />)}
+            </div>
+          </>
+        ) : (
+          <p>No results found. Try adjusting your filters or search term.</p>
+        )}
       </div>
     </div>
   )

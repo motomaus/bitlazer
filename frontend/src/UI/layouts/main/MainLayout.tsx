@@ -70,7 +70,7 @@ const MainLayout = () => {
         {/* Lines */}
         <div
           ref={(el) => el && linesRef.current.push(el)}
-          className="w-[110vw] h-px left-0 absolute origin-top-left rotate-line hover-area"
+          className="w-[150vw] h-px left-0 absolute origin-top-left rotate-line hover-area"
           data-rotate="-17.62"
           onMouseEnter={(e) => handleMouseEnter(e, -17.62)}
           onMouseMove={(e) => handleMouseMove(e, -17.62)}
@@ -81,7 +81,7 @@ const MainLayout = () => {
 
         <div
           ref={(el) => el && linesRef.current.push(el)}
-          className="w-[110vw] h-px left-0 absolute origin-top-left rotate-line hover-area"
+          className="w-[150vw] h-px left-0 absolute origin-top-left rotate-line hover-area"
           data-rotate="-6.96"
           onMouseEnter={(e) => handleMouseEnter(e, -6.96)}
           onMouseMove={(e) => handleMouseMove(e, -6.96)}
@@ -92,7 +92,7 @@ const MainLayout = () => {
 
         <div
           ref={(el) => el && linesRef.current.push(el)}
-          className="w-[110vw] h-px left-0 absolute origin-top-left rotate-line hover-area"
+          className="w-[150vw] h-px left-0 absolute origin-top-left rotate-line hover-area"
           data-rotate="37.45"
           onMouseEnter={(e) => handleMouseEnter(e, 37.45)}
           onMouseMove={(e) => handleMouseMove(e, 37.45)}
@@ -103,7 +103,7 @@ const MainLayout = () => {
 
         <div
           ref={(el) => el && linesRef.current.push(el)}
-          className="w-[110vw] h-px left-0 absolute origin-top-left rotate-line hover-area"
+          className="w-[150vw] h-px left-0 absolute origin-top-left rotate-line hover-area"
           data-rotate="-7.18"
           onMouseEnter={(e) => handleMouseEnter(e, -7.18)}
           onMouseMove={(e) => handleMouseMove(e, -7.18)}
@@ -114,7 +114,7 @@ const MainLayout = () => {
 
         <div
           ref={(el) => el && linesRef.current.push(el)}
-          className="w-[110vw] h-px left-0 md:left-0 absolute origin-top-left rotate-line hover-area"
+          className="w-[150vw] h-px left-0 md:left-0 absolute origin-top-left rotate-line hover-area"
           data-rotate="8.23"
           onMouseEnter={(e) => handleMouseEnter(e, 8.23)}
           onMouseMove={(e) => handleMouseMove(e, 8.23)}

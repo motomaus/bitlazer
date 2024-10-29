@@ -3,32 +3,54 @@ import { IEcosystemItem } from './EcosystemItem'
 
 interface IEcosystemGridItem extends IEcosystemItem {}
 
-const EcosystemGridItem: React.FC<IEcosystemGridItem> = ({ imageSrc, logoSrc, title, description, socialIcons }) => {
+const EcosystemGridItem: React.FC<IEcosystemGridItem> = ({
+  imageSrc,
+  logoSrc,
+  title,
+  description,
+  socialIcons,
+  tag,
+  liveness,
+}) => {
   return (
-    <article className="flex overflow-hidden flex-col items-center px-2 pt-2 pb-11 w-full rounded-xl bg-neutral-800 max-md:mt-8">
-      <div className="flex overflow-hidden relative flex-col gap-5 justify-between items-start self-stretch px-3 pt-3 pb-40 w-full text-sm font-medium leading-none uppercase whitespace-nowrap aspect-[1.815] text-neutral-500 max-md:pb-24">
-        <img loading="lazy" src={imageSrc} alt="" className="object-cover absolute inset-0 size-full" />
-        <span className="relative px-3 py-2.5 bg-lightgreen-100 rounded">DeFi</span>
-        <span className="relative px-3 py-2.5 bg-lightgreen-100 rounded">Live</span>
+    <article className="flex overflow-hidden flex-col items-center p-2 pb-7 w-full rounded-xl bg-neutral-800">
+      <div className="flex flex-col overflow-hidden rounded-xl relative justify-between p-3 w-full text-sm font-medium leading-none uppercase whitespace-nowrap aspect-[1.815] text-white">
+        <img loading="lazy" src={imageSrc} alt="" className="object-cover absolute inset-0 size-full scale-105" />
+        {tag && (
+          <span className="absolute top-3 left-3 z-10 pointer-events-none px-3 py-2.5 bg-lightgreen-100 rounded">
+            {tag.toLocaleUpperCase()}
+          </span>
+        )}
+        {liveness && (
+          <span className="absolute top-3 right-3 z-10 pointer-events-none px-3 py-2.5 bg-lightgreen-100 rounded">
+            {liveness.toLocaleUpperCase()}
+          </span>
+        )}
       </div>
-      <img
-        loading="lazy"
-        src={logoSrc}
-        alt={`${title} logo`}
-        className="object-contain z-10 -mt-8 w-16 rounded-xl aspect-square"
-      />
-      <h2 className="mt-10 text-2xl leading-tight text-white uppercase">{title}</h2>
-      <p className="mt-3.5 text-sm leading-4 text-center text-white uppercase">{description}</p>
-      <div className="flex gap-2.5 mt-11 max-w-full w-[116px] max-md:mt-10">
-        {socialIcons.map((icon, index) => (
-          <img
-            key={index}
-            loading="lazy"
-            src={icon}
-            alt={`Social icon ${index + 1}`}
-            className="object-contain shrink-0 w-8 aspect-square"
-          />
-        ))}
+      <div className="-mt-8 w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center bg-black border-4 border-solid border-neutral-800 relative z-10">
+        <div className="flex items-center justify-center p-1.5">
+          <img loading="lazy" src={logoSrc} alt={`${title} logo`} className="object-contain size-full aspect-square" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-10 mt-8">
+        <div className="flex flex-col gap-1 items-center text-center md:px-3">
+          <h2 className="m-0 text-2xl leading-tight text-white uppercase">{title}</h2>
+          <p className="m-0 text-sm font-light leading-4 text-center text-white uppercase opacity-70">{description}</p>
+        </div>
+        <ul className="flex items-center justify-center flex-wrap gap-2.5">
+          {socialIcons.map((icon, index) => (
+            <li key={index}>
+              <a
+                className="w-8 h-8 flex items-center justify-center icon hover:opacity-70"
+                href={icon.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {icon.icon}
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     </article>
   )
