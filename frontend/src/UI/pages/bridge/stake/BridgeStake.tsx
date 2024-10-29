@@ -7,6 +7,7 @@ import { waitForTransactionReceipt, writeContract } from '@wagmi/core'
 import { stakeLBTC_abi } from 'src/assets/abi/stakeLBTC'
 import { formatEther, parseEther } from 'ethers/lib/utils'
 import { devnet } from 'src/web3/chains'
+import { handleChainSwitch } from 'src/web3/functions'
 import { config } from 'src/web3/config'
 import Cookies from 'universal-cookie'
 
@@ -149,7 +150,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
             ) : (
               <Button type="submit" onClick={(e) => {
                 e.preventDefault()
-                switchChain({ chainId: devnet.id })
+                handleChainSwitch(true)
               }}>
                 SWITCH CHAIN
               </Button>
@@ -207,7 +208,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
             ) : (
               <Button type="submit" onClick={(e) => {
                 e.preventDefault()
-                switchChain({ chainId: devnet.id })
+                handleChainSwitch(true)
               }}>
                 SWITCH CHAIN
               </Button>

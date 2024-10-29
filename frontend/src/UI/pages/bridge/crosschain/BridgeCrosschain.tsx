@@ -12,10 +12,11 @@ import { config } from 'src/web3/config'
 import { LBTC_abi } from 'src/assets/abi/lbtc'
 import Cookies from 'universal-cookie'
 import { devnet } from 'src/web3/chains'
+import { handleChainSwitch } from 'src/web3/functions'
 
-interface IBridgeWithdraw { }
+interface IBridgeCrosschain { }
 
-const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
+const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
   const {
     handleSubmit,
     control,
@@ -119,36 +120,8 @@ const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
     } catch (error) {
       toast(<TXToast {... { message: "Failed to Bridge tokens" }} />);
     }
-
-    // const depositArgs = {
-    //   abi: ['function depositERC20(uint256 amount)'],
-    //   address: L2_GATEWAY_ROUTER,
-    //   functionName: 'depositERC20',
-    //   args: [parseEther(getValues("amount"))],
-    // } as any;
-
-    // try {
-    //   simulateContract(config, depositArgs)
-    // } catch (error) {
-    //   console.error('Failed to simulate:', error)
-    // }
-
-    // try {
-    //   const transactionHash = await writeContract(config, depositArgs)
-    //   const receipt = await waitForTransactionReceipt(config, {
-    //     hash: transactionHash,
-    //   })
-    //   if (receipt.status === "success") {
-    //     toast.success('Bridge successful');
-    //   } else {
-    //     toast.error('Bridge failed');
-    //   }
-    // } catch (error) {
-    //   toast.error('Failed to bridge:', error as any)
-    // }
   }
 
-  // Inside your onSubmit function:
   const onSubmit = async (data: any) => {
     approval ? handleDeposit() : handleApprove()
   }
@@ -227,7 +200,7 @@ const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
             ) : (
               <Button type="submit" onClick={(e) => {
                 e.preventDefault()
-                switchChain({ chainId: arbitrumSepolia.id })
+                handleChainSwitch(false)
               }}>
                 SWITCH CHAIN
               </Button>
@@ -286,7 +259,7 @@ const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
             ) : (
               <Button type="submit" onClick={(e) => {
                 e.preventDefault()
-                switchChain({ chainId: devnet.id })
+                handleChainSwitch(true)
               }}>
                 SWITCH CHAIN
               </Button>
@@ -298,4 +271,4 @@ const BridgeWithdraw: FC<IBridgeWithdraw> = () => {
   )
 }
 
-export default BridgeWithdraw
+export default BridgeCrosschain

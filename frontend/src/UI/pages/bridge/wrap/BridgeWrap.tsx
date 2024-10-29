@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { useAccount, useBalance, useReadContract, useSwitchChain } from 'wagmi'
 import { erc20Abi } from 'viem'
 import { waitForTransactionReceipt, writeContract } from '@wagmi/core'
-import { arbitrumSepolia } from 'wagmi/chains'
+import { arbitrumSepolia, mainnet } from 'wagmi/chains'
 import { config } from 'src/web3/config'
 import { ERC20_CONTRACT_ADDRESS, TokenKeys, WRAP_CONTRACT } from 'src/web3/contracts'
 import { LBTC_abi } from 'src/assets/abi/lbtc'
@@ -12,16 +12,19 @@ import { parseEther, formatEther } from 'ethers/lib/utils'
 import { toast } from 'react-toastify';
 import { BigNumber } from 'ethers/lib/ethers'
 import Cookies from 'universal-cookie'
+import { handleChainSwitch } from 'src/web3/functions'
+import { use } from 'i18next'
 
-interface IBridgeDeposit { }
+interface IBridgeWrap { }
 
-const BridgeDeposit: FC<IBridgeDeposit> = () => {
+const BridgeWrap: FC<IBridgeWrap> = () => {
   const [selectedToken, setSelectedToken] = useState<TokenKeys>('wbtc')
   const [selectedTokenUnwrap, setSelectedTokenUnwrap] = useState<TokenKeys>('wbtc')
   const { switchChain } = useSwitchChain()
   const { address, isConnected, chainId } = useAccount()
   const [approval, setApproval] = useState<boolean>(false)
   const [reverseApproval, setReverseApproval] = useState<boolean>(false)
+  const [holderBalance, setHolderBalance] = useState<string | undefined>(undefined)
 
   const {
     handleSubmit,
@@ -64,11 +67,31 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
     chainId: arbitrumSepolia.id,
   })
 
+  // Balances of all tokens
+  const { data: abtcBalance, isLoading: abtcBalanceLoading } = useBalance({
+    address,
+    token: ERC20_CONTRACT_ADDRESS['abtc'],
+    chainId: arbitrumSepolia.id,
+  })
+
+  const { data: tbtcBalance, isLoading: tbtcBalanceLoading } = useBalance({
+    address,
+    token: ERC20_CONTRACT_ADDRESS['tbtc'],
+    chainId: arbitrumSepolia.id,
+  })
+
+  const { data: wbtcBalance, isLoading: wbtcBalanceLoading } = useBalance({
+    address,
+    token: ERC20_CONTRACT_ADDRESS['wbtc'],
+    chainId: arbitrumSepolia.id,
+  })
+
   const { data: approvalData } = useReadContract({
     abi: erc20Abi,
     address: ERC20_CONTRACT_ADDRESS[selectedToken],
     functionName: 'allowance',
     args: [address || '0x', WRAP_CONTRACT],
+    chainId: arbitrumSepolia.id,
   })
 
   const { data: reverseApprovalData } = useReadContract({
@@ -76,7 +99,44 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
     address: WRAP_CONTRACT,
     functionName: 'allowance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS[selectedToken]],
+    chainId: arbitrumSepolia.id,
   })
+
+  // getHolderBalance
+
+  const { data: abtcHolderBalance } = useReadContract({
+    abi: LBTC_abi,
+    address: WRAP_CONTRACT,
+    functionName: 'getHolderBalance',
+    args: [address || '0x', ERC20_CONTRACT_ADDRESS['abtc']],
+    chainId: arbitrumSepolia.id,
+  })
+
+  const { data: wbtcHolderBalance } = useReadContract({
+    abi: LBTC_abi,
+    address: WRAP_CONTRACT,
+    functionName: 'getHolderBalance',
+    args: [address || '0x', ERC20_CONTRACT_ADDRESS['wbtc']],
+    chainId: arbitrumSepolia.id,
+  })
+
+  const { data: tbtcHolderBalance } = useReadContract({
+    abi: LBTC_abi,
+    address: WRAP_CONTRACT,
+    functionName: 'getHolderBalance',
+    args: [address || '0x', ERC20_CONTRACT_ADDRESS['tbtc']],
+    chainId: arbitrumSepolia.id,
+  })
+
+  useEffect(() => {
+    if (selectedTokenUnwrap === 'wbtc') {
+      setHolderBalance(wbtcHolderBalance as string)
+    } else if (selectedTokenUnwrap === 'abtc') {
+      setHolderBalance(abtcHolderBalance as string)
+    } else if (selectedTokenUnwrap === 'tbtc') {
+      setHolderBalance(tbtcHolderBalance as string)
+    }
+  }, [selectedTokenUnwrap, wbtcHolderBalance, abtcHolderBalance, tbtcHolderBalance])
 
   useEffect(() => {
     if (approvalData) {
@@ -203,9 +263,27 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
                 <option value="" disabled>
                   Select a token
                 </option>
-                <option value="wbtc">WBTC</option>
-                <option value="abtc">ABTC</option>
-                <option value="tbtc">TBTC</option>
+                {
+                  Object.keys(ERC20_CONTRACT_ADDRESS).map((token) => (
+                    <>
+                      {
+                        token.toLowerCase() !== 'lbtc' && (
+                          <option
+                            key={token}
+                            value={token}
+                            disabled={
+                              token.toLowerCase() === 'wbtc' && BigNumber.from(wbtcBalance?.value || "0").eq(0) ||
+                              token.toLowerCase() === 'abtc' && BigNumber.from(abtcBalance?.value || "0").eq(0) ||
+                              token.toLowerCase() === 'tbtc' && BigNumber.from(tbtcBalance?.value || "0").eq(0)
+                            }
+                          >
+                            {token.toUpperCase()}
+                          </option>
+                        )
+                      }
+                    </>
+                  ))
+                }
               </select>
               <span className="ml-2">-&gt; LBTC</span>
             </div>
@@ -271,7 +349,7 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
             ) : (
               <Button type="submit" onClick={(e) => {
                 e.preventDefault()
-                switchChain({ chainId: arbitrumSepolia.id })
+                handleChainSwitch(false)
               }}>
                 SWITCH CHAIN
               </Button>
@@ -302,9 +380,27 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
                 <option value="" disabled>
                   Select a token
                 </option>
-                <option value="wbtc">-&gt; WBTC</option>
-                <option value="abtc">-&gt; ABTC</option>
-                <option value="tbtc">-&gt; TBTC</option>
+                {
+                  Object.keys(ERC20_CONTRACT_ADDRESS).map((token) => (
+                    <>
+                      {
+                        token.toLowerCase() !== 'lbtc' && (
+                          <option
+                            key={token}
+                            value={token}
+                            disabled={
+                              token.toLowerCase() === 'wbtc' && BigNumber.from(wbtcHolderBalance ?? 0).eq(0) ||
+                              token.toLowerCase() === 'abtc' && BigNumber.from(abtcHolderBalance ?? 0).eq(0) ||
+                              token.toLowerCase() === 'tbtc' && BigNumber.from(tbtcHolderBalance ?? 0).eq(0)
+                            }
+                          >
+                            -&gt; {token.toUpperCase()}
+                          </option>
+                        )
+                      }
+                    </>
+                  ))
+                }
               </select>
             </div>
           </div>
@@ -317,7 +413,7 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
             rules={{
               required: 'Amount is required',
               min: { value: 0.001, message: 'Amount must be greater than 0.001' },
-              max: { value: formatEther(lbtcBalanceData?.value.toString() || "0"), message: 'Amount must be less than balance' },
+              max: { value: formatEther(holderBalance?.toString() || "0"), message: 'Amount must be less than balance' },
             }}
             render={({ field }) => (
               <InputField
@@ -331,12 +427,12 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-              Balance: {lbtcBalanceLoading ? 'Loading...' : `${formatEther(lbtcBalanceData?.value.toString() || "0")} ${lbtcBalanceData?.symbol}`}
+              Balance: {lbtcBalanceLoading ? 'Loading...' : `${formatEther(holderBalance?.toString() || "0")} ${lbtcBalanceData?.symbol}`}
             </div>
             <button
               onClick={(e) => {
                 e.preventDefault()
-                unwrapSetValue('amount', formatEther(lbtcBalanceData?.value.toString() || '0'))
+                unwrapSetValue('amount', formatEther(holderBalance?.toString() || '0'))
                 unwrapTrigger('amount')
               }}
               className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
@@ -354,26 +450,29 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
         </div> */}
           {
             chainId === arbitrumSepolia.id ? (
-              <Button type="submit" disabled={!isUnwrapValid}>
+              <Button type="submit" disabled={!isUnwrapValid || holderBalance === '0'}>
                 UNWRAP
               </Button>
               // <>
               //   {
-              //     reverseApprovalData ? (
-              //       <Button type="submit" disabled={!isValid}>
-              //         UNWRAP
-              //       </Button>
-              //     ) : (
-              //       <Button type="submit">
-              //         APPROVE
-              //       </Button>
-              //     )
+              //     (selectedToken === 'abtc' && BigNumber.from(abtcUnwrapAllowance).gte(unwrapGetValues("amount")))
+              //       || (selectedToken === 'tbtc' && BigNumber.from(tbtcUnwrapAllowance).gte(unwrapGetValues("amount")))
+              //       || (selectedToken === 'wbtc' && BigNumber.from(wbtcUnwrapAllowance).gte(unwrapGetValues("amount")))
+              //       ? (
+              //         <Button type="submit" disabled={!isValid}>
+              //           UNWRAP
+              //         </Button>
+              //       ) : (
+              //         <Button type="submit">
+              //           APPROVE
+              //         </Button>
+              //       )
               //   }
               // </>
             ) : (
               <Button type="submit" onClick={(e) => {
                 e.preventDefault()
-                switchChain({ chainId: arbitrumSepolia.id })
+                handleChainSwitch(false)
               }}>
                 SWITCH CHAIN
               </Button>
@@ -389,4 +488,4 @@ const BridgeDeposit: FC<IBridgeDeposit> = () => {
   )
 }
 
-export default BridgeDeposit
+export default BridgeWrap
