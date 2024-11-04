@@ -6,7 +6,7 @@ export const devnet = {
   name: 'Bitlazer Devnet',
   nativeCurrency: { name: 'LazerBTC', symbol: 'LBTC', decimals: 18 },
   rpcUrls: {
-    default: { http: ['http://devnet.bitlazer.io:8449'] },
+    default: { http: ['https://devnet.bitlazer.io'] },
   },
 } as const satisfies Chain
 
