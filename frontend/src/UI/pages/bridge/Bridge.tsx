@@ -1,13 +1,16 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { FC, useEffect, useState } from 'react'
-import BridgeDeposit from './deposit/BridgeDeposit'
+import BridgeDeposit from './wrap/BridgeWrap'
 import BridgeStake from './stake/BridgeStake'
-import BridgeWithdraw from './withdraw/BridgeWithdraw'
-import { useAccount } from 'wagmi'
+import BridgeWithdraw from './crosschain/BridgeCrosschain'
+import { useAccount, useReadContract } from 'wagmi'
 import BridgeConnect from './connect/BridgeConnect'
 import clsx from 'clsx'
+import { LBTC_abi } from 'src/assets/abi/lbtc'
+import { ERC20_CONTRACT_ADDRESS } from 'src/web3/contracts'
+import Cookies from "universal-cookie";
 
-interface IBridge {}
+interface IBridge { }
 interface BridgeTab {
   id: string
   name: string
@@ -15,16 +18,16 @@ interface BridgeTab {
 
 const Bridge: FC<IBridge> = () => {
   const tabs: BridgeTab[] = [
-    { id: 'deposit', name: 'DEPOSIT' },
-    { id: 'stake', name: 'STAKE' },
+    { id: 'deposit', name: 'WRAP' },
     { id: 'withdraw', name: 'BRIDGE' },
+    { id: 'stake', name: 'STAKE' },
     { id: 'connect', name: 'CONNECT WALLET' },
   ]
 
-  const [activeTabId, setActiveTabId] = useState<string>('connect')
+  const [activeTabId, setActiveTabId] = useState<string | null>(null)
   const [currentProgress, setCurrentProgress] = useState<number>(0)
 
-  const { isConnected } = useAccount()
+  const { address, isConnected, chainId } = useAccount()
 
   const renderContent = () => {
     switch (activeTabId) {
@@ -42,6 +45,23 @@ const Bridge: FC<IBridge> = () => {
   }
 
   useEffect(() => {
+    const cookies = new Cookies();
+    const cookie = cookies.get('bridgeTab')
+    if (cookie && cookie !== 'connect') {
+      console.log("Setting active tab to: ", cookie)
+      setActiveTabId(cookie)
+    }
+  }, [])
+
+  useEffect(() => {
+    const cookies = new Cookies();
+    if (activeTabId !== "connect") {
+      console.log("Setting cookie tab to: ", activeTabId)
+      cookies.set('bridgeTab', activeTabId)
+    }
+  }, [activeTabId])
+
+  useEffect(() => {
     if (isConnected && activeTabId === 'connect') {
       setActiveTabId('deposit')
     } else if (!isConnected && activeTabId !== 'connect') {
@@ -51,7 +71,28 @@ const Bridge: FC<IBridge> = () => {
 
   useEffect(() => {
     if (isConnected) {
-      setCurrentProgress(1)
+      const cookies = new Cookies();
+      const hasWrapped = (): boolean => {
+        return cookies.get('hasWrapped') === true
+      }
+
+      const hasBridged = (): boolean => {
+        return cookies.get('hasBridged') === true
+      }
+
+      const hasStaked = (): boolean => {
+        return cookies.get('hasStaked') === true
+      }
+
+      let progress = 0
+
+      if (hasWrapped()) {
+        progress = hasBridged() ? (hasStaked() ? 4 : 3) : (hasStaked() ? 4 : 2)
+      } else {
+        progress = hasBridged() ? (hasStaked() ? 4 : 3) : (hasStaked() ? 4 : 1)
+      }
+
+      setCurrentProgress(progress)
     }
   }, [isConnected])
 
@@ -135,10 +176,10 @@ const Bridge: FC<IBridge> = () => {
                   </div>
                   <div className="flex flex-col gap-[0.312rem] mt-auto overflow-hidden">
                     <div className="relative inline-flex flex-row max-w-full text-base font-normal  font-arial ">
-                      <div className={currentProgress > 0 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
-                      <div className={currentProgress > 1 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
-                      <div className={currentProgress > 2 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
-                      <div className={currentProgress > 3 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
+                      <div className={currentProgress > 0 ? 'text-[#66d560]' : ''}>░░░░░░░░░</div>
+                      <div className={currentProgress > 1 ? 'text-[#66d560]' : ''}>░░░░░░░░░</div>
+                      <div className={currentProgress > 2 ? 'text-[#66d560]' : ''}>░░░░░░░░░</div>
+                      <div className={currentProgress > 3 ? 'text-[#66d560]' : ''}>░░░░░░░░░</div>
                     </div>
                     <div className="tracking-[-0.06em] leading-[1.25rem] font-maison-neue-trial">
                       CURRENT PROGRESS{' '}
