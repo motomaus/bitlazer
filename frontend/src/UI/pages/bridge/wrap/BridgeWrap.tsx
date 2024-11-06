@@ -140,9 +140,8 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
   useEffect(() => {
     if (approvalData) {
-      const approvalAmount = approvalData as unknown as string
-      if (BigNumber.from(approvalAmount).gte(parseEther(getValues('amount') || '0'))) {
-        setApproval(true)
+      if (BigNumber.from(approvalData).gte(parseEther(getValues("amount") || '0'))) {
+        setApproval(true);
       } else {
         setApproval(false)
       }
@@ -181,9 +180,11 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     } else {
       toast(<TXToast {...{ message: 'Transaction failed' }} />)
     }
+    setApproval(true);
+    await handleDeposit();
   }
 
-  const handleDeposit = async () => {
+  const handleDeposit = async (firstTime: Boolean = true) => {
     const args = {
       abi: LBTC_abi,
       address: WRAP_CONTRACT,
@@ -204,8 +205,16 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       } else {
         toast(<TXToast {...{ message: 'Wrap failed' }} />)
       }
-    } catch (error) {
-      toast(<TXToast {...{ message: 'Failed to Wrap' }} />)
+   } catch (error: any) {
+      // console.log("Error: ", error)
+      if (!error.message.includes("User rejected the request.")) {
+        toast(<TXToast {... { message: "Failed to Wrap. Increasing Allowance." }} />);
+        console.log(error.message);
+        await handleApprove();
+        handleDeposit(firstTime = false);
+      } else {
+        toast(<TXToast {... { message: "Transaction Rejected." }} />);
+      }
     }
   }
 
@@ -230,8 +239,12 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       } else {
         toast(<TXToast {...{ message: 'Unwrap failed' }} />)
       }
-    } catch (error) {
-      toast(<TXToast {...{ message: 'Failed to Unwrap' }} />)
+      } catch (error: any) {
+      if (!error.message.includes("User rejected the request.")) {
+        toast(<TXToast {... { message: "Failed to Unwrap" }} />);
+      } else {
+        toast(<TXToast {... { message: "Transaction Rejected." }} />);
+      }
     }
   }
 

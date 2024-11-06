@@ -2,7 +2,7 @@ import { Button, InputField, TXToast } from '@components/index'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { arbitrumSepolia } from 'wagmi/chains'
-import { ERC20_CONTRACT_ADDRESS, L2_GATEWAY_ROUTER, TokenKeys } from '../../../../web3/contracts'
+import { ERC20_CONTRACT_ADDRESS, L2_GATEWAY_ROUTER, L2_GATEWAY_ROUTER_BACK, TokenKeys } from '../../../../web3/contracts'
 import { useAccount, useBalance, useReadContract, useSwitchChain } from 'wagmi'
 import { writeContract, waitForTransactionReceipt, simulateContract } from '@wagmi/core'
 import { BigNumber, ethers } from 'ethers'
@@ -92,7 +92,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     }
   }
 
-  const handleDeposit = async () => {
+  const handleDeposit = async (toL3: Boolean) => {
     if (!connector) {
       return
     }
@@ -103,7 +103,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     const web3Provider = new ethers.providers.Web3Provider(provider)
     const signer = web3Provider.getSigner()
     const L2GatewayRouterABI = ['function depositERC20(uint256 amount)']
-    const l2GatewayRouterContract = new ethers.Contract(L2_GATEWAY_ROUTER, L2GatewayRouterABI, signer)
+    const l2GatewayRouterContract = new ethers.Contract(toL3 ? L2_GATEWAY_ROUTER : L2_GATEWAY_ROUTER_BACK, L2GatewayRouterABI, signer)
     try {
       // Perform the outbound transfer via L2 Gateway Router
       const tx = await l2GatewayRouterContract.depositERC20(parseEther(getValues("amount")))
@@ -123,11 +123,11 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
   }
 
   const onSubmit = async (data: any) => {
-    approval ? handleDeposit() : handleApprove()
+    approval ? handleDeposit(true) : handleApprove()
   }
 
   const handleBridgeBack = async () => {
-    await handleDeposit();
+    await handleDeposit(false);
   }
 
   const { data, isLoading } = useBalance({
