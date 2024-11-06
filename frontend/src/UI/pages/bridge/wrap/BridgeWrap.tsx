@@ -9,13 +9,13 @@ import { config } from 'src/web3/config'
 import { ERC20_CONTRACT_ADDRESS, TokenKeys, WRAP_CONTRACT } from 'src/web3/contracts'
 import { LBTC_abi } from 'src/assets/abi/lbtc'
 import { parseEther, formatEther } from 'ethers/lib/utils'
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'
 import { BigNumber } from 'ethers/lib/ethers'
 import Cookies from 'universal-cookie'
 import { handleChainSwitch } from 'src/web3/functions'
 import { use } from 'i18next'
 
-interface IBridgeWrap { }
+interface IBridgeWrap {}
 
 const BridgeWrap: FC<IBridgeWrap> = () => {
   const [selectedToken, setSelectedToken] = useState<TokenKeys>('wbtc')
@@ -140,11 +140,11 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
   useEffect(() => {
     if (approvalData) {
-      const approvalAmount = approvalData as unknown as string;
-      if (BigNumber.from(approvalAmount).gte(parseEther(getValues("amount") || '0'))) {
-        setApproval(true);
+      const approvalAmount = approvalData as unknown as string
+      if (BigNumber.from(approvalAmount).gte(parseEther(getValues('amount') || '0'))) {
+        setApproval(true)
       } else {
-        setApproval(false);
+        setApproval(false)
       }
     } else {
       console.log('Approval data not found')
@@ -153,11 +153,11 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
   useEffect(() => {
     if (approvalData) {
-      const approvalAmount = approvalData as unknown as string;
-      if (BigNumber.from(approvalAmount).gte(parseEther(unwrapGetValues("amount") || '0'))) {
-        setReverseApproval(true);
+      const approvalAmount = approvalData as unknown as string
+      if (BigNumber.from(approvalAmount).gte(parseEther(unwrapGetValues('amount') || '0'))) {
+        setReverseApproval(true)
       } else {
-        setReverseApproval(false);
+        setReverseApproval(false)
       }
     } else {
       console.log('Approval data not found')
@@ -169,20 +169,17 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       abi: LBTC_abi,
       address: ERC20_CONTRACT_ADDRESS[selectedToken],
       functionName: 'approve',
-      args: [
-        WRAP_CONTRACT,
-        parseEther(getValues("amount"))
-      ],
+      args: [WRAP_CONTRACT, parseEther(getValues('amount'))],
     }
-    const approvalTransactionHash = await writeContract(config, approvalArgs);
+    const approvalTransactionHash = await writeContract(config, approvalArgs)
     const approvalReceipt = await waitForTransactionReceipt(config, {
       hash: approvalTransactionHash,
     })
-    if (approvalReceipt.status === "success") {
-      const txHash = approvalReceipt.transactionHash;
-      toast(<TXToast {...{ message: "Approval successful", txHash }} />);
+    if (approvalReceipt.status === 'success') {
+      const txHash = approvalReceipt.transactionHash
+      toast(<TXToast {...{ message: 'Approval successful', txHash }} />)
     } else {
-      toast(<TXToast {... { message: "Transaction failed" }} />);
+      toast(<TXToast {...{ message: 'Transaction failed' }} />)
     }
   }
 
@@ -191,10 +188,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       abi: LBTC_abi,
       address: WRAP_CONTRACT,
       functionName: 'mint',
-      args: [
-        parseEther(getValues("amount")),
-        ERC20_CONTRACT_ADDRESS[selectedToken],
-      ],
+      args: [parseEther(getValues('amount')), ERC20_CONTRACT_ADDRESS[selectedToken]],
     } as any
 
     try {
@@ -202,16 +196,16 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       const receipt = await waitForTransactionReceipt(config, {
         hash: transactionHash,
       })
-      if (receipt.status === "success") {
-        const txHash = receipt.transactionHash;
-        toast(<TXToast {...{ message: "Wrap successful", txHash }} />);
-        const cookies = new Cookies();
+      if (receipt.status === 'success') {
+        const txHash = receipt.transactionHash
+        toast(<TXToast {...{ message: 'Wrap successful', txHash }} />)
+        const cookies = new Cookies()
         cookies.set('hasWrapped', 'true', { path: '/' })
       } else {
-        toast(<TXToast {... { message: "Wrap failed" }} />);
+        toast(<TXToast {...{ message: 'Wrap failed' }} />)
       }
     } catch (error) {
-      toast(<TXToast {... { message: "Failed to Wrap" }} />);
+      toast(<TXToast {...{ message: 'Failed to Wrap' }} />)
     }
   }
 
@@ -220,10 +214,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       abi: LBTC_abi,
       address: WRAP_CONTRACT,
       functionName: 'burn',
-      args: [
-        parseEther(unwrapGetValues("amount")),
-        ERC20_CONTRACT_ADDRESS[selectedTokenUnwrap],
-      ],
+      args: [parseEther(unwrapGetValues('amount')), ERC20_CONTRACT_ADDRESS[selectedTokenUnwrap]],
     } as any
 
     try {
@@ -231,16 +222,16 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       const receipt = await waitForTransactionReceipt(config, {
         hash: transactionHash,
       })
-      if (receipt.status === "success") {
-        const txHash = receipt.transactionHash;
-        toast(<TXToast {...{ message: "Deposit successful", txHash }} />);
-        const cookies = new Cookies();
+      if (receipt.status === 'success') {
+        const txHash = receipt.transactionHash
+        toast(<TXToast {...{ message: 'Deposit successful', txHash }} />)
+        const cookies = new Cookies()
         cookies.set('hasWrapped', 'true', { path: '/' })
       } else {
-        toast(<TXToast {... { message: "Unwrap failed" }} />);
+        toast(<TXToast {...{ message: 'Unwrap failed' }} />)
       }
     } catch (error) {
-      toast(<TXToast {... { message: "Failed to Unwrap" }} />);
+      toast(<TXToast {...{ message: 'Failed to Unwrap' }} />)
     }
   }
 
@@ -263,27 +254,23 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
                 <option value="" disabled>
                   Select a token
                 </option>
-                {
-                  Object.keys(ERC20_CONTRACT_ADDRESS).map((token) => (
-                    <>
-                      {
-                        token.toLowerCase() !== 'lbtc' && (
-                          <option
-                            key={token}
-                            value={token}
-                            disabled={
-                              token.toLowerCase() === 'wbtc' && BigNumber.from(wbtcBalance?.value || "0").eq(0) ||
-                              token.toLowerCase() === 'abtc' && BigNumber.from(abtcBalance?.value || "0").eq(0) ||
-                              token.toLowerCase() === 'tbtc' && BigNumber.from(tbtcBalance?.value || "0").eq(0)
-                            }
-                          >
-                            {token.toUpperCase()}
-                          </option>
-                        )
-                      }
-                    </>
-                  ))
-                }
+                {Object.keys(ERC20_CONTRACT_ADDRESS).map((token) => (
+                  <>
+                    {token.toLowerCase() !== 'lbtc' && (
+                      <option
+                        key={token}
+                        value={token}
+                        disabled={
+                          (token.toLowerCase() === 'wbtc' && BigNumber.from(wbtcBalance?.value || '0').eq(0)) ||
+                          (token.toLowerCase() === 'abtc' && BigNumber.from(abtcBalance?.value || '0').eq(0)) ||
+                          (token.toLowerCase() === 'tbtc' && BigNumber.from(tbtcBalance?.value || '0').eq(0))
+                        }
+                      >
+                        {token.toUpperCase()}
+                      </option>
+                    )}
+                  </>
+                ))}
               </select>
               <span className="ml-2">-&gt; LBTC</span>
             </div>
@@ -297,7 +284,10 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
             rules={{
               required: 'Amount is required',
               min: { value: 0.001, message: 'Amount must be greater than 0.001' },
-              max: { value: formatEther(balanceData?.value.toString() || "0"), message: 'Amount must be less than balance' },
+              max: {
+                value: formatEther(balanceData?.value.toString() || '0'),
+                message: 'Amount must be less than balance',
+              },
             }}
             render={({ field }) => (
               <InputField
@@ -311,7 +301,10 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-              Balance: {balanceLoading ? 'Loading...' : `${formatEther(balanceData?.value.toString() || "0")} ${balanceData?.symbol}`}
+              Balance:{' '}
+              {balanceLoading
+                ? 'Loading...'
+                : `${formatEther(balanceData?.value.toString() || '0')} ${balanceData?.symbol}`}
             </div>
             <button
               onClick={(e) => {
@@ -331,30 +324,27 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           <div className="relative tracking-[-0.06em] leading-[1.25rem] inline-block min-w-[4.188rem]">GAS FEE</div>
           <div className="w-[2.75rem] relative tracking-[-0.06em] leading-[1.25rem] text-right inline-block">00.00</div>
         </div> */}
-          {
-            chainId === arbitrumSepolia.id ? (
-              <>
-                {
-                  approval ? (
-                    <Button type="submit" disabled={!isValid}>
-                      WRAP
-                    </Button>
-                  ) : (
-                    <Button type="submit">
-                      APPROVE
-                    </Button>
-                  )
-                }
-              </>
-            ) : (
-              <Button type="submit" onClick={(e) => {
+          {chainId === arbitrumSepolia.id ? (
+            <>
+              {approval ? (
+                <Button type="submit" disabled={!isValid}>
+                  WRAP
+                </Button>
+              ) : (
+                <Button type="submit">APPROVE</Button>
+              )}
+            </>
+          ) : (
+            <Button
+              type="submit"
+              onClick={(e) => {
                 e.preventDefault()
                 handleChainSwitch(false)
-              }}>
-                SWITCH CHAIN
-              </Button>
-            )
-          }
+              }}
+            >
+              SWITCH CHAIN
+            </Button>
+          )}
           {/* <div className="h-[0.688rem] relative tracking-[-0.06em] leading-[1.25rem] text-gray-200 inline-block">
           Transaction number
         </div> */}
@@ -363,10 +353,13 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
       <div className="h-px w-full bg-[#6c6c6c]"></div>
 
-      <form onSubmit={(e) => {
-        e.preventDefault()
-        handleUnwrap()
-      }} className="flex flex-col gap-7">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          handleUnwrap()
+        }}
+        className="flex flex-col gap-7"
+      >
         <div className="flex flex-col relative gap-[0.75rem]">
           <label className="text-lightgreen-100">## UNWRAP LBTC TO {selectedTokenUnwrap.toUpperCase()}</label>
           <div className="relative">
@@ -380,27 +373,23 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
                 <option value="" disabled>
                   Select a token
                 </option>
-                {
-                  Object.keys(ERC20_CONTRACT_ADDRESS).map((token) => (
-                    <>
-                      {
-                        token.toLowerCase() !== 'lbtc' && (
-                          <option
-                            key={token}
-                            value={token}
-                            disabled={
-                              token.toLowerCase() === 'wbtc' && BigNumber.from(wbtcHolderBalance ?? 0).eq(0) ||
-                              token.toLowerCase() === 'abtc' && BigNumber.from(abtcHolderBalance ?? 0).eq(0) ||
-                              token.toLowerCase() === 'tbtc' && BigNumber.from(tbtcHolderBalance ?? 0).eq(0)
-                            }
-                          >
-                            -&gt; {token.toUpperCase()}
-                          </option>
-                        )
-                      }
-                    </>
-                  ))
-                }
+                {Object.keys(ERC20_CONTRACT_ADDRESS).map((token) => (
+                  <>
+                    {token.toLowerCase() !== 'lbtc' && (
+                      <option
+                        key={token}
+                        value={token}
+                        disabled={
+                          (token.toLowerCase() === 'wbtc' && BigNumber.from(wbtcHolderBalance ?? 0).eq(0)) ||
+                          (token.toLowerCase() === 'abtc' && BigNumber.from(abtcHolderBalance ?? 0).eq(0)) ||
+                          (token.toLowerCase() === 'tbtc' && BigNumber.from(tbtcHolderBalance ?? 0).eq(0))
+                        }
+                      >
+                        -&gt; {token.toUpperCase()}
+                      </option>
+                    )}
+                  </>
+                ))}
               </select>
             </div>
           </div>
@@ -413,7 +402,10 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
             rules={{
               required: 'Amount is required',
               min: { value: 0.001, message: 'Amount must be greater than 0.001' },
-              max: { value: formatEther(holderBalance?.toString() || "0"), message: 'Amount must be less than balance' },
+              max: {
+                value: formatEther(holderBalance?.toString() || '0'),
+                message: 'Amount must be less than balance',
+              },
             }}
             render={({ field }) => (
               <InputField
@@ -427,7 +419,10 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-              Balance: {lbtcBalanceLoading ? 'Loading...' : `${formatEther(holderBalance?.toString() || "0")} ${lbtcBalanceData?.symbol}`}
+              Balance:{' '}
+              {lbtcBalanceLoading
+                ? 'Loading...'
+                : `${formatEther(holderBalance?.toString() || '0')} ${lbtcBalanceData?.symbol}`}
             </div>
             <button
               onClick={(e) => {
@@ -448,43 +443,43 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           <div className="relative tracking-[-0.06em] leading-[1.25rem] inline-block min-w-[4.188rem]">GAS FEE</div>
           <div className="w-[2.75rem] relative tracking-[-0.06em] leading-[1.25rem] text-right inline-block">00.00</div>
         </div> */}
-          {
-            chainId === arbitrumSepolia.id ? (
-              <Button type="submit" disabled={!isUnwrapValid || holderBalance === '0'}>
-                UNWRAP
-              </Button>
-              // <>
-              //   {
-              //     (selectedToken === 'abtc' && BigNumber.from(abtcUnwrapAllowance).gte(unwrapGetValues("amount")))
-              //       || (selectedToken === 'tbtc' && BigNumber.from(tbtcUnwrapAllowance).gte(unwrapGetValues("amount")))
-              //       || (selectedToken === 'wbtc' && BigNumber.from(wbtcUnwrapAllowance).gte(unwrapGetValues("amount")))
-              //       ? (
-              //         <Button type="submit" disabled={!isValid}>
-              //           UNWRAP
-              //         </Button>
-              //       ) : (
-              //         <Button type="submit">
-              //           APPROVE
-              //         </Button>
-              //       )
-              //   }
-              // </>
-            ) : (
-              <Button type="submit" onClick={(e) => {
+          {chainId === arbitrumSepolia.id ? (
+            <Button type="submit" disabled={!isUnwrapValid || holderBalance === '0'}>
+              UNWRAP
+            </Button>
+          ) : (
+            // <>
+            //   {
+            //     (selectedToken === 'abtc' && BigNumber.from(abtcUnwrapAllowance).gte(unwrapGetValues("amount")))
+            //       || (selectedToken === 'tbtc' && BigNumber.from(tbtcUnwrapAllowance).gte(unwrapGetValues("amount")))
+            //       || (selectedToken === 'wbtc' && BigNumber.from(wbtcUnwrapAllowance).gte(unwrapGetValues("amount")))
+            //       ? (
+            //         <Button type="submit" disabled={!isValid}>
+            //           UNWRAP
+            //         </Button>
+            //       ) : (
+            //         <Button type="submit">
+            //           APPROVE
+            //         </Button>
+            //       )
+            //   }
+            // </>
+            <Button
+              type="submit"
+              onClick={(e) => {
                 e.preventDefault()
                 handleChainSwitch(false)
-              }}>
-                SWITCH CHAIN
-              </Button>
-            )
-          }
+              }}
+            >
+              SWITCH CHAIN
+            </Button>
+          )}
           {/* <div className="h-[0.688rem] relative tracking-[-0.06em] leading-[1.25rem] text-gray-200 inline-block">
           Transaction number
         </div> */}
         </div>
-      </form >
-
-    </div >
+      </form>
+    </div>
   )
 }
 

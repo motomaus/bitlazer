@@ -13,6 +13,7 @@ export interface IMyModal {
   className?: string
   label: string
   isReversed?: boolean
+  position?: string
 }
 
 const MyModal: FC<PropsWithChildren<IMyModal>> = ({
@@ -22,6 +23,7 @@ const MyModal: FC<PropsWithChildren<IMyModal>> = ({
   children,
   className,
   label,
+  position = 'md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2',
 }) => {
   return (
     <Draggable handle=".modal-header">
@@ -40,7 +42,9 @@ const MyModal: FC<PropsWithChildren<IMyModal>> = ({
         <Fade in={open}>
           <div
             className={clsx(
-              'absolute md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 p-0 bg-transparent border-0 top-0 left-0  md:!h-auto h-full md:pointer-events-auto md:[&_*]:pointer-events-auto',
+              'absolute ',
+              position,
+              'bg-transparent border-0 top-0 left-0  md:!h-auto h-full md:pointer-events-auto md:[&_*]:pointer-events-auto',
               width,
               className,
             )}

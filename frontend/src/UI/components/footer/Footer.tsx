@@ -79,6 +79,7 @@ const Footer: FC<IFooter> = () => {
       <MyModal
         label={'HOW IT WORKS'}
         width="md:w-[39.375rem]"
+        position="md:top-1/2 md:left-1/4 md:-translate-x-1/4 md:-translate-y-1/2"
         open={openHowItWorksModal}
         handleClose={() => setOpenHowItWorksModal(false)}
       >
@@ -95,6 +96,7 @@ const Footer: FC<IFooter> = () => {
       <MyModal
         label={'ROADMAP'}
         width="md:w-[41.375rem]"
+        position="md:top-1/4 md:left-2/3 md:-translate-x-1/2 md:-translate-y-1/4"
         open={openRoadmapModal}
         handleClose={() => setOpenRoadmapModal(false)}
       >

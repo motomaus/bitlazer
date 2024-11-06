@@ -15,7 +15,7 @@ const Home: FC<IHome> = () => {
               <span className="inline-block">
                 <Typewriter
                   options={{
-                    strings: ['earnings', 'yield', 'profits'],
+                    strings: ['network', 'earnings', 'yield'],
                     autoStart: true,
                     loop: true,
                     deleteSpeed: 50,
@@ -29,9 +29,9 @@ const Home: FC<IHome> = () => {
             </div>
           </div>
           <div className="flex md:flex-row flex-col items-center gap-4 md:gap-[1.625rem] flex-wrap">
-            <Button variant={'dark'} className="md:!w-auto min-w-[11.75rem]">
+            {/* <Button variant={'dark'} className="md:!w-auto min-w-[11.75rem]">
               LEARN MORE
-            </Button>
+            </Button> */}
             <Button link={'/bridge'} className="md:!w-auto min-w-[11.5rem]">
               BRIDGE & EARN
             </Button>

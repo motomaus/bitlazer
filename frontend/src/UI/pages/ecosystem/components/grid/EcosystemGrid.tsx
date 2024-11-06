@@ -3,18 +3,18 @@ import EcosystemGridItem from '../item/EcosystemGridItem'
 
 import { useMediaQuery } from 'react-responsive'
 
-import image0 from '@images/ecosystem/image0.jpg'
-import image1 from '@images/ecosystem/image1.jpg'
-import image2 from '@images/ecosystem/image2.jpg'
-import image3 from '@images/ecosystem/image3.jpg'
+import quantumBackground from '@images/ecosystem/quantum/792989385625933014.png'
+import quantumLogo from '@images/ecosystem/quantum/quantum.png'
+import barbarianBackground from '@images/ecosystem/barbarian/792983471455859783.png'
+import barbarianLogo from '@images/ecosystem/barbarian/792982900225199389.png'
+import bitBeamBackground from '@images/ecosystem/bitbeam/image2.jpg'
+import bitBeamLogo from '@images/ecosystem/bitbeam/logo.png'
+import abyssLogo from '@images/ecosystem/abyss/792985258162286918.png'
+import abyssBackground from '@images/ecosystem/abyss/792991494454650274.png'
 import image4 from '@images/ecosystem/image4.jpg'
 import image5 from '@images/ecosystem/image5.jpg'
 import image6 from '@images/ecosystem/image6.png'
 
-import logo0 from '@images/ecosystem/logo0.png'
-import logo1 from '@images/ecosystem/logo1.png'
-import logo2 from '@images/ecosystem/logo2.png'
-import logo3 from '@images/ecosystem/logo3.png'
 import logo4 from '@images/ecosystem/logo4.png'
 import logo5 from '@images/ecosystem/logo5.png'
 import logo6 from '@images/ecosystem/logo6.png'
@@ -24,76 +24,33 @@ import { InputField, MySelect } from '@components/index'
 
 const ecosystemData: IEcosystemItem[] = [
   {
-    imageSrc: image0,
-    logoSrc: logo0,
-    title: 'Mode Bridge',
-    description: 'The Mode Bridge allows you to transfer your assets between L1 and Mode',
-    socialIcons: [
-      {
-        icon: <LinkIcon />,
-        href: 'http://',
-      },
-      {
-        icon: <XIcon />,
-        href: 'http://',
-      },
-      {
-        icon: <DiscordIcon />,
-        href: 'http://',
-      },
-    ],
-  },
-  {
-    imageSrc: image1,
-    logoSrc: logo1,
-    title: 'Airpuff',
-    description: 'AirPuff emerges as the leading one-stop solution for airdrop leveraging',
-    tag: 'bridge',
-    liveness: 'live',
-    socialIcons: [
-      {
-        icon: <LinkIcon />,
-        href: 'http://',
-      },
-      {
-        icon: <XIcon />,
-        href: 'http://',
-      },
-      {
-        icon: <DiscordIcon />,
-        href: 'http://',
-      },
-    ],
-  },
-  {
-    imageSrc: image2,
-    logoSrc: logo2,
-    title: 'Aori',
+    imageSrc: quantumBackground,
+    logoSrc: quantumLogo,
+    title: 'Quantum Bridge',
     description:
-      'Build institutional grade defi applications for decentralized options trading, spot trading, and otc settlement',
+      'Quantum Bridge is an innovative crypto project focused on interconnectivity, decentralization, and security across multiple blockchain ecosystems',
+    socialIcons: [
+      {
+        icon: <LinkIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <XIcon />,
+        href: 'http://',
+      },
+      {
+        icon: <DiscordIcon />,
+        href: 'http://',
+      },
+    ],
+  },
+  {
+    imageSrc: barbarianBackground,
+    logoSrc: barbarianLogo,
+    title: 'Barbarian Swap',
+    description:
+      'Barbarian Swap revolutionizes decentralized trading by empowering users with seamless, secure, and efficient asset exchanges',
     tag: 'defi',
-    liveness: 'live',
-    socialIcons: [
-      {
-        icon: <LinkIcon />,
-        href: 'http://',
-      },
-      {
-        icon: <XIcon />,
-        href: 'http://',
-      },
-      {
-        icon: <DiscordIcon />,
-        href: 'http://',
-      },
-    ],
-  },
-  {
-    imageSrc: image3,
-    logoSrc: logo3,
-    title: 'Astaria',
-    description: 'Astaria allows permissionless leverage for any asset.',
-    tag: 'gaming',
     liveness: 'upcoming',
     socialIcons: [
       {
@@ -110,55 +67,36 @@ const ecosystemData: IEcosystemItem[] = [
       },
     ],
   },
+  // {
+  //   imageSrc: bitBeamBackground,
+  //   logoSrc: bitBeamLogo,
+  //   title: 'BitBeam',
+  //   description:
+  //     'BitBeam is airdropping BTC to users, promoting decentralized finance and rewarding community engagement and participation.  ',
+  //   tag: 'defi',
+  //   liveness: 'upcoming',
+  //   socialIcons: [
+  //     {
+  //       icon: <LinkIcon />,
+  //       href: 'http://',
+  //     },
+  //     {
+  //       icon: <XIcon />,
+  //       href: 'http://',
+  //     },
+  //     {
+  //       icon: <DiscordIcon />,
+  //       href: 'http://',
+  //     },
+  //   ],
+  // },
   {
-    imageSrc: image4,
-    logoSrc: logo4,
-    title: 'Atlendis',
-    description: 'First RWA Lending Protocol',
-    tag: 'infra',
-    liveness: 'live',
-    socialIcons: [
-      {
-        icon: <LinkIcon />,
-        href: 'http://',
-      },
-      {
-        icon: <XIcon />,
-        href: 'http://',
-      },
-      {
-        icon: <DiscordIcon />,
-        href: 'http://',
-      },
-    ],
-  },
-  {
-    imageSrc: image5,
-    logoSrc: logo5,
-    title: 'Bebop',
-    description: 'Bebop is a trading app and a suite of APIs that finds the best route for your trades.',
-    tag: 'infra',
-    socialIcons: [
-      {
-        icon: <LinkIcon />,
-        href: 'http://',
-      },
-      {
-        icon: <XIcon />,
-        href: 'http://',
-      },
-      {
-        icon: <DiscordIcon />,
-        href: 'http://',
-      },
-    ],
-  },
-  {
-    imageSrc: image6,
-    logoSrc: logo6,
-    title: 'Beefy',
-    description: 'Beefy automates yield farming to make DeFi easy, safe and efficient for all.',
-    tag: 'bridge',
+    imageSrc: abyssBackground,
+    logoSrc: abyssLogo,
+    title: 'AbyssNFT',
+    description:
+      'AbyssNFT is a groundbreaking project that brings art to life, enchanting users with unique, mystical non-fungible tokens and experiences.',
+    tag: 'nft',
     liveness: 'upcoming',
     socialIcons: [
       {
@@ -175,10 +113,76 @@ const ecosystemData: IEcosystemItem[] = [
       },
     ],
   },
+  // {
+  //   imageSrc: image4,
+  //   logoSrc: logo4,
+  //   title: 'Atlendis',
+  //   description: 'First RWA Lending Protocol',
+  //   tag: 'infra',
+  //   liveness: 'live',
+  //   socialIcons: [
+  //     {
+  //       icon: <LinkIcon />,
+  //       href: 'http://',
+  //     },
+  //     {
+  //       icon: <XIcon />,
+  //       href: 'http://',
+  //     },
+  //     {
+  //       icon: <DiscordIcon />,
+  //       href: 'http://',
+  //     },
+  //   ],
+  // },
+  // {
+  //   imageSrc: image5,
+  //   logoSrc: logo5,
+  //   title: 'Bebop',
+  //   description: 'Bebop is a trading app and a suite of APIs that finds the best route for your trades.',
+  //   tag: 'infra',
+  //   socialIcons: [
+  //     {
+  //       icon: <LinkIcon />,
+  //       href: 'http://',
+  //     },
+  //     {
+  //       icon: <XIcon />,
+  //       href: 'http://',
+  //     },
+  //     {
+  //       icon: <DiscordIcon />,
+  //       href: 'http://',
+  //     },
+  //   ],
+  // },
+  // {
+  //   imageSrc: image6,
+  //   logoSrc: logo6,
+  //   title: 'Beefy',
+  //   description: 'Beefy automates yield farming to make DeFi easy, safe and efficient for all.',
+  //   tag: 'bridge',
+  //   liveness: 'upcoming',
+  //   socialIcons: [
+  //     {
+  //       icon: <LinkIcon />,
+  //       href: 'http://',
+  //     },
+  //     {
+  //       icon: <XIcon />,
+  //       href: 'http://',
+  //     },
+  //     {
+  //       icon: <DiscordIcon />,
+  //       href: 'http://',
+  //     },
+  //   ],
+  // },
 ]
 
 const tagOptions = [
   { value: 'defi', label: 'DeFi' },
+  { value: 'nft', label: 'NFT' },
   { value: 'bridge', label: 'Bridge' },
   { value: 'infra', label: 'Infra' },
   { value: 'gaming', label: 'Gaming' },

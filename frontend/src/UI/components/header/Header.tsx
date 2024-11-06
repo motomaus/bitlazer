@@ -94,6 +94,15 @@ const Header: FC<IHeader> = () => {
                       </Link>
                     </li>
                     <li>
+                      <Link
+                        to="/ecosystem"
+                        className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/ecosystem' ? 'line-through pointer-events-none' : ''}`}
+                        onClick={closeMenu}
+                      >
+                        [ECOSYSTEM]
+                      </Link>
+                    </li>
+                    <li>
                       <button
                         className={clsx(
                           'text-lightgreen-100 hover:opacity-80',
@@ -176,6 +185,7 @@ const Header: FC<IHeader> = () => {
       <MyModal
         label={'HOW IT WORKS'}
         width="md:w-[39.375rem]"
+        position="md:top-1/3 md:left-1/4 md:-translate-x-1/3 md:-translate-y-1/3"
         open={openHowItWorksModal}
         handleClose={() => setOpenHowItWorksModal(false)}
       >
@@ -192,6 +202,7 @@ const Header: FC<IHeader> = () => {
       <MyModal
         label={'ROADMAP'}
         width="md:w-[41.375rem]"
+        position="md:top-1/4 md:left-2/3 md:-translate-x-1/2 md:-translate-y-1/4"
         open={openRoadmapModal}
         handleClose={() => setOpenRoadmapModal(false)}
       >
