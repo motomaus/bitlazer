@@ -22,7 +22,7 @@ const Roadmap: FC<IRoadmap> = () => {
   }, [])
 
   return (
-    <div className="flex-1  rounded-12xs bg-black font-ocr-x-trial border-forestgreen border-[.1875rem] border-solid box-border flex flex-col md:max-h-[40rem]">
+    <div className="flex-1  rounded-12xs bg-black font-ocrx border-forestgreen border-[.1875rem] border-solid box-border flex flex-col md:max-h-[40rem]">
       <OverlayScrollbarsComponent options={{}} style={{ maxHeight, overflow: 'auto' }}>
         <div className="flex flex-col gap-[1.668rem]">
           <div className="flex flex-col gap-6 md:gap-[2.375rem] md:p-10 px-4 py-6 ">

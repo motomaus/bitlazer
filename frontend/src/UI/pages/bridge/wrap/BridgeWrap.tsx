@@ -245,7 +245,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         <div className="flex flex-col relative gap-[0.75rem]">
           <label className="text-lightgreen-100">## WRAP {selectedToken.toUpperCase()} TO LBTC</label>
           <div className="relative">
-            <div className="font-ocr-x-trial w-full rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex items-center">
+            <div className="font-ocrx w-full rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex items-center">
               <select
                 value={selectedToken}
                 onChange={(e) => setSelectedToken(e.target.value as TokenKeys)}
@@ -363,7 +363,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         <div className="flex flex-col relative gap-[0.75rem]">
           <label className="text-lightgreen-100">## UNWRAP LBTC TO {selectedTokenUnwrap.toUpperCase()}</label>
           <div className="relative">
-            <div className="font-ocr-x-trial w-full rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex items-center">
+            <div className="font-ocrx w-full rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex items-center">
               <span className="ml-2 w-[50%]">LBTC</span>
               <select
                 value={selectedTokenUnwrap}

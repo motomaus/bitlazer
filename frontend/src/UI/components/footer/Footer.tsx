@@ -15,7 +15,7 @@ const Footer: FC<IFooter> = () => {
   const [openFeaturesModal, setOpenFeaturesModal] = useState(false)
 
   return (
-    <footer className="absolute bottom-0 left-0 z-10 w-full text-base text-gray-100 font-maison-neue-trial z-30 md:pointer-events-auto md:[&_*]:pointer-events-auto">
+    <footer className="absolute bottom-0 left-0 z-10 w-full text-base text-gray-100 font-maison-neue z-30 md:pointer-events-auto md:[&_*]:pointer-events-auto">
       <div className="container">
         <div className="flex md:flex-row flex-col items-center justify-between gap-5 border-dimgray-100 border-0 border-t-[.075rem] border-dashed pt-5 pb-[1.625rem] ">
           <nav className="tracking-[-0.02em]">

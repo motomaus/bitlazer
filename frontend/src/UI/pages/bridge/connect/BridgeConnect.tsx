@@ -31,7 +31,7 @@ const BridgeConnect: FC<IBridgeConnect> = () => {
         <div className="tracking-[-0.06em] leading-[1.25rem]">Please connect Wallet to proceed</div>
         <div className="flex-1 flex flex-col gap-[0.562rem]">
           <button
-            className="font-ocr-x-trial w-full cursor-pointer rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group"
+            className="font-ocrx w-full cursor-pointer rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group"
             onClick={() => {
               setOpenConnectWalletModal(true)
             }}
