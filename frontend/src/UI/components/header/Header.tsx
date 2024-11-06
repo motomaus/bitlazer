@@ -73,7 +73,7 @@ const Header: FC<IHeader> = () => {
                 X
               </button>
               <div className="items-center gap-[4.875rem] flex md:flex-row flex-col">
-                <nav className="whitespace-nowrap text-[1.25rem] text-lightgreen-100 font-ocr-x-trial md:mx-auto">
+                <nav className="whitespace-nowrap text-[1.25rem] text-lightgreen-100 font-ocrx text-extrathin md:mx-auto">
                   <ul className="flex md:flex-row flex-col items-center gap-8 md:gap-8">
                     <li>
                       <Link
@@ -91,6 +91,15 @@ const Header: FC<IHeader> = () => {
                         onClick={closeMenu}
                       >
                         [BRIDGE]
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/ecosystem"
+                        className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/ecosystem' ? 'line-through pointer-events-none' : ''}`}
+                        onClick={closeMenu}
+                      >
+                        [ECOSYSTEM]
                       </Link>
                     </li>
                     <li>
@@ -176,6 +185,7 @@ const Header: FC<IHeader> = () => {
       <MyModal
         label={'HOW IT WORKS'}
         width="md:w-[39.375rem]"
+        position="md:top-1/3 md:left-1/4 md:-translate-x-1/3 md:-translate-y-1/3"
         open={openHowItWorksModal}
         handleClose={() => setOpenHowItWorksModal(false)}
       >
@@ -192,6 +202,7 @@ const Header: FC<IHeader> = () => {
       <MyModal
         label={'ROADMAP'}
         width="md:w-[41.375rem]"
+        position="md:top-1/4 md:left-2/3 md:-translate-x-1/2 md:-translate-y-1/4"
         open={openRoadmapModal}
         handleClose={() => setOpenRoadmapModal(false)}
       >

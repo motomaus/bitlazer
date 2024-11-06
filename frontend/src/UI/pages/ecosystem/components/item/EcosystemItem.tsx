@@ -14,7 +14,7 @@ interface IEcosystemLinks {
   icon: JSX.Element
   href: string
 }
-export type TypeEcosystemTag = 'defi' | 'bridge' | 'infra' | 'gaming'
+export type TypeEcosystemTag = 'defi' | 'bridge' | 'infra' | 'gaming' | 'nft'
 export type TypeEcosystemLiveness = 'live' | 'upcoming'
 
 const EcosystemItem: React.FC<IEcosystemItem> = ({
@@ -44,13 +44,8 @@ const EcosystemItem: React.FC<IEcosystemItem> = ({
       </div>
       <div className="flex flex-col gap-5 p-8 md:max-w-[25.5rem] w-full">
         <div className="flex flex-col gap-5">
-          <div className="h-16 w-16 rounded-[0.1153rem] overflow-hidden">
-            <img
-              loading="lazy"
-              src={logoSrc}
-              alt={`${title} logo`}
-              className="object-contain size-full aspect-square"
-            />
+          <div className="h-16 w-16 rounded-[5.1153rem] overflow-hidden">
+            <img loading="lazy" src={logoSrc} alt={`${title} logo`} className="object-cover w-full h-full" />
           </div>
           <div className="flex flex-col gap-1">
             <h2 className="m-0 text-2xl leading-tight text-white uppercase">{title}</h2>

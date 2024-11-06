@@ -93,11 +93,11 @@ const MySelect: React.FC<MySelectProps> = ({
 
   return (
     <label
-      className={clsx('flex flex-col relative w-full', s.wrapper, wrapperClassName, {
+      className={clsx('flex flex-col relative w-full ', s.wrapper, wrapperClassName, {
         [s.default]: isDefault,
       })}
     >
-      {label && <span className="text-zinc-300 text-sm font-light mb-1">{label}</span>}
+      {label && <span className="text-zinc-300 text-sm font-light mb-1 ">{label}</span>}
       <Select
         onInputChange={onInputChange}
         isDisabled={disabled}

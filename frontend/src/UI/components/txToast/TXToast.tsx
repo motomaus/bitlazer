@@ -1,13 +1,12 @@
 import { FC } from 'react'
 
 interface ITXToast {
-    message: string,
-    txHash?: string
+  message: string
+  txHash?: string
 }
 
 const TXToast: FC<ITXToast> = ({ message, txHash }) => {
-
-    return (
+return (
         <div
             className='self-stretch rounded-[.115rem] bg-forestgreen flex flex-col py-[0.187rem] px-[0.125rem] font-maison-neue-trial'
         >
