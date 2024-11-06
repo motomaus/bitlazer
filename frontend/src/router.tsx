@@ -7,6 +7,7 @@ import BridgePage from '@pages/BridgePage'
 import RoadmapPage from '@pages/RoadmapPage'
 import FeaturesPage from '@pages/FeaturesPage'
 import HowItWorksPage from '@pages/HowItWorksPage'
+import EcosystemPage from '@pages/EcosystemPage'
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,6 +19,7 @@ export const router = createBrowserRouter(
         <Route element={<RoadmapPage />} path="/roadmap" />
         <Route element={<FeaturesPage />} path="/features" />
         <Route element={<HowItWorksPage />} path="/how-it-works" />
+        <Route element={<EcosystemPage />} path="/ecosystem" />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Route>,

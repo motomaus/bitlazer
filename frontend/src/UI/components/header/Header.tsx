@@ -11,9 +11,6 @@ import Features from '@pages/features/Features'
 import clsx from 'clsx'
 import { useAccount } from 'wagmi'
 import { Account } from '@pages/connect-wallet/Account'
-import { devnet } from 'src/web3/chains'
-import { config } from 'src/web3/config'
-import { switchChain } from '@wagmi/core'
 
 interface IHeader {}
 
@@ -23,7 +20,7 @@ const Header: FC<IHeader> = () => {
   const [openConnectWalletModal, setOpenConnectWalletModal] = useState(false)
   const [openRoadmapModal, setOpenRoadmapModal] = useState(false)
   const [openFeaturesModal, setOpenFeaturesModal] = useState(false)
-  const { isConnected, chainId } = useAccount()
+  const { isConnected } = useAccount()
 
   const location = useLocation()
 
@@ -48,15 +45,6 @@ const Header: FC<IHeader> = () => {
       setOpenConnectWalletModal(false)
     }
   }, [isConnected])
-
-  useEffect(() => {
-    const _switchChain = async () => {
-      await switchChain(config, { chainId: devnet.id })
-    }
-    if (chainId && chainId !== devnet.id) {
-      _switchChain()
-    }
-  }, [chainId])
 
   return (
     <>
@@ -86,7 +74,7 @@ const Header: FC<IHeader> = () => {
               </button>
               <div className="items-center gap-[4.875rem] flex md:flex-row flex-col">
                 <nav className="whitespace-nowrap text-[1.25rem] text-lightgreen-100 font-ocr-x-trial md:mx-auto">
-                  <ul className="flex md:flex-row flex-col items-center gap-8">
+                  <ul className="flex md:flex-row flex-col items-center gap-8 md:gap-8">
                     <li>
                       <Link
                         to="/about"
@@ -147,6 +135,15 @@ const Header: FC<IHeader> = () => {
                         [ROADMAP]
                       </button>
                     </li>
+                    {/* <li>
+                      <Link
+                        to="/ecosystem"
+                        className={`text-lightgreen-100 uppercase hover:opacity-80 ${location.pathname === '/ecosystem' ? 'line-through pointer-events-none' : ''}`}
+                        onClick={closeMenu}
+                      >
+                        [ecosystem]
+                      </Link>
+                    </li> */}
                     {/* <li>
                       <Link
                         to="/faq"
