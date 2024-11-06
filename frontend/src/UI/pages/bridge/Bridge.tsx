@@ -50,6 +50,8 @@ const Bridge: FC<IBridge> = () => {
     if (cookie && cookie !== 'connect') {
       console.log("Setting active tab to: ", cookie)
       setActiveTabId(cookie)
+    } else {
+      setActiveTabId('deposit')
     }
   }, [])
 
