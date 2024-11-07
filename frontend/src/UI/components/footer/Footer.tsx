@@ -1,5 +1,4 @@
 import React, { FC, useState } from 'react'
-import { Link } from 'react-router-dom'
 
 import MyModal from '@components/modal/MyModal'
 import HowItWorks from '@pages/how-it-works/HowItWorks'
@@ -16,16 +15,16 @@ const Footer: FC<IFooter> = () => {
   const [openFeaturesModal, setOpenFeaturesModal] = useState(false)
 
   return (
-    <footer className="absolute bottom-0 left-0 z-10 w-full text-base text-gray-100 font-maison-neue-trial z-30 md:pointer-events-auto md:[&_*]:pointer-events-auto">
+    <footer className="absolute bottom-0 left-0 z-10 w-full text-base text-gray-100 font-maison-neue z-30 md:pointer-events-auto md:[&_*]:pointer-events-auto">
       <div className="container">
         <div className="flex md:flex-row flex-col items-center justify-between gap-5 border-dimgray-100 border-0 border-t-[.075rem] border-dashed pt-5 pb-[1.625rem] ">
           <nav className="tracking-[-0.02em]">
             <ul className="flex items-center gap-5">
-              <li>
+              {/* <li>
                 <Link className="text-gray-100 hover:text-white" to="/about">
                   ABOUT
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <button
                   className="text-gray-100 hover:text-white"
@@ -80,6 +79,7 @@ const Footer: FC<IFooter> = () => {
       <MyModal
         label={'HOW IT WORKS'}
         width="md:w-[39.375rem]"
+        position="md:top-1/2 md:left-1/4 md:-translate-x-1/4 md:-translate-y-1/2"
         open={openHowItWorksModal}
         handleClose={() => setOpenHowItWorksModal(false)}
       >
@@ -96,6 +96,7 @@ const Footer: FC<IFooter> = () => {
       <MyModal
         label={'ROADMAP'}
         width="md:w-[41.375rem]"
+        position="md:top-1/4 md:left-2/3 md:-translate-x-1/2 md:-translate-y-1/4"
         open={openRoadmapModal}
         handleClose={() => setOpenRoadmapModal(false)}
       >

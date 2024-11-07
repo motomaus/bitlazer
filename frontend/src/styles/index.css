@@ -20,6 +20,10 @@ body {
   color: rgb(var(--foreground-rgb));
 } */
 
+.Toastify__toast {
+  color: #3d8938;
+}
+
 html,
 body {
   background: #000;
@@ -34,14 +38,14 @@ body {
 
 @layer base {
   @font-face {
-    font-family: 'OCR-X TTF';
+    font-family: 'OCRX';
     src: url('./fonts/OCR-XTTF-Regular.eot');
     src:
       url('./fonts/OCR-XTTF-Regular.eot?#iefix') format('embedded-opentype'),
       url('./fonts/OCR-XTTF-Regular.woff2') format('woff2'),
       url('./fonts/OCR-XTTF-Regular.woff') format('woff'),
       url('./fonts/OCR-XTTF-Regular.ttf') format('truetype');
-    font-weight: normal;
+    font-weight: thin;
     font-style: normal;
     font-display: swap;
   }

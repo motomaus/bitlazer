@@ -5,7 +5,7 @@ export const devnet = {
   name: 'Bitlazer Devnet',
   nativeCurrency: { name: 'LazerBTC', symbol: 'LBTC', decimals: 18 },
   rpcUrls: {
-    default: { http: ['http://devnet.bitlazer.io:8449'] },
+    default: { http: ['https://devnet.bitlazer.io'] },
   },
 } as const satisfies Chain
 
@@ -14,7 +14,7 @@ export const testnet = {
   name: 'Bitlazer Testnet',
   nativeCurrency: { name: 'LazerBTC', symbol: 'LBTC', decimals: 18 },
   rpcUrls: {
-    default: { http: ['http://testnet.bitlazer.io:8449'] },
+    default: { http: ['http://testnet.bitlazer.io'] },
   },
 } as const satisfies Chain
 
@@ -23,6 +23,6 @@ export const mainnet = {
   name: 'Bitlazer Mainnet',
   nativeCurrency: { name: 'LazerBTC', symbol: 'LBTC', decimals: 18 },
   rpcUrls: {
-    default: { http: ['http://mainnet.bitlazer.io:8449'] },
+    default: { http: ['http://mainnet.bitlazer.io'] },
   },
 } as const satisfies Chain

@@ -28,7 +28,7 @@ const Features: FC<IFeatures> = () => {
   }, [])
 
   return (
-    <div className="flex-1  rounded-12xs bg-black font-ocr-x-trial border-forestgreen border-[.1875rem] border-solid box-border flex flex-col md:max-h-[40rem]">
+    <div className="flex-1  rounded-12xs bg-black font-ocrx border-forestgreen border-[.1875rem] border-solid box-border flex flex-col md:max-h-[40rem]">
       <OverlayScrollbarsComponent options={{}} style={{ maxHeight, overflow: 'auto' }}>
         <ul>
           <li className="flex flex-col md:p-10 md:pl-20 px-4 py-6 border-forestgreen border-0 border-b-[.1875rem] border-solid last:!border-0">
@@ -37,11 +37,11 @@ const Features: FC<IFeatures> = () => {
                 <img className="w-full h-full object-contain" loading="lazy" alt="" src={img1} />
               </div>
               <div className="flex-1 flex flex-col gap-4">
-                <div className="uppercase text-xl">Native BTC Yield</div>
-                <div className="text-base tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum
-                  vestibulum. Cras venenatis euismod malesuada. Sed sit amet sapien eget magna dapibus tincidunt.
-                  Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+                <div className="uppercase text-xl">Low Fees</div>
+                <div className="text-base tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
+                  Transaction costs on Bitlazer are kept under 1 cent per transfer, thanks to the gas-optimized settings
+                  of its Layer 3 infrastructure. This allows for cost-efficient usage across a wide range of
+                  applications, from everyday transactions to complex smart contracts.
                 </div>
               </div>
             </div>
@@ -53,10 +53,10 @@ const Features: FC<IFeatures> = () => {
               </div>
               <div className="flex-1 flex flex-col gap-4">
                 <div className="uppercase text-xl">Seamless Bridging</div>
-                <div className="text-base tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum
-                  vestibulum. Cras venenatis euismod malesuada. Sed sit amet sapien eget magna dapibus tincidunt.
-                  Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+                <div className="text-base tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
+                  Bitlazer’s cross-chain bridging connects Bitcoin and Ethereum ecosystems without friction. Users can
+                  move native BTC or WBTC into the Bitlazer Layer 3 environment with ease, facilitating smooth
+                  interaction between the two networks in a secure and decentralized manner.
                 </div>
               </div>
             </div>
@@ -68,10 +68,10 @@ const Features: FC<IFeatures> = () => {
               </div>
               <div className="flex-1 flex flex-col gap-4">
                 <div className="uppercase text-xl">Fast Settlements</div>
-                <div className="text-base tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum
-                  vestibulum. Cras venenatis euismod malesuada. Sed sit amet sapien eget magna dapibus tincidunt.
-                  Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+                <div className="text-base tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
+                  With an average block time of under 1 second on Arbitrum L3 Orbiter, Bitlazer ensures lightning-fast
+                  transaction settlements. Users benefit from near-instant transaction finality, ideal for trading,
+                  payments, and high-frequency operations.
                 </div>
               </div>
             </div>
@@ -82,11 +82,11 @@ const Features: FC<IFeatures> = () => {
                 <img className="w-full h-full object-contain" loading="lazy" alt="" src={img4} />
               </div>
               <div className="flex-1 flex flex-col gap-4">
-                <div className="uppercase text-xl">low fees</div>
-                <div className="text-base tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae vestibulum
-                  vestibulum. Cras venenatis euismod malesuada. Sed sit amet sapien eget magna dapibus tincidunt.
-                  Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+                <div className="uppercase text-xl">Native BTC Yield</div>
+                <div className="text-base tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
+                  Users can stake their L3-native Bitcoin (LBTC) to earn passive BTC rewards. This yield is generated
+                  from the network’s activity and gas fees, providing a powerful incentive to hold and stake BTC within
+                  the Bitlazer ecosystem, unlocking new opportunities for liquidity growth.
                 </div>
               </div>
             </div>

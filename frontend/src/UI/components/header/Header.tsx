@@ -11,9 +11,6 @@ import Features from '@pages/features/Features'
 import clsx from 'clsx'
 import { useAccount } from 'wagmi'
 import { Account } from '@pages/connect-wallet/Account'
-import { devnet } from 'src/web3/chains'
-import { config } from 'src/web3/config'
-import { switchChain } from '@wagmi/core'
 
 interface IHeader {}
 
@@ -23,7 +20,7 @@ const Header: FC<IHeader> = () => {
   const [openConnectWalletModal, setOpenConnectWalletModal] = useState(false)
   const [openRoadmapModal, setOpenRoadmapModal] = useState(false)
   const [openFeaturesModal, setOpenFeaturesModal] = useState(false)
-  const { isConnected, chainId } = useAccount()
+  const { isConnected } = useAccount()
 
   const location = useLocation()
 
@@ -48,15 +45,6 @@ const Header: FC<IHeader> = () => {
       setOpenConnectWalletModal(false)
     }
   }, [isConnected])
-
-  useEffect(() => {
-    const _switchChain = async () => {
-      await switchChain(config, { chainId: devnet.id })
-    }
-    if (chainId && chainId !== devnet.id) {
-      _switchChain()
-    }
-  }, [chainId])
 
   return (
     <>
@@ -85,8 +73,8 @@ const Header: FC<IHeader> = () => {
                 X
               </button>
               <div className="items-center gap-[4.875rem] flex md:flex-row flex-col">
-                <nav className="whitespace-nowrap text-[1.25rem] text-lightgreen-100 font-ocr-x-trial md:mx-auto">
-                  <ul className="flex md:flex-row flex-col items-center gap-8">
+                <nav className="whitespace-nowrap text-[1.25rem] text-lightgreen-100 font-ocrx text-extrathin md:mx-auto">
+                  <ul className="flex md:flex-row flex-col items-center gap-8 md:gap-8">
                     <li>
                       <Link
                         to="/about"
@@ -103,6 +91,15 @@ const Header: FC<IHeader> = () => {
                         onClick={closeMenu}
                       >
                         [BRIDGE]
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/ecosystem"
+                        className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/ecosystem' ? 'line-through pointer-events-none' : ''}`}
+                        onClick={closeMenu}
+                      >
+                        [ECOSYSTEM]
                       </Link>
                     </li>
                     <li>
@@ -149,6 +146,15 @@ const Header: FC<IHeader> = () => {
                     </li>
                     {/* <li>
                       <Link
+                        to="/ecosystem"
+                        className={`text-lightgreen-100 uppercase hover:opacity-80 ${location.pathname === '/ecosystem' ? 'line-through pointer-events-none' : ''}`}
+                        onClick={closeMenu}
+                      >
+                        [ecosystem]
+                      </Link>
+                    </li> */}
+                    {/* <li>
+                      <Link
                         to="/faq"
                         className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/faq' ? 'line-through pointer-events-none' : ''}`}
                         onClick={closeMenu}
@@ -179,6 +185,7 @@ const Header: FC<IHeader> = () => {
       <MyModal
         label={'HOW IT WORKS'}
         width="md:w-[39.375rem]"
+        position="md:top-1/3 md:left-1/4 md:-translate-x-1/3 md:-translate-y-1/3"
         open={openHowItWorksModal}
         handleClose={() => setOpenHowItWorksModal(false)}
       >
@@ -195,6 +202,7 @@ const Header: FC<IHeader> = () => {
       <MyModal
         label={'ROADMAP'}
         width="md:w-[41.375rem]"
+        position="md:top-1/4 md:left-2/3 md:-translate-x-1/2 md:-translate-y-1/4"
         open={openRoadmapModal}
         handleClose={() => setOpenRoadmapModal(false)}
       >

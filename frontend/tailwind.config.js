@@ -38,16 +38,16 @@ const config = {
         },
         fuchsia: '#ff00ff',
         darkgreen: 'rgba(30, 101, 27, 0.3)',
+        'neutral-800': '#393a3a',
       },
       spacing: {},
       fontFamily: {
         sans: [
           '"Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
         ],
-        'maison-neue-trial':
+        'maison-neue':
           '"Maison Neue Mono", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
-        'ocr-x-trial':
-          '"OCR-X TTF", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+        ocrx: '"OCRX", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
         arial: 'Arial',
       },
       borderRadius: {

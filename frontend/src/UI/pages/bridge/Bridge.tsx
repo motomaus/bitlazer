@@ -1,11 +1,14 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { FC, useEffect, useState } from 'react'
-import BridgeDeposit from './deposit/BridgeDeposit'
+import BridgeDeposit from './wrap/BridgeWrap'
 import BridgeStake from './stake/BridgeStake'
-import BridgeWithdraw from './withdraw/BridgeWithdraw'
-import { useAccount } from 'wagmi'
+import BridgeWithdraw from './crosschain/BridgeCrosschain'
+import { useAccount, useReadContract } from 'wagmi'
 import BridgeConnect from './connect/BridgeConnect'
 import clsx from 'clsx'
+import { LBTC_abi } from 'src/assets/abi/lbtc'
+import { ERC20_CONTRACT_ADDRESS } from 'src/web3/contracts'
+import Cookies from 'universal-cookie'
 
 interface IBridge {}
 interface BridgeTab {
@@ -15,16 +18,16 @@ interface BridgeTab {
 
 const Bridge: FC<IBridge> = () => {
   const tabs: BridgeTab[] = [
-    { id: 'deposit', name: 'DEPOSIT' },
-    { id: 'stake', name: 'STAKE' },
+    { id: 'deposit', name: 'WRAP' },
     { id: 'withdraw', name: 'BRIDGE' },
+    { id: 'stake', name: 'STAKE' },
     { id: 'connect', name: 'CONNECT WALLET' },
   ]
 
-  const [activeTabId, setActiveTabId] = useState<string>('connect')
+  const [activeTabId, setActiveTabId] = useState<string | null>(null)
   const [currentProgress, setCurrentProgress] = useState<number>(0)
 
-  const { isConnected } = useAccount()
+  const { address, isConnected, chainId } = useAccount()
 
   const renderContent = () => {
     switch (activeTabId) {
@@ -42,6 +45,25 @@ const Bridge: FC<IBridge> = () => {
   }
 
   useEffect(() => {
+    const cookies = new Cookies()
+    const cookie = cookies.get('bridgeTab')
+    if (cookie && cookie !== 'connect') {
+      console.log('Setting active tab to: ', cookie)
+      setActiveTabId(cookie)
+     } else {
+      setActiveTabId('deposit')
+    }
+  }, [])
+
+  useEffect(() => {
+    const cookies = new Cookies()
+    if (activeTabId !== 'connect') {
+      console.log('Setting cookie tab to: ', activeTabId)
+      cookies.set('bridgeTab', activeTabId)
+    }
+  }, [activeTabId])
+
+  useEffect(() => {
     if (isConnected && activeTabId === 'connect') {
       setActiveTabId('deposit')
     } else if (!isConnected && activeTabId !== 'connect') {
@@ -51,7 +73,28 @@ const Bridge: FC<IBridge> = () => {
 
   useEffect(() => {
     if (isConnected) {
-      setCurrentProgress(1)
+      const cookies = new Cookies()
+      const hasWrapped = (): boolean => {
+        return cookies.get('hasWrapped') === true
+      }
+
+      const hasBridged = (): boolean => {
+        return cookies.get('hasBridged') === true
+      }
+
+      const hasStaked = (): boolean => {
+        return cookies.get('hasStaked') === true
+      }
+
+      let progress = 0
+
+      if (hasWrapped()) {
+        progress = hasBridged() ? (hasStaked() ? 4 : 3) : hasStaked() ? 4 : 2
+      } else {
+        progress = hasBridged() ? (hasStaked() ? 4 : 3) : hasStaked() ? 4 : 1
+      }
+
+      setCurrentProgress(progress)
     }
   }, [isConnected])
 
@@ -61,10 +104,8 @@ const Bridge: FC<IBridge> = () => {
         <div className="flex flex-col items-center md:pointer-events-auto md:[&_*]:pointer-events-auto">
           <section className="md:max-w-[62.919rem] w-full flex md:flex-row flex-col-reverse text-[1rem] text-white ">
             <div className="md:max-w-[30.95rem] w-full flex flex-col md:pt-10">
-              <div className="bg-black font-ocr-x-trial  border-white border-[.075rem] border-dashed flex flex-col md:pt-[2.562rem] md:pb-[2.25rem] md:pl-[2.5rem] md:pr-[0.5rem] px-4 py-6 md:gap-[2.375rem] gap-6 md:min-h-[44.6875rem]">
-                <div className="relative tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
-                  ## HOW IT WORKS
-                </div>
+              <div className="bg-black font-ocrx  border-white border-[.075rem] border-dashed flex flex-col md:pt-[2.562rem] md:pb-[2.25rem] md:pl-[2.5rem] md:pr-[0.5rem] px-4 py-6 md:gap-[2.375rem] gap-6 md:min-h-[44.6875rem]">
+                <div className="relative tracking-[-0.06em] leading-[1.313rem] font-maison-neue">## HOW IT WORKS</div>
                 <div className="flex flex-col gap-10 max-w-[27rem] flex-1">
                   <div className="flex flex-col gap-[2.375rem]">
                     <div className="flex flex-col gap-4">
@@ -73,7 +114,7 @@ const Bridge: FC<IBridge> = () => {
                         <span className="text-fuchsia">Wrap Bitcoin to Bitlazer BTC</span>
                         <span> ] </span>
                       </div>
-                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
+                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
                         Embark on a secure and efficient journey as you transform your Bitcoin (BTC) into LBTC. This
                         innovative process allows you to harness the power of Bitcoin while enjoying the benefits of
                         enhanced liquidity and flexibility. By wrapping your BTC, you’re not just converting your
@@ -88,7 +129,7 @@ const Bridge: FC<IBridge> = () => {
                         <span className="text-fuchsia">Bridge Bitcoin to Bitlazer</span>
                         <span> ] </span>
                       </div>
-                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
+                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
                         Users can bridge their Wrapped Bitcoin (WBTC) from Ethereum to Bitlazer's Layer 3 (L3) network,
                         or directly deposit native Bitcoin (BTC) using the BTC-native bridge, powered by light client
                         technology. This process securely transfers assets to the L3 Bitlazer network, where they can
@@ -101,7 +142,7 @@ const Bridge: FC<IBridge> = () => {
                         <span className="text-fuchsia">Stake L3 BTC or LZR Tokens</span>
                         <span> ] </span>
                       </div>
-                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
+                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
                         <p className="m-0">
                           Once assets are bridged, users can participate in Bitlazer’s dual staking rewards program.
                           They have the option to stake either:
@@ -119,7 +160,7 @@ const Bridge: FC<IBridge> = () => {
                         <span className="text-fuchsia">Claim Airdrop and Earn Yield</span>
                         <span> ] </span>
                       </div>
-                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue-trial">
+                      <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
                         <p className="m-0">
                           Users who bridge their BTC and actively participate in staking can also qualify for the
                           airdrop of LZR tokens. Early bridgers receive an additional 20% bonus from the total LZR
@@ -135,16 +176,16 @@ const Bridge: FC<IBridge> = () => {
                   </div>
                   <div className="flex flex-col gap-[0.312rem] mt-auto overflow-hidden">
                     <div className="relative inline-flex flex-row max-w-full text-base font-normal  font-arial ">
-                      <div className={currentProgress > 0 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
-                      <div className={currentProgress > 1 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
-                      <div className={currentProgress > 2 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
-                      <div className={currentProgress > 3 ? 'text-[#66d560]' : ''}>░░░░░░░░░░░</div>
+                      <div className={currentProgress > 0 ? 'text-[#66d560]' : ''}>░░░░░░░░░</div>
+                      <div className={currentProgress > 1 ? 'text-[#66d560]' : ''}>░░░░░░░░░</div>
+                      <div className={currentProgress > 2 ? 'text-[#66d560]' : ''}>░░░░░░░░░</div>
+                      <div className={currentProgress > 3 ? 'text-[#66d560]' : ''}>░░░░░░░░░</div>
                     </div>
-                    <div className="tracking-[-0.06em] leading-[1.25rem] font-maison-neue-trial">
+                    <div className="tracking-[-0.06em] leading-[1.25rem] font-maison-neue">
                       CURRENT PROGRESS{' '}
-                      <span className="font-ocr-x-trial">
-                        {currentProgress}/4 <span className="font-maison-neue-trial">[</span>{' '}
-                        {Math.round((currentProgress / 4) * 100)}% <span className="font-maison-neue-trial">]</span>
+                      <span className="font-ocrx">
+                        {currentProgress}/4 <span className="font-maison-neue">[</span>{' '}
+                        {Math.round((currentProgress / 4) * 100)}% <span className="font-maison-neue">]</span>
                       </span>
                     </div>
                   </div>
@@ -160,7 +201,7 @@ const Bridge: FC<IBridge> = () => {
                         key={tab.id}
                         onClick={() => setActiveTabId(tab.id)}
                         className={clsx(
-                          'font-ocr-x-trial w-full cursor-pointer rounded-[.115rem] h-10 text-lightgreen-100 text-[1.25rem] whitespace-nowrap flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group',
+                          'font-ocrx w-full cursor-pointer rounded-[.115rem] h-10 text-lightgreen-100 text-[1.25rem] whitespace-nowrap flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group',
                           activeTabId === tab.id
                             ? 'bg-forestgreen pointer-events-none touch-none'
                             : 'bg-darkslategray-200',
