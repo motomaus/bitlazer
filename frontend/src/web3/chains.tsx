@@ -1,12 +1,11 @@
 import { type Chain } from 'viem'
 
-
 export const devnet = {
   id: 40670607008,
   name: 'Bitlazer Devnet',
   nativeCurrency: { name: 'LazerBTC', symbol: 'LBTC', decimals: 18 },
   rpcUrls: {
-    default: { http: ['https://devnet.bitlazer.io:8449'] },
+    default: { http: ['https://devnet.bitlazer.io'] },
   },
 } as const satisfies Chain
 
@@ -15,7 +14,7 @@ export const testnet = {
   name: 'Bitlazer Testnet',
   nativeCurrency: { name: 'LazerBTC', symbol: 'LBTC', decimals: 18 },
   rpcUrls: {
-    default: { http: ['https://testnet.bitlazer.io:8449'] },
+    default: { http: ['http://testnet.bitlazer.io'] },
   },
 } as const satisfies Chain
 
@@ -24,6 +23,6 @@ export const mainnet = {
   name: 'Bitlazer Mainnet',
   nativeCurrency: { name: 'LazerBTC', symbol: 'LBTC', decimals: 18 },
   rpcUrls: {
-    default: { http: ['https://mainnet.bitlazer.io:8449'] },
+    default: { http: ['http://mainnet.bitlazer.io'] },
   },
 } as const satisfies Chain
