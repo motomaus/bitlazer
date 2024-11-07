@@ -52,7 +52,7 @@ const EcosystemItem: React.FC<IEcosystemItem> = ({
             <p className="m-0 self-stretch text-sm leading-4 text-white uppercase opacity-70">{description}</p>
           </div>
         </div>
-        <ul className="flex items-center flex-wrap gap-2.5 mt-auto">
+        {/* <ul className="flex items-center flex-wrap gap-2.5 mt-auto">
           {socialIcons.map((icon, index) => (
             <li key={index}>
               <a
@@ -65,7 +65,7 @@ const EcosystemItem: React.FC<IEcosystemItem> = ({
               </a>
             </li>
           ))}
-        </ul>
+        </ul> */}
       </div>
     </article>
   )

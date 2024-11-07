@@ -23,27 +23,27 @@ import { DiscordIcon, LinkIcon, XIcon } from '@svgs'
 import { InputField, MySelect } from '@components/index'
 
 const ecosystemData: IEcosystemItem[] = [
-  {
-    imageSrc: quantumBackground,
-    logoSrc: quantumLogo,
-    title: 'Quantum Bridge',
-    description:
-      'Quantum Bridge is an innovative crypto project focused on interconnectivity, decentralization, and security across multiple blockchain ecosystems',
-    socialIcons: [
-      {
-        icon: <LinkIcon />,
-        href: 'http://',
-      },
-      {
-        icon: <XIcon />,
-        href: 'http://',
-      },
-      {
-        icon: <DiscordIcon />,
-        href: 'http://',
-      },
-    ],
-  },
+  // {
+  //   imageSrc: quantumBackground,
+  //   logoSrc: quantumLogo,
+  //   title: 'Quantum Bridge',
+  //   description:
+  //     'Quantum Bridge is an innovative crypto project focused on interconnectivity, decentralization, and security across multiple blockchain ecosystems',
+  //   socialIcons: [
+  //     {
+  //       icon: <LinkIcon />,
+  //       href: 'http://',
+  //     },
+  //     {
+  //       icon: <XIcon />,
+  //       href: 'http://',
+  //     },
+  //     {
+  //       icon: <DiscordIcon />,
+  //       href: 'http://',
+  //     },
+  //   ],
+  // },
   {
     imageSrc: barbarianBackground,
     logoSrc: barbarianLogo,

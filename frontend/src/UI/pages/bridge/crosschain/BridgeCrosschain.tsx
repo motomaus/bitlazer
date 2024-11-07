@@ -2,7 +2,12 @@ import { Button, InputField, TXToast } from '@components/index'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { arbitrumSepolia } from 'wagmi/chains'
-import { ERC20_CONTRACT_ADDRESS, L2_GATEWAY_ROUTER, L2_GATEWAY_ROUTER_BACK, TokenKeys } from '../../../../web3/contracts'
+import {
+  ERC20_CONTRACT_ADDRESS,
+  L2_GATEWAY_ROUTER,
+  L2_GATEWAY_ROUTER_BACK,
+  TokenKeys,
+} from '../../../../web3/contracts'
 import { useAccount, useBalance, useReadContract, useSwitchChain } from 'wagmi'
 import { writeContract, waitForTransactionReceipt, simulateContract } from '@wagmi/core'
 import { BigNumber, ethers } from 'ethers'
@@ -14,7 +19,7 @@ import Cookies from 'universal-cookie'
 import { devnet } from 'src/web3/chains'
 import { handleChainSwitch } from 'src/web3/functions'
 
-interface IBridgeCrosschain { }
+interface IBridgeCrosschain {}
 
 const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
   const {
@@ -62,11 +67,11 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
 
   useEffect(() => {
     if (approvalData) {
-      const approvalAmount = approvalData as unknown as string;
-      if (BigNumber.from(approvalAmount).gte(parseEther(getValues("amount") || '0'))) {
-        setApproval(true);
+      const approvalAmount = approvalData as unknown as string
+      if (BigNumber.from(approvalAmount).gte(parseEther(getValues('amount') || '0'))) {
+        setApproval(true)
       } else {
-        setApproval(false);
+        setApproval(false)
       }
     } else {
       console.log('Approval data not found')
@@ -78,21 +83,21 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
       abi: LBTC_abi,
       address: ERC20_CONTRACT_ADDRESS['lbtc'],
       functionName: 'approve',
-      args: [L2_GATEWAY_ROUTER, parseEther(getValues("amount"))],
+      args: [L2_GATEWAY_ROUTER, parseEther(getValues('amount'))],
     }
-    const approvalTransactionHash = await writeContract(config, approvalArgs);
+    const approvalTransactionHash = await writeContract(config, approvalArgs)
     const approvalReceipt = await waitForTransactionReceipt(config, {
       hash: approvalTransactionHash,
     })
-    if (approvalReceipt.status === "success") {
-      const txHash = approvalReceipt.transactionHash;
-      toast(<TXToast {...{ message: "Approval successful", txHash }} />);
+    if (approvalReceipt.status === 'success') {
+      const txHash = approvalReceipt.transactionHash
+      toast(<TXToast {...{ message: 'Approval successful', txHash }} />)
     } else {
-      toast(<TXToast {... { message: "Approval failed" }} />);
+      toast(<TXToast {...{ message: 'Approval failed' }} />)
     }
   }
 
-  const handleDeposit = async (toL3: Boolean) => {
+  const handleDeposit = async (toL3: boolean) => {
     if (!connector) {
       return
     }
@@ -103,22 +108,27 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     const web3Provider = new ethers.providers.Web3Provider(provider)
     const signer = web3Provider.getSigner()
     const L2GatewayRouterABI = ['function depositERC20(uint256 amount)']
-    const l2GatewayRouterContract = new ethers.Contract(toL3 ? L2_GATEWAY_ROUTER : L2_GATEWAY_ROUTER_BACK, L2GatewayRouterABI, signer)
+    const l2GatewayRouterContract = new ethers.Contract(
+      toL3 ? L2_GATEWAY_ROUTER : L2_GATEWAY_ROUTER_BACK,
+      L2GatewayRouterABI,
+      signer,
+    )
     try {
       // Perform the outbound transfer via L2 Gateway Router
-      const tx = await l2GatewayRouterContract.depositERC20(parseEther(getValues("amount")))
+      const tx = await l2GatewayRouterContract.depositERC20(parseEther(getValues('amount')))
       const receipt = await tx.wait()
 
       if (receipt.status === 1) {
-        const txHash = receipt.transactionHash;
-        toast(<TXToast {...{ message: "Bridge successful", txHash }} />);
-        const cookies = new Cookies();
+        const txHash = receipt.transactionHash
+        toast(<TXToast {...{ message: 'Bridge successful', txHash }} />)
+        const cookies = new Cookies()
         cookies.set('hasBridged', 'true', { path: '/' })
       } else {
-        toast(<TXToast {... { message: "Bridge failed" }} />);
+        toast(<TXToast {...{ message: 'Bridge failed' }} />)
       }
     } catch (error) {
-      toast(<TXToast {... { message: "Failed to Bridge tokens" }} />);
+      console.log(error)
+      toast(<TXToast {...{ message: 'Failed to Bridge tokens' }} />)
     }
   }
 
@@ -127,7 +137,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
   }
 
   const handleBridgeBack = async () => {
-    await handleDeposit(false);
+    await handleDeposit(false)
   }
 
   const { data, isLoading } = useBalance({
@@ -165,7 +175,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-              Balance: {isLoading ? 'Loading...' : `${formatEther(data?.value.toString() || "0")} ${data?.symbol}`}
+              Balance: {isLoading ? 'Loading...' : `${formatEther(data?.value.toString() || '0')} ${data?.symbol}`}
             </div>
             <button
               onClick={(e) => {
@@ -182,37 +192,37 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
           </div>
         </div>
         <div className="flex flex-col gap-[0.687rem]">
-          {
-            chainId === arbitrumSepolia.id ? (
-              <>
-                {
-                  approval ? (
-                    <Button type="submit" disabled={!isValid}>
-                      BRIDGE
-                    </Button>
-                  ) : (
-                    <Button type="submit">
-                      APPROVE
-                    </Button>
-                  )
-                }
-              </>
-            ) : (
-              <Button type="submit" onClick={(e) => {
+          {chainId === arbitrumSepolia.id ? (
+            <>
+              {approval ? (
+                <Button type="submit" disabled={!isValid}>
+                  BRIDGE
+                </Button>
+              ) : (
+                <Button type="submit">APPROVE</Button>
+              )}
+            </>
+          ) : (
+            <Button
+              type="submit"
+              onClick={(e) => {
                 e.preventDefault()
                 handleChainSwitch(false)
-              }}>
-                SWITCH CHAIN
-              </Button>
-            )
-          }
+              }}
+            >
+              SWITCH CHAIN
+            </Button>
+          )}
         </div>
       </form>
       <div className="h-px w-full bg-[#6c6c6c]"></div>
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        handleBridgeBack();
-      }} className="flex flex-col gap-7">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          handleBridgeBack()
+        }}
+        className="flex flex-col gap-7"
+      >
         <div className="flex flex-col gap-[0.687rem] max-w-full">
           <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## BRIDGE BACK</div>
           <Controller
@@ -234,7 +244,8 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-              Balance: {l3isLoading ? 'Loading...' : `${formatEther(l3Data?.value.toString() || "0")} ${l3Data?.symbol}`}
+              Balance:{' '}
+              {l3isLoading ? 'Loading...' : `${formatEther(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
             </div>
             <button
               onClick={(e) => {
@@ -251,20 +262,21 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
           </div>
         </div>
         <div className="flex flex-col gap-[0.687rem]">
-          {
-            chainId === devnet.id ? (
-              <Button type="submit" disabled={!unstakeIsValid}>
-                BRIDGE
-              </Button>
-            ) : (
-              <Button type="submit" onClick={(e) => {
+          {chainId === devnet.id ? (
+            <Button type="submit" disabled={!unstakeIsValid}>
+              BRIDGE
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              onClick={(e) => {
                 e.preventDefault()
                 handleChainSwitch(true)
-              }}>
-                SWITCH CHAIN
-              </Button>
-            )
-          }
+              }}
+            >
+              SWITCH CHAIN
+            </Button>
+          )}
         </div>
       </form>
     </div>

@@ -11,8 +11,9 @@ const Home: FC<IHome> = () => {
         <section className="self-stretch relative z-10 gap-[1.875rem] flex flex-col items-center text-center text-[2.5rem] text-white font-ocrx">
           <div className="flex flex-col gap-[1.625rem]">
             <h1 className="m-0 max-w-[32.1rem] w-full text-inherit uppercase font-normal">
-              Lazer fast Bitcoin{' '}
-              <span className="inline-block">
+              Lazer fast <br />
+              Bitcoin{' '}
+              <span className="inline-block text-lightgreen-100">
                 <Typewriter
                   options={{
                     strings: ['network', 'earnings', 'yield'],

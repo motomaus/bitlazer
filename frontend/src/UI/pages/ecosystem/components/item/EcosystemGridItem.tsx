@@ -37,7 +37,7 @@ const EcosystemGridItem: React.FC<IEcosystemGridItem> = ({
           <h2 className="m-0 text-2xl leading-tight text-white uppercase">{title}</h2>
           <p className="m-0 text-sm font-light leading-4 text-center text-white uppercase opacity-70">{description}</p>
         </div>
-        <ul className="flex items-center justify-center flex-wrap gap-2.5">
+        {/* <ul className="flex items-center justify-center flex-wrap gap-2.5">
           {socialIcons.map((icon, index) => (
             <li key={index}>
               <a
@@ -50,7 +50,7 @@ const EcosystemGridItem: React.FC<IEcosystemGridItem> = ({
               </a>
             </li>
           ))}
-        </ul>
+        </ul> */}
       </div>
     </article>
   )
