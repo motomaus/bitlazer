@@ -18,6 +18,12 @@ contract ZBTC is ReentrancyGuardUpgradeable, AccessControlUpgradeable, ERC20Upgr
     mapping(address => IERC20) public supportedWrappers;
     mapping(address => mapping(address => uint256)) internal holderBalances;
 
+    bool public paused;
+    bool public pausedExtraHolderBalance;
+
+    uint256 public totalBridgeIn;
+    uint256 public totalBridgeOut;
+
     IERC20 public sZBTC;
 
     function initialize(string memory name, string memory symbol, address _owner) public initializer {
@@ -45,6 +51,26 @@ contract ZBTC is ReentrancyGuardUpgradeable, AccessControlUpgradeable, ERC20Upgr
         supportedWrappers[_WBTC] = IERC20(_WBTC);
     }
 
+    function removeWBTCAddress(address _WBTC) public onlyOwner {
+        delete supportedWrappers[_WBTC];
+    }
+
+    function pause() public onlyOwner {
+        paused = true;
+    }
+
+    function unpause() public onlyOwner {
+        paused = false;
+    }
+
+    function pauseExtraHolderBalance() public onlyOwner {
+        pausedExtraHolderBalance = true;
+    }
+
+    function unpauseExtraHolderBalance() public onlyOwner {
+        pausedExtraHolderBalance = false;
+    }
+
     function setSZBTCAddress(address _sZBTC) public onlyOwner {
         sZBTC = IERC20(_sZBTC);
     }
@@ -54,16 +80,19 @@ contract ZBTC is ReentrancyGuardUpgradeable, AccessControlUpgradeable, ERC20Upgr
     }
 
     function mint(uint256 amount, address _WBTC) public nonReentrant {
+        require(!paused, "Contract paused");
         IERC20 WBTC = supportedWrappers[_WBTC];
         require(WBTC != IERC20(address(0)), "Wrapper not supported");
         holderBalances[msg.sender][_WBTC] += amount;
         _mint(msg.sender, amount);
         WBTC.safeTransferFrom(msg.sender, address(this), amount);
+        totalBridgeIn += amount;
     }
 
     // If sufficient balance of sZBTC is not available, this function will fail
     // Otherwise, add the extra balance to the holder's balance in order to allow the extra stake accumulated to l3 withdrawals
     function addExtraHolderBalance(address _holder, uint256 amount, IERC20 _WBTC) public nonReentrant {
+        require(!pausedExtraHolderBalance, "Extra holder balance paused");
         uint256 sZBTCBalance = sZBTC.balanceOf(_holder);
         require(sZBTCBalance >= amount, "Insufficient sZBTC balance");
         // Verify _WBTC is a supported wrapper
@@ -76,6 +105,7 @@ contract ZBTC is ReentrancyGuardUpgradeable, AccessControlUpgradeable, ERC20Upgr
     }
 
     function burn(uint256 amount, address _WBTC) public nonReentrant {
+        require(!paused, "Contract paused");
         IERC20 WBTC = supportedWrappers[_WBTC];
         require(WBTC != IERC20(address(0)), "Wrapper not supported");
         require(holderBalances[msg.sender][_WBTC] >= amount, "Insufficient balance in the wrapper holding");
@@ -83,6 +113,7 @@ contract ZBTC is ReentrancyGuardUpgradeable, AccessControlUpgradeable, ERC20Upgr
         holderBalances[msg.sender][_WBTC] -= amount;
         _burn(msg.sender, amount);
         WBTC.transfer(msg.sender, amount);
+        totalBridgeOut += amount;
     }
 
     function getHolderBalance(address _holder, address _WBTC) public view returns (uint256) {
