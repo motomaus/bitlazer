@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react'
 import { useAccount, useBalance, useDisconnect } from 'wagmi'
 import { switchChain } from '@wagmi/core'
 import { WalletOptions } from './WalletOptions'
-import { devnet } from 'src/web3/chains'
+import { testnet } from 'src/web3/chains'
 import { config } from 'src/web3/config'
 import { formatEther } from 'ethers/lib/utils'
 
@@ -15,7 +15,7 @@ const ConnectWallet: FC<IConnectWallet> = () => {
 
   const userBalance = useBalance({
     address: address,
-    chainId: devnet.id,
+    chainId: testnet.id,
   })
 
   return (

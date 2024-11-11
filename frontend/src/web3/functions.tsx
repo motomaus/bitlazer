@@ -1,7 +1,7 @@
 import { getWalletClient } from '@wagmi/core'
 import { config } from './config'
 import { arbitrumSepolia } from 'wagmi/chains'
-import { devnet, mainnet } from './chains'
+import { testnet, mainnet } from './chains'
 
 export const handleChainSwitch = async (toMainnet: boolean) => {
   const walletClient = await getWalletClient(config, {
@@ -9,10 +9,10 @@ export const handleChainSwitch = async (toMainnet: boolean) => {
   })
   if (toMainnet) {
     await walletClient.addChain({
-      chain: devnet,
+      chain: testnet,
     })
     await walletClient.switchChain({
-      id: devnet.id,
+      id: testnet.id,
     })
   } else {
     await walletClient.addChain({
@@ -29,6 +29,6 @@ export const handleAddL3Chain = async () => {
     chainId: mainnet.id,
   })
   await walletClient.addChain({
-    chain: devnet,
+    chain: testnet,
   })
 }

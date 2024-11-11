@@ -6,7 +6,7 @@ import { useBalance, useAccount, useSwitchChain } from 'wagmi'
 import { waitForTransactionReceipt, writeContract } from '@wagmi/core'
 import { stakeLBTC_abi } from 'src/assets/abi/stakeLBTC'
 import { formatEther, parseEther } from 'ethers/lib/utils'
-import { devnet } from 'src/web3/chains'
+import { testnet } from 'src/web3/chains'
 import { handleChainSwitch } from 'src/web3/functions'
 import { config } from 'src/web3/config'
 import Cookies from 'universal-cookie'
@@ -16,13 +16,12 @@ interface IBridgeStake {
 }
 
 const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
-
   const { switchChain } = useSwitchChain()
   const { address, chainId } = useAccount()
 
   const userBalance = useBalance({
     address: address,
-    chainId: devnet.id,
+    chainId: testnet.id,
   })
 
   const {
@@ -59,18 +58,18 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
       functionName: 'stake',
       args: [parseEther(data.stakeAmount)],
       value: parseEther(data.stakeAmount).toBigInt(),
-    } as any;
-    const txHash = await writeContract(config, args);
+    } as any
+    const txHash = await writeContract(config, args)
     const receipt = await waitForTransactionReceipt(config, {
       hash: txHash,
     })
-    if (receipt.status === "success") {
-      const txHash = receipt.transactionHash;
-      toast(<TXToast {...{ message: "Stake successful", txHash }} />);
-      const cookies = new Cookies();
+    if (receipt.status === 'success') {
+      const txHash = receipt.transactionHash
+      toast(<TXToast {...{ message: 'Stake successful', txHash }} />)
+      const cookies = new Cookies()
       cookies.set('hasStaked', 'true', { path: '/' })
     } else {
-      toast(<TXToast {... { message: "Stake failed" }} />);
+      toast(<TXToast {...{ message: 'Stake failed' }} />)
     }
   }
 
@@ -82,17 +81,17 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
       address: '0xD9A158f561E0DfD1842DF7A5c1549cD3D065d319',
       functionName: 'unstake',
       args: [parseEther(data.unstakeAmount)],
-    } as any;
+    } as any
 
-    const txHash = await writeContract(config, args);
+    const txHash = await writeContract(config, args)
     const receipt = await waitForTransactionReceipt(config, {
       hash: txHash,
     })
-    if (receipt.status === "success") {
-      const txHash = receipt.transactionHash;
-      toast(<TXToast {...{ message: "Unstake successful", txHash }} />);
+    if (receipt.status === 'success') {
+      const txHash = receipt.transactionHash
+      toast(<TXToast {...{ message: 'Unstake successful', txHash }} />)
     } else {
-      toast(<TXToast {... { message: "Unstake failed" }} />);
+      toast(<TXToast {...{ message: 'Unstake failed' }} />)
     }
   }
 
@@ -122,7 +121,9 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
             )}
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
-            <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">Balance: {formatEther(userBalance.data?.value || "0")} LBTC</div>
+            <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
+              Balance: {formatEther(userBalance.data?.value || '0')} LBTC
+            </div>
             <button
               className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
               disabled={!enabled}
@@ -142,20 +143,21 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
           <div className="flex flex-row items-center justify-between gap-[1.25rem]">
             <div className="relative tracking-[-0.06em] leading-[1.25rem] inline-block min-w-[4.188rem]">APY TBD%</div>
           </div>
-          {
-            chainId === devnet.id ? (
-              <Button type="submit" disabled={!isStakeValid}>
-                STAKE
-              </Button>
-            ) : (
-              <Button type="submit" onClick={(e) => {
+          {chainId === testnet.id ? (
+            <Button type="submit" disabled={!isStakeValid}>
+              STAKE
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              onClick={(e) => {
                 e.preventDefault()
                 handleChainSwitch(true)
-              }}>
-                SWITCH CHAIN
-              </Button>
-            )
-          }
+              }}
+            >
+              SWITCH CHAIN
+            </Button>
+          )}
         </div>
       </form>
 
@@ -183,7 +185,9 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
             )}
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
-            <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">Balance: {formatEther(userBalance.data?.value || "0")} LBTC</div>
+            <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
+              Balance: {formatEther(userBalance.data?.value || '0')} LBTC
+            </div>
             <button
               className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
               disabled={!enabled}
@@ -200,20 +204,21 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
           </div>
         </div>
         <div className="flex flex-col gap-[0.687rem]">
-          {
-            chainId === devnet.id ? (
-              <Button type="submit" disabled={!isUnstakeValid && !enabled}>
-                UNSTAKE
-              </Button>
-            ) : (
-              <Button type="submit" onClick={(e) => {
+          {chainId === testnet.id ? (
+            <Button type="submit" disabled={!isUnstakeValid && !enabled}>
+              UNSTAKE
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              onClick={(e) => {
                 e.preventDefault()
                 handleChainSwitch(true)
-              }}>
-                SWITCH CHAIN
-              </Button>
-            )
-          }
+              }}
+            >
+              SWITCH CHAIN
+            </Button>
+          )}
         </div>
       </form>
     </div>

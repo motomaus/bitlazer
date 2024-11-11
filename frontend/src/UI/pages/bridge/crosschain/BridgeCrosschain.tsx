@@ -16,7 +16,7 @@ import { formatEther, parseEther } from 'ethers/lib/utils'
 import { config } from 'src/web3/config'
 import { LBTC_abi } from 'src/assets/abi/lbtc'
 import Cookies from 'universal-cookie'
-import { devnet } from 'src/web3/chains'
+import { testnet } from 'src/web3/chains'
 import { handleChainSwitch } from 'src/web3/functions'
 
 interface IBridgeCrosschain {}
@@ -151,7 +151,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
 
   const { data: l3Data, isLoading: l3isLoading } = useBalance({
     address,
-    chainId: devnet.id,
+    chainId: testnet.id,
   })
 
   return (
@@ -236,12 +236,8 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
           </div>
         </div>
         <div className="flex flex-col gap-[0.687rem]">
-          <Button
-            link="https://bridge.arbitrum.io/?destinationChain=arbitrum-sepolia&sourceChain=40670607008"
-            target="_blank"
-            className="w-auto uppercase"
-          >
-            Bridge Back via Arbitrum
+          <Button link="https://bitlazer-sepolia.bridge.caldera.xyz/" target="_blank" className="w-auto uppercase">
+            Bridge via Caldera
           </Button>
         </div>
       </form>
