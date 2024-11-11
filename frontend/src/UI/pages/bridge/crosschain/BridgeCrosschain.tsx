@@ -107,7 +107,9 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     }
     const web3Provider = new ethers.providers.Web3Provider(provider)
     const signer = web3Provider.getSigner()
-    const L2GatewayRouterABI = ['function depositERC20(uint256 amount)']
+    const L2GatewayRouterABI = toL3
+      ? ['function depositERC20(uint256 amount)']
+      : ['function bridgeBurn(address account, uint256 amount)']
     const l2GatewayRouterContract = new ethers.Contract(
       toL3 ? L2_GATEWAY_ROUTER : L2_GATEWAY_ROUTER_BACK,
       L2GatewayRouterABI,
@@ -115,7 +117,9 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     )
     try {
       // Perform the outbound transfer via L2 Gateway Router
-      const tx = await l2GatewayRouterContract.depositERC20(parseEther(getValues('amount')))
+      const tx = toL3
+        ? await l2GatewayRouterContract.depositERC20(parseEther(getValues('amount')))
+        : await l2GatewayRouterContract.bridgeBurn(address, parseEther('1'))
       const receipt = await tx.wait()
 
       if (receipt.status === 1) {
@@ -127,7 +131,6 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
         toast(<TXToast {...{ message: 'Bridge failed' }} />)
       }
     } catch (error) {
-      console.log(error)
       toast(<TXToast {...{ message: 'Failed to Bridge tokens' }} />)
     }
   }
@@ -225,58 +228,21 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
       >
         <div className="flex flex-col gap-[0.687rem] max-w-full">
           <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## BRIDGE BACK</div>
-          <Controller
-            name="amount"
-            control={unstakeControl}
-            rules={{
-              required: 'Amount is required',
-              min: { value: 0.0001, message: 'Amount must be greater than 0' },
-            }}
-            render={({ field }) => (
-              <InputField
-                placeholder="0.00"
-                label="ENTER AMOUNT"
-                type="number"
-                {...field}
-                error={unstakeErrors.amount ? unstakeErrors.amount.message : null}
-              />
-            )}
-          />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
               Balance:{' '}
               {l3isLoading ? 'Loading...' : `${formatEther(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
             </div>
-            <button
-              onClick={(e) => {
-                e.preventDefault()
-                unstakeSetValue('amount', formatEther(l3Data?.value.toString() || '0'))
-                unstakeTrigger('amount')
-              }}
-              className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
-            >
-              <span className="relative tracking-[-0.06em] leading-[0.563rem] inline-block [text-shadow:0.2px_0_0_#66d560,_0_0.2px_0_#66d560,_-0.2px_0_0_#66d560,_0_-0.2px_0_#66d560] min-w-[1.75rem]">
-                MAX
-              </span>
-            </button>
           </div>
         </div>
         <div className="flex flex-col gap-[0.687rem]">
-          {chainId === devnet.id ? (
-            <Button type="submit" disabled={!unstakeIsValid}>
-              BRIDGE
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              onClick={(e) => {
-                e.preventDefault()
-                handleChainSwitch(true)
-              }}
-            >
-              SWITCH CHAIN
-            </Button>
-          )}
+          <Button
+            link="https://bridge.arbitrum.io/?destinationChain=arbitrum-sepolia&sourceChain=40670607008"
+            target="_blank"
+            className="w-auto uppercase"
+          >
+            Bridge Back via Arbitrum
+          </Button>
         </div>
       </form>
     </div>
