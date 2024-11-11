@@ -158,7 +158,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     <div className="flex flex-col gap-7">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7">
         <div className="flex flex-col gap-[0.687rem] max-w-full">
-          <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## BRIDGE</div>
+          <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## BRIDGE TO BITLAZER</div>
           <Controller
             name="amount"
             control={control}
@@ -227,7 +227,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
         className="flex flex-col gap-7"
       >
         <div className="flex flex-col gap-[0.687rem] max-w-full">
-          <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## BRIDGE BACK</div>
+          <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## BRIDGE TO ARBITRUM</div>
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
               Balance:{' '}

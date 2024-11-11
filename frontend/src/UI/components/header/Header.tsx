@@ -144,24 +144,6 @@ const Header: FC<IHeader> = () => {
                         [ROADMAP]
                       </button>
                     </li>
-                    {/* <li>
-                      <Link
-                        to="/ecosystem"
-                        className={`text-lightgreen-100 uppercase hover:opacity-80 ${location.pathname === '/ecosystem' ? 'line-through pointer-events-none' : ''}`}
-                        onClick={closeMenu}
-                      >
-                        [ecosystem]
-                      </Link>
-                    </li> */}
-                    {/* <li>
-                      <Link
-                        to="/faq"
-                        className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/faq' ? 'line-through pointer-events-none' : ''}`}
-                        onClick={closeMenu}
-                      >
-                        [FAQ]
-                      </Link>
-                    </li> */}
                   </ul>
                 </nav>
                 <Button

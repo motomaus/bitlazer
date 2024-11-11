@@ -5,6 +5,7 @@ import HowItWorks from '@pages/how-it-works/HowItWorks'
 import ConnectWallet from '@pages/connect-wallet/ConnectWallet'
 import Roadmap from '@pages/roadmap/Roadmap'
 import Features from '@pages/features/Features'
+import clsx from 'clsx'
 
 interface IFooter {}
 
@@ -45,11 +46,11 @@ const Footer: FC<IFooter> = () => {
                   ROADMAP
                 </button>
               </li>
-              {/* <li>
-                <Link className="text-gray-100 hover:text-white" to="/faq">
-                  FAQ
-                </Link>
-              </li> */}
+              <li>
+                <a href="https://bitlazer.gitbook.io/bitlazer" target="_blank" rel="noopener noreferrer">
+                  DOCUMENTATION
+                </a>
+              </li>
             </ul>
           </nav>
           <ul className="flex items-center gap-5 tracking-[-0.02em]">
