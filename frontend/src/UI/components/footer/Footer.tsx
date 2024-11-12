@@ -27,30 +27,20 @@ const Footer: FC<IFooter> = () => {
                 </Link>
               </li> */}
               <li>
-                <button
-                  className="text-gray-100 hover:text-white"
-                  onClick={() => {
-                    setOpenFeaturesModal(!openFeaturesModal)
-                  }}
-                >
-                  FEATURES
-                </button>
-              </li>
-              <li>
-                <button
-                  className="text-gray-100 hover:text-white"
-                  onClick={() => {
-                    setOpenRoadmapModal(!openRoadmapModal)
-                  }}
-                >
-                  ROADMAP
-                </button>
-              </li>
-              <li>
                 <a href="https://bitlazer.gitbook.io/bitlazer" target="_blank" rel="noopener noreferrer">
                   DOCUMENTATION
                 </a>
               </li>
+              <li>
+                <a href="https://bitlazer-sepolia.explorer.caldera.xyz/" target="_blank" rel="noopener noreferrer">
+                  EXPLORER
+                </a>
+              </li>
+              {/* <li>
+                <a href="https://explorer.testnet.bitlazer.io" target="_blank" rel="noopener noreferrer">
+                  EXPLORER
+                </a>
+              </li> */}
             </ul>
           </nav>
           <ul className="flex items-center gap-5 tracking-[-0.02em]">

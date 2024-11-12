@@ -56,6 +56,8 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
   const { switchChain } = useSwitchChain()
   const { address, isConnected, chainId, connector } = useAccount()
   const [approval, setApproval] = useState<boolean>(false)
+  const [refreshApproval, setRefreshApproval] = useState(false)
+  const [isWaitingForBridgeTx, setIsWaitingForBridgeTx] = useState(false)
 
   const { data: approvalData } = useReadContract({
     abi: LBTC_abi,
@@ -63,20 +65,25 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     functionName: 'allowance',
     args: [address, L2_GATEWAY_ROUTER],
     chainId: arbitrumSepolia.id,
+    key: refreshApproval,
+    initialData: '0',
   })
 
   useEffect(() => {
-    if (approvalData) {
-      const approvalAmount = approvalData as unknown as string
-      if (BigNumber.from(approvalAmount).gte(parseEther(getValues('amount') || '0'))) {
-        setApproval(true)
-      } else {
-        setApproval(false)
+    const fetchApprovalData = () => {
+      const amount = getValues('amount')
+
+      if (approvalData !== undefined) {
+        const approvalAmount = approvalData as unknown as string
+        if (BigNumber.from(approvalAmount).gte(parseEther(amount || '0'))) {
+          setApproval(true)
+        } else {
+          setApproval(false)
+        }
       }
-    } else {
-      console.log('Approval data not found')
     }
-  }, [approvalData, watch('amount')])
+    fetchApprovalData()
+  }, [approvalData, watch('amount'), refreshApproval])
 
   const handleApprove = async () => {
     const approvalArgs = {
@@ -92,6 +99,9 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     if (approvalReceipt.status === 'success') {
       const txHash = approvalReceipt.transactionHash
       toast(<TXToast {...{ message: 'Approval successful', txHash }} />)
+      setTimeout(() => {
+        setRefreshApproval((prev) => !prev)
+      }, 1000)
     } else {
       toast(<TXToast {...{ message: 'Approval failed' }} />)
     }
@@ -120,7 +130,9 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
       const tx = toL3
         ? await l2GatewayRouterContract.depositERC20(parseEther(getValues('amount')))
         : await l2GatewayRouterContract.bridgeBurn(address, parseEther('1'))
+      setIsWaitingForBridgeTx(true)
       const receipt = await tx.wait()
+      setIsWaitingForBridgeTx(false)
 
       if (receipt.status === 1) {
         const txHash = receipt.transactionHash
@@ -133,6 +145,19 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     } catch (error) {
       toast(<TXToast {...{ message: 'Failed to Bridge tokens' }} />)
     }
+    setTimeout(() => {
+      setRefreshApproval((prev) => !prev)
+      refetchBalance()
+      refetchBalanceL3()
+    }, 1000)
+    setTimeout(() => {
+      setRefreshApproval((prev) => !prev)
+      refetchBalance()
+      refetchBalanceL3()
+    }, 5000)
+    setTimeout(() => {
+      refetchBalanceL3()
+    }, 15000)
   }
 
   const onSubmit = async (data: any) => {
@@ -143,13 +168,21 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     await handleDeposit(false)
   }
 
-  const { data, isLoading } = useBalance({
+  const {
+    data,
+    isLoading,
+    refetch: refetchBalance,
+  } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['lbtc'],
     chainId: arbitrumSepolia.id,
   })
 
-  const { data: l3Data, isLoading: l3isLoading } = useBalance({
+  const {
+    data: l3Data,
+    isLoading: l3isLoading,
+    refetch: refetchBalanceL3,
+  } = useBalance({
     address,
     chainId: testnet.id,
   })
@@ -173,6 +206,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
                 type="number"
                 {...field}
                 error={errors.amount ? errors.amount.message : null}
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
               />
             )}
           />
@@ -198,8 +232,8 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
           {chainId === arbitrumSepolia.id ? (
             <>
               {approval ? (
-                <Button type="submit" disabled={!isValid}>
-                  BRIDGE
+                <Button type="submit" disabled={!isValid || isWaitingForBridgeTx} aria-busy={isWaitingForBridgeTx}>
+                  {isWaitingForBridgeTx ? <span className="animate-loading-pulse">BRIDGINING...</span> : 'BRIDGE'}
                 </Button>
               ) : (
                 <Button type="submit">APPROVE</Button>

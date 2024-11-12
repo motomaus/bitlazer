@@ -21,18 +21,18 @@ const ConnectWallet: FC<IConnectWallet> = () => {
   return (
     <div className="flex-1 rounded-12xs bg-black border-forestgreen border-[.1875rem] border-solid box-border flex flex-col py-[1.25rem] px-[0.562rem] gap-[1.668rem] ">
       <div className="tracking-[-0.06em] leading-[1.25rem]">
-        {isConnected ? 'You have connected wallet:' : 'Choose wallet to connect:'}
+        {isConnected ? 'Your wallet is connected' : 'Choose wallet to connect:'}
       </div>
       <div className="flex-1 flex flex-col gap-[0.562rem]">
         {isConnected && address ? (
           <>
             {address}
-            <div className="tracking-[-0.06em] leading-[1.25rem] mt-[1rem] mb-[1rem]">
+            {/* <div className="tracking-[-0.06em] leading-[1.25rem] mt-[1rem] mb-[1rem]">
               Balance:{' '}
               {userBalance.isLoading
                 ? 'Loading...'
                 : `${formatEther(userBalance.data?.value.toString() || '0')} ${userBalance.data?.symbol}`}
-            </div>
+            </div> */}
             <button
               className="font-ocrx w-full cursor-pointer rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group"
               onClick={() => disconnect()}

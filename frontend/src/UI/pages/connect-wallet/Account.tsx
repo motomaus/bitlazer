@@ -8,11 +8,11 @@ export function Account() {
   const { address, isConnected } = useAccount()
   const [openConnectWalletModal, setOpenConnectWalletModal] = useState(false)
 
-  useEffect(() => {
-    if (isConnected) {
-      handleAddL3Chain()
-    }
-  }, [isConnected])
+  // useEffect(() => {
+  //   if (isConnected) {
+  //     handleAddL3Chain()
+  //   }
+  // }, [isConnected])
 
   return (
     <div>
@@ -23,7 +23,7 @@ export function Account() {
           }}
           className="text-white"
         >
-          {address.slice(0, 10) + '...' + address.slice(-10)}
+          {address.slice(0, 6) + '...' + address.slice(-4)}
         </button>
       )}
       <MyModal

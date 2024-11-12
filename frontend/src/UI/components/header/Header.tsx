@@ -9,8 +9,10 @@ import ConnectWallet from '@pages/connect-wallet/ConnectWallet'
 import Roadmap from '@pages/roadmap/Roadmap'
 import Features from '@pages/features/Features'
 import clsx from 'clsx'
-import { useAccount } from 'wagmi'
+import { useAccount, useBalance } from 'wagmi'
 import { Account } from '@pages/connect-wallet/Account'
+import { testnet } from 'src/web3/chains'
+import { formatEther } from 'viem'
 
 interface IHeader {}
 
@@ -20,9 +22,15 @@ const Header: FC<IHeader> = () => {
   const [openConnectWalletModal, setOpenConnectWalletModal] = useState(false)
   const [openRoadmapModal, setOpenRoadmapModal] = useState(false)
   const [openFeaturesModal, setOpenFeaturesModal] = useState(false)
-  const { isConnected } = useAccount()
+  const { address, isConnected } = useAccount()
 
   const location = useLocation()
+
+  const formatBalance = (balance: string) => {
+    if (!balance) return '0'
+    const etherValue = formatEther(balance)
+    return Number(etherValue).toFixed(4)
+  }
 
   const toggleMenu = () => {
     setIsActive(!isActive)
@@ -45,6 +53,15 @@ const Header: FC<IHeader> = () => {
       setOpenConnectWalletModal(false)
     }
   }, [isConnected])
+
+  const {
+    data: l3Data,
+    isLoading: l3isLoading,
+    // refetch: refetchBalanceL3,
+  } = useBalance({
+    address,
+    chainId: testnet.id,
+  })
 
   return (
     <>
@@ -146,17 +163,26 @@ const Header: FC<IHeader> = () => {
                     </li>
                   </ul>
                 </nav>
-                <Button
-                  onClick={() => {
-                    if (!isConnected) {
-                      setOpenConnectWalletModal(!openConnectWalletModal)
-                      closeMenu()
-                    }
-                  }}
-                  className="!w-auto"
-                >
-                  {isConnected ? <Account /> : 'CONNECT WALLET'}
-                </Button>
+                <div className="flex items-center space-x-0">
+                  {isConnected && (
+                    <Button className="w-auto uppercase">
+                      {l3isLoading
+                        ? 'Loading...'
+                        : `${formatBalance(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
+                    </Button>
+                  )}
+                  <Button
+                    onClick={() => {
+                      if (!isConnected) {
+                        setOpenConnectWalletModal(!openConnectWalletModal)
+                        closeMenu()
+                      }
+                    }}
+                    className="!w-auto"
+                  >
+                    {isConnected ? <Account /> : 'CONNECT WALLET'}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

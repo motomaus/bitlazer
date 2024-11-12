@@ -54,6 +54,21 @@ const config = {
         '12xs': '1px',
         '11xs-8': '1.8px',
       },
+      animation: {
+        'loading-dots': 'loading 2s infinite',
+        'loading-pulse': 'loadingPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      keyframes: {
+        loading: {
+          '0%': { opacity: '0.2' },
+          '20%': { opacity: '1' },
+          '100%': { opacity: '0.2' },
+        },
+        loadingPulse: {
+          '0%, 100%': { opacity: '0.2' },
+          '50%': { opacity: '0.8' },
+        },
+      },
     },
     fontSize: {
       base: '1rem',
