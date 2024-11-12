@@ -243,13 +243,9 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
         <div className="flex flex-col gap-[0.687rem]">
           {chainId === arbitrumSepolia.id ? (
             <>
-              {approval ? (
-                <Button type="submit" disabled={!isValid || isWaitingForBridgeTx} aria-busy={isWaitingForBridgeTx}>
-                  {isWaitingForBridgeTx ? <span className="animate-loading-pulse">BRIDGINING...</span> : 'BRIDGE'}
-                </Button>
-              ) : (
-                <Button type="submit">APPROVE</Button>
-              )}
+              <Button type="submit" disabled={!isValid || isWaitingForBridgeTx} aria-busy={isWaitingForBridgeTx}>
+                {approval ? 'BRIDGE' : 'APPROVE'}
+              </Button>
             </>
           ) : (
             <Button

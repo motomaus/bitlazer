@@ -92,7 +92,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     scopeKey: refresh.toString(),
   })
 
-  const { data: approvalData } = useReadContract({
+  const { data: approvalData, isLoading: isLoadingApproval } = useReadContract({
     abi: erc20Abi,
     address: ERC20_CONTRACT_ADDRESS[selectedToken],
     functionName: 'allowance',
@@ -341,19 +341,11 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           </div>
         </div>
         <div className="flex flex-col gap-[0.687rem]">
-          {/* <div className="flex flex-row items-center justify-between gap-[1.25rem]">
-          <div className="relative tracking-[-0.06em] leading-[1.25rem] inline-block min-w-[4.188rem]">GAS FEE</div>
-          <div className="w-[2.75rem] relative tracking-[-0.06em] leading-[1.25rem] text-right inline-block">00.00</div>
-        </div> */}
           {chainId === arbitrumSepolia.id ? (
             <>
-              {approval ? (
-                <Button type="submit" disabled={!isValid}>
-                  WRAP
-                </Button>
-              ) : (
-                <Button type="submit">APPROVE</Button>
-              )}
+              <Button type="submit" disabled={!isValid || isLoadingApproval}>
+                {approval ? 'WRAP' : 'APPROVE'}
+              </Button>
             </>
           ) : (
             <Button
@@ -366,9 +358,6 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
               SWITCH CHAIN
             </Button>
           )}
-          {/* <div className="h-[0.688rem] relative tracking-[-0.06em] leading-[1.25rem] text-gray-200 inline-block">
-          Transaction number
-        </div> */}
         </div>
       </form>
 
