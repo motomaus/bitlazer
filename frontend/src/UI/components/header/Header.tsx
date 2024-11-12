@@ -28,7 +28,7 @@ const Header: FC<IHeader> = () => {
 
   const formatBalance = (balance: string) => {
     if (!balance) return '0'
-    const etherValue = formatEther(balance)
+    const etherValue = formatEther(BigInt(balance))
     return Number(etherValue).toFixed(4)
   }
 
