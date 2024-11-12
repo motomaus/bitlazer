@@ -93,6 +93,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     functionName: 'allowance',
     args: [address || '0x', WRAP_CONTRACT],
     chainId: arbitrumSepolia.id,
+    scopeKey: refresh.toString(),
   })
 
   const { data: reverseApprovalData } = useReadContract({
@@ -101,6 +102,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     functionName: 'allowance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS[selectedToken]],
     chainId: arbitrumSepolia.id,
+    scopeKey: refresh.toString(),
   })
 
   // getHolderBalance
@@ -111,6 +113,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     functionName: 'getHolderBalance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS['abtc']],
     chainId: arbitrumSepolia.id,
+    scopeKey: refresh.toString(),
   })
 
   const { data: wbtcHolderBalance } = useReadContract({
@@ -128,6 +131,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     functionName: 'getHolderBalance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS['tbtc']],
     chainId: arbitrumSepolia.id,
+    scopeKey: refresh.toString(),
   })
 
   useEffect(() => {
@@ -141,29 +145,14 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   }, [selectedTokenUnwrap, wbtcHolderBalance, abtcHolderBalance, tbtcHolderBalance])
 
   useEffect(() => {
-    if (approvalData) {
+    if (approvalData !== undefined) {
       if (BigNumber.from(approvalData).gte(parseEther(getValues('amount') || '0'))) {
         setApproval(true)
       } else {
         setApproval(false)
       }
-    } else {
-      console.log('Approval data not found')
     }
-  }, [approvalData, watch('amount')])
-
-  useEffect(() => {
-    if (approvalData) {
-      const approvalAmount = approvalData as unknown as string
-      if (BigNumber.from(approvalAmount).gte(parseEther(unwrapGetValues('amount') || '0'))) {
-        setReverseApproval(true)
-      } else {
-        setReverseApproval(false)
-      }
-    } else {
-      console.log('Approval data not found')
-    }
-  }, [reverseApprovalData, unwrapWatch('amount')])
+  }, [approvalData, watch('amount'), refresh])
 
   const handleApprove = async () => {
     const approvalArgs = {
@@ -172,10 +161,19 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       functionName: 'approve',
       args: [WRAP_CONTRACT, parseEther(getValues('amount'))],
     }
-    const approvalTransactionHash = await writeContract(config, approvalArgs)
+
+    let approvalTransactionHash
+    try {
+      approvalTransactionHash = await writeContract(config, approvalArgs)
+    } catch (error) {
+      console.log('Error: ', error)
+      toast(<TXToast {...{ message: 'Approval failed', error }} />)
+      return
+    }
     const approvalReceipt = await waitForTransactionReceipt(config, {
       hash: approvalTransactionHash,
     })
+    setRefresh((prev) => !prev)
     if (approvalReceipt.status === 'success') {
       const txHash = approvalReceipt.transactionHash
       toast(<TXToast {...{ message: 'Approval successful', txHash }} />)
@@ -183,7 +181,6 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       toast(<TXToast {...{ message: 'Transaction failed' }} />)
     }
     setApproval(true)
-    await handleDeposit()
   }
 
   const handleDeposit = async () => {
@@ -216,6 +213,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         toast(<TXToast {...{ message: 'Transaction Rejected.' }} />)
       }
     }
+    setRefresh((prev) => !prev)
   }
 
   const handleUnwrap = async () => {
