@@ -27,4 +27,5 @@ export const config = createConfig({
     // [mainnet.id]: http(),
   },
   connectors,
+  pollingInterval: 2500,
 })

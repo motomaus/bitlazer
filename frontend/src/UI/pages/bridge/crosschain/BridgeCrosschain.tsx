@@ -91,7 +91,14 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
       functionName: 'approve',
       args: [L2_GATEWAY_ROUTER, parseEther(getValues('amount'))],
     }
-    const approvalTransactionHash = await writeContract(config, approvalArgs)
+
+    let approvalTransactionHash
+    try {
+      approvalTransactionHash = await writeContract(config, approvalArgs)
+    } catch (error) {
+      toast(<TXToast {...{ message: 'Approval failed', error }} />)
+      return
+    }
     const approvalReceipt = await waitForTransactionReceipt(config, {
       hash: approvalTransactionHash,
     })
@@ -157,6 +164,12 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     setTimeout(() => {
       refetchBalanceL3()
     }, 15000)
+    setTimeout(() => {
+      refetchBalanceL3()
+    }, 20000)
+    setTimeout(() => {
+      refetchBalanceL3()
+    }, 25000)
   }
 
   const onSubmit = async (data: any) => {
