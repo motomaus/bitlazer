@@ -23,6 +23,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   const { switchChain } = useSwitchChain()
   const { address, isConnected, chainId } = useAccount()
   const [approval, setApproval] = useState<boolean>(false)
+  const [refresh, setRefresh] = useState<boolean>(false)
   const [reverseApproval, setReverseApproval] = useState<boolean>(false)
   const [holderBalance, setHolderBalance] = useState<string | undefined>(undefined)
 
@@ -118,6 +119,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     functionName: 'getHolderBalance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS['wbtc']],
     chainId: arbitrumSepolia.id,
+    scopeKey: refresh.toString(),
   })
 
   const { data: tbtcHolderBalance } = useReadContract({
@@ -140,8 +142,8 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
   useEffect(() => {
     if (approvalData) {
-      if (BigNumber.from(approvalData).gte(parseEther(getValues("amount") || '0'))) {
-        setApproval(true);
+      if (BigNumber.from(approvalData).gte(parseEther(getValues('amount') || '0'))) {
+        setApproval(true)
       } else {
         setApproval(false)
       }
@@ -180,11 +182,11 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     } else {
       toast(<TXToast {...{ message: 'Transaction failed' }} />)
     }
-    setApproval(true);
-    await handleDeposit();
+    setApproval(true)
+    await handleDeposit()
   }
 
-  const handleDeposit = async (firstTime: Boolean = true) => {
+  const handleDeposit = async () => {
     const args = {
       abi: LBTC_abi,
       address: WRAP_CONTRACT,
@@ -205,15 +207,13 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       } else {
         toast(<TXToast {...{ message: 'Wrap failed' }} />)
       }
-   } catch (error: any) {
-      // console.log("Error: ", error)
-      if (!error.message.includes("User rejected the request.")) {
-        toast(<TXToast {... { message: "Failed to Wrap. Increasing Allowance." }} />);
-        console.log(error.message);
-        await handleApprove();
-        handleDeposit(firstTime = false);
+    } catch (error: any) {
+      console.log('Error: ', error)
+      if (!error.message.includes('User rejected the request.')) {
+        toast(<TXToast {...{ message: 'Failed to Wrap.' }} />)
+        console.log(error.message)
       } else {
-        toast(<TXToast {... { message: "Transaction Rejected." }} />);
+        toast(<TXToast {...{ message: 'Transaction Rejected.' }} />)
       }
     }
   }
@@ -239,11 +239,11 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       } else {
         toast(<TXToast {...{ message: 'Unwrap failed' }} />)
       }
-      } catch (error: any) {
-      if (!error.message.includes("User rejected the request.")) {
-        toast(<TXToast {... { message: "Failed to Unwrap" }} />);
+    } catch (error: any) {
+      if (!error.message.includes('User rejected the request.')) {
+        toast(<TXToast {...{ message: 'Failed to Unwrap' }} />)
       } else {
-        toast(<TXToast {... { message: "Transaction Rejected." }} />);
+        toast(<TXToast {...{ message: 'Transaction Rejected.' }} />)
       }
     }
   }
