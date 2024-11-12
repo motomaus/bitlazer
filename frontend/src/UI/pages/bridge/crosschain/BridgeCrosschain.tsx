@@ -65,6 +65,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     functionName: 'allowance',
     args: [address, L2_GATEWAY_ROUTER],
     chainId: arbitrumSepolia.id,
+    scopeKey: refreshApproval.toString(),
   })
 
   useEffect(() => {

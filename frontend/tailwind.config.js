@@ -73,6 +73,8 @@ const config = {
     fontSize: {
       base: '1rem',
       xl: '1.25rem',
+      '2xl': '1.45rem',
+      '4xl': '4.25rem',
       'lgi-7': '1.231rem',
       smi: '0.813rem',
       inherit: 'inherit',
