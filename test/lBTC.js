@@ -38,7 +38,7 @@ describe("ZBTC Contract", function () {
     await ZBTC.setWBTCAddress(WBTC.address);
 
     expect(await WBTC.balanceOf(addr1)).to.equal("1000000000000000000");
-    expect(await ZBTC.getWBTCAddress(WBTC.address)).to.equal(WBTC.address);
+    expect(await ZBTC.getWBTCAddress()).to.equal(WBTC.address);
 
     expect(await ZBTC.setSZBTCAddress(sZBTC.address)).to.be.ok;
     expect(await ZBTC.sZBTC()).to.equal(sZBTC.address);
@@ -52,27 +52,21 @@ describe("ZBTC Contract", function () {
     // Set the allowance for the contract to spend the WBTC
     await WBTC.connect(addr1Signer).approve(ZBTC.address, mintAmount);
 
-    expect(await ZBTC.connect(addr1Signer).mint(mintAmount, WBTC.address))
+    expect(await ZBTC.connect(addr1Signer).mint(mintAmount))
       .to.emit(ZBTC, "Transfer")
       .withArgs(ethers.constants.AddressZero, owner, mintAmount);
 
     expect(await ZBTC.balanceOf(addr1)).to.equal("500000000000000000");
-    expect(await ZBTC.getHolderBalance(addr1, WBTC.address)).to.equal(
-      "500000000000000000",
-    );
     expect(await WBTC.balanceOf(addr1)).to.equal("500000000000000000");
 
     // Try to burn the ZBTC and expect the same amount of WBTC back in the wallet
     const burnAmount = ethers.utils.parseUnits("0.25", 18);
     await ZBTC.connect(addr1Signer).approve(ZBTC.address, burnAmount);
-    expect(await ZBTC.connect(addr1Signer).burn(burnAmount, WBTC.address))
+    expect(await ZBTC.connect(addr1Signer).burn(burnAmount))
       .to.emit(ZBTC, "Transfer")
       .withArgs(owner, ethers.constants.AddressZero, burnAmount);
 
     expect(await ZBTC.balanceOf(addr1)).to.equal("250000000000000000");
-    expect(await ZBTC.getHolderBalance(addr1, WBTC.address)).to.equal(
-      "250000000000000000",
-    );
     expect(await ZBTC.balanceOf(addr1)).to.equal("250000000000000000");
     expect(await WBTC.balanceOf(addr1)).to.equal("750000000000000000");
   });
@@ -87,14 +81,11 @@ describe("ZBTC Contract", function () {
     // Set the allowance for the contract to spend the WBTC
     await WBTC.connect(addr1Signer).approve(ZBTC.address, mintAmount);
 
-    expect(await ZBTC.connect(addr1Signer).mint(mintAmount, WBTC.address))
+    expect(await ZBTC.connect(addr1Signer).mint(mintAmount))
       .to.emit(ZBTC, "Transfer")
       .withArgs(ethers.constants.AddressZero, owner, mintAmount);
 
     expect(await ZBTC.balanceOf(addr1)).to.equal("500000000000000000");
-    expect(await ZBTC.getHolderBalance(addr1, WBTC.address)).to.equal(
-      "500000000000000000",
-    );
     expect(await WBTC.balanceOf(addr1)).to.equal("500000000000000000");
 
     // Utilize sZBTC rewards to allow extra withdrawal of WBTC
@@ -109,18 +100,17 @@ describe("ZBTC Contract", function () {
     // Set the allowance for the contract to spend the sZBTC
     await sZBTC.connect(addr1Signer).approve(ZBTC.address, mintExtraAmount);
     expect(
-      await ZBTC.addExtraHolderBalance(addr1, mintExtraAmount, WBTC.address),
+      await ZBTC.addExtraHolderBalance(addr1, mintExtraAmount),
     ).to.be.ok;
 
     // Try to burn the ZBTC and expect the same amount of WBTC back in the wallet
     const burnAmount = ethers.utils.parseUnits("0.6", 18);
     await ZBTC.connect(addr1Signer).approve(ZBTC.address, burnAmount);
-    expect(await ZBTC.connect(addr1Signer).burn(burnAmount, WBTC.address))
+    expect(await ZBTC.connect(addr1Signer).burn(burnAmount))
       .to.emit(ZBTC, "Transfer")
       .withArgs(owner, ethers.constants.AddressZero, burnAmount);
 
     expect(await ZBTC.balanceOf(addr1)).to.equal("0");
-    expect(await ZBTC.getHolderBalance(addr1, WBTC.address)).to.equal("0");
     expect(await ZBTC.balanceOf(addr1)).to.equal("0");
     expect(await WBTC.balanceOf(addr1)).to.equal("1100000000000000000");
   });
