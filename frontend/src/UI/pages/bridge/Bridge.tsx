@@ -50,7 +50,7 @@ const Bridge: FC<IBridge> = () => {
     if (cookie && cookie !== 'connect') {
       console.log('Setting active tab to: ', cookie)
       setActiveTabId(cookie)
-     } else {
+    } else {
       setActiveTabId('deposit')
     }
   }, [])
@@ -200,6 +200,7 @@ const Bridge: FC<IBridge> = () => {
                       <button
                         key={tab.id}
                         onClick={() => setActiveTabId(tab.id)}
+                        disabled={tab.id === 'stake'}
                         className={clsx(
                           'font-ocrx w-full cursor-pointer rounded-[.115rem] h-10 text-lightgreen-100 text-[1.25rem] whitespace-nowrap flex py-[0.187rem] px-[0.125rem] transition-all duration-300 group',
                           activeTabId === tab.id

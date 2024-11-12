@@ -60,12 +60,14 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     address,
     token: ERC20_CONTRACT_ADDRESS[selectedToken],
     chainId: arbitrumSepolia.id,
+    scopeKey: refresh.toString(),
   })
 
   const { data: lbtcBalanceData, isLoading: lbtcBalanceLoading } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['lbtc'],
     chainId: arbitrumSepolia.id,
+    scopeKey: refresh.toString(),
   })
 
   // Balances of all tokens
@@ -73,18 +75,21 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     address,
     token: ERC20_CONTRACT_ADDRESS['abtc'],
     chainId: arbitrumSepolia.id,
+    scopeKey: refresh.toString(),
   })
 
   const { data: tbtcBalance, isLoading: tbtcBalanceLoading } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['tbtc'],
     chainId: arbitrumSepolia.id,
+    scopeKey: refresh.toString(),
   })
 
   const { data: wbtcBalance, isLoading: wbtcBalanceLoading } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['wbtc'],
     chainId: arbitrumSepolia.id,
+    scopeKey: refresh.toString(),
   })
 
   const { data: approvalData } = useReadContract({
@@ -213,7 +218,9 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         toast(<TXToast {...{ message: 'Transaction Rejected.' }} />)
       }
     }
-    setRefresh((prev) => !prev)
+    setTimeout(() => {
+      setRefresh((prev) => !prev)
+    }, 1000)
   }
 
   const handleUnwrap = async () => {
@@ -244,6 +251,9 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         toast(<TXToast {...{ message: 'Transaction Rejected.' }} />)
       }
     }
+    setTimeout(() => {
+      setRefresh((prev) => !prev)
+    }, 1000)
   }
 
   const onSubmit = async (data: any) => {
