@@ -14,7 +14,7 @@ export const testnet = {
   name: 'Bitlazer Testnet',
   nativeCurrency: { name: 'LazerBTC', symbol: 'lBTC', decimals: 18 },
   rpcUrls: {
-    default: { http: ['https://bitlazer-sepolia.rpc.caldera.xyz/http'] },
+    default: { http: ['https://rpc.testnet.bitlazer.io/http'] },
   },
 } as const satisfies Chain
 

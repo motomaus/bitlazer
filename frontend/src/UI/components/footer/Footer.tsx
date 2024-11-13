@@ -31,9 +31,16 @@ const Footer: FC<IFooter> = () => {
                   DOCUMENTATION
                 </a>
               </li>
+              |
               <li>
                 <a href="https://explorer.testnet.bitlazer.io" target="_blank" rel="noopener noreferrer">
                   EXPLORER
+                </a>
+              </li>
+              |
+              <li>
+                <a href="https://faucet.testnet.bitlazer.io" target="_blank" rel="noopener noreferrer">
+                  TESTNET FAUCET
                 </a>
               </li>
             </ul>
