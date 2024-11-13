@@ -32,15 +32,10 @@ const Footer: FC<IFooter> = () => {
                 </a>
               </li>
               <li>
-                <a href="https://bitlazer-sepolia.explorer.caldera.xyz/" target="_blank" rel="noopener noreferrer">
-                  EXPLORER
-                </a>
-              </li>
-              {/* <li>
                 <a href="https://explorer.testnet.bitlazer.io" target="_blank" rel="noopener noreferrer">
                   EXPLORER
                 </a>
-              </li> */}
+              </li>
             </ul>
           </nav>
           <ul className="flex items-center gap-5 tracking-[-0.02em]">
