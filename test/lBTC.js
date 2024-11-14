@@ -19,8 +19,7 @@ describe("ZBTC Contract", function () {
     const WBTCContract = await ethers.getContractFactory("WBTC");
     WBTC = await WBTCContract.deploy(owner, "WBTC", "WBTC");
 
-    const sZBTCContract = await ethers.getContractFactory("sZBTC");
-    sZBTC = await sZBTCContract.deploy(owner, "sZBTC", "sZBTC");
+
 
     // Deploy the contract
     const lBTCContract = await ethers.getContractFactory("ZBTC");
@@ -30,15 +29,19 @@ describe("ZBTC Contract", function () {
       initializer: "initialize",
     });
 
+    const sZBTCContract = await ethers.getContractFactory("SZBTC");
+    sZBTC = await sZBTCContract.deploy(owner, ZBTC.address, "sZBTC", "sZBTC");
+
     // Mint 1 WBTC for the owner
     const mintAmount = ethers.utils.parseUnits("1", 18);
     await WBTC.mint(addr1, mintAmount);
+
 
     // Set WBTC as the minting base to ZBTC
     await ZBTC.setWBTCAddress(WBTC.address);
 
     expect(await WBTC.balanceOf(addr1)).to.equal("1000000000000000000");
-    expect(await ZBTC.getWBTCAddress()).to.equal(WBTC.address);
+    expect(await ZBTC.WBTC()).to.equal(WBTC.address);
 
     expect(await ZBTC.setSZBTCAddress(sZBTC.address)).to.be.ok;
     expect(await ZBTC.sZBTC()).to.equal(sZBTC.address);
