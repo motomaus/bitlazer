@@ -1,27 +1,33 @@
-// contracts/ERC20Mock.sol
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
 pragma solidity 0.8.24;
 
-import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "./sZBTC.sol";
 
-contract ZBTC is ReentrancyGuardUpgradeable, AccessControlUpgradeable, ERC20Upgradeable {
+contract ZBTC is
+    ReentrancyGuardUpgradeable,
+    AccessControlUpgradeable,
+    ERC20Upgradeable
+{
     using SafeERC20 for IERC20;
 
     bool public paused;
     bool public pausedExtraHolderBalance;
 
-    IERC20 public sZBTC;
+    SZBTC public sZBTC;
     IERC20 public WBTC;
 
-    function initialize(string memory name, string memory symbol, address _owner) public initializer {
+    bool public isWBTCSet;
+
+    function initialize(
+        string memory name,
+        string memory symbol,
+        address _owner
+    ) public initializer {
         require(_owner != address(0), "Owner cannot be 0 address");
         __ERC20_init(name, symbol);
         __AccessControl_init();
@@ -36,7 +42,10 @@ contract ZBTC is ReentrancyGuardUpgradeable, AccessControlUpgradeable, ERC20Upgr
 
     /// *** Modifiers ***
     modifier onlyOwner() {
-        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Only owner can call this function");
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
+            "Only owner can call this function"
+        );
         _;
     }
 
@@ -48,10 +57,6 @@ contract ZBTC is ReentrancyGuardUpgradeable, AccessControlUpgradeable, ERC20Upgr
         paused = false;
     }
 
-    function setWBTCAddress(address _WBTC) public onlyOwner {
-        WBTC = IERC20(_WBTC);
-    }
-
     function pauseExtraHolderBalance() public onlyOwner {
         pausedExtraHolderBalance = true;
     }
@@ -60,12 +65,14 @@ contract ZBTC is ReentrancyGuardUpgradeable, AccessControlUpgradeable, ERC20Upgr
         pausedExtraHolderBalance = false;
     }
 
-    function setSZBTCAddress(address _sZBTC) public onlyOwner {
-        sZBTC = IERC20(_sZBTC);
+    function setWBTCAddress(address _WBTC) public onlyOwner {
+        require(!isWBTCSet, "WBTC already set");
+        WBTC = IERC20(_WBTC);
+        isWBTCSet = true;
     }
 
-    function getWBTCAddress() public view returns (address) {
-        return address(WBTC);
+    function setSZBTCAddress(address _sZBTC) public onlyOwner {
+        sZBTC = SZBTC(_sZBTC);
     }
 
     function mint(uint256 amount) public nonReentrant {
@@ -76,13 +83,15 @@ contract ZBTC is ReentrancyGuardUpgradeable, AccessControlUpgradeable, ERC20Upgr
 
     // If sufficient balance of sZBTC is not available, this function will fail
     // Otherwise, add the extra balance to the holder's balance in order to allow the extra stake accumulated to l3 withdrawals
-    function addExtraHolderBalance(address _holder, uint256 amount) public nonReentrant {
+    function addExtraHolderBalance(
+        address _holder,
+        uint256 amount
+    ) public nonReentrant {
         require(!pausedExtraHolderBalance, "Extra holder balance paused");
         uint256 sZBTCBalance = sZBTC.balanceOf(_holder);
         require(sZBTCBalance >= amount, "Insufficient sZBTC balance");
-        // Verify _WBTC is a supported wrapper
         // Burn the sZBTC
-        sZBTC.safeTransferFrom(_holder, address(0x000000000000000000000000000000000000dEaD), amount);
+        sZBTC.burn(_holder, amount);
         // Mint the lBTC to the holder
         _mint(_holder, amount);
     }
