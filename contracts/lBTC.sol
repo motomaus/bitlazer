@@ -1,33 +1,104 @@
 // SPDX-License-Identifier: Apache-2.0
 pragma solidity 0.8.24;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "./sZBTC.sol";
 
-contract SZBTC is ERC20, Ownable {
-    address public immutable zBTC;
+contract ZBTC is
+    ReentrancyGuardUpgradeable,
+    AccessControlUpgradeable,
+    ERC20Upgradeable
+{
+    using SafeERC20 for IERC20;
 
-    modifier onlyZBTC() {
-        require(msg.sender == zBTC, "Caller is not the zBTC contract");
+    bool public paused;
+    bool public pausedExtraHolderBalance;
+
+    SZBTC public sZBTC;
+    IERC20 public WBTC;
+
+    bool public isWBTCSet;
+
+    function initialize(
+        string memory name,
+        string memory symbol,
+        address _owner
+    ) public initializer {
+        require(_owner != address(0), "Owner cannot be 0 address");
+        __ERC20_init(name, symbol);
+        __AccessControl_init();
+        _grantRole(DEFAULT_ADMIN_ROLE, _owner);
+        __ReentrancyGuard_init();
+    }
+
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    /// *** Modifiers ***
+    modifier onlyOwner() {
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
+            "Only owner can call this function"
+        );
         _;
     }
 
-    constructor(
-        address _owner,
-        address _zBTC,
-        string memory name,
-        string memory symbol
-    ) ERC20(name, symbol) {
-        // Transfer ownership to the provided _owner address
-        _transferOwnership(_owner);
-        zBTC = _zBTC;
+    function pause() public onlyOwner {
+        paused = true;
     }
 
-    function mint(address to, uint256 amount) public onlyOwner {
-        _mint(to, amount);
+    function unpause() public onlyOwner {
+        paused = false;
     }
 
-    function burn(address from, uint256 amount) public onlyZBTC {
-        _burn(from, amount);
+    function pauseExtraHolderBalance() public onlyOwner {
+        pausedExtraHolderBalance = true;
+    }
+
+    function unpauseExtraHolderBalance() public onlyOwner {
+        pausedExtraHolderBalance = false;
+    }
+
+    function setWBTCAddress(address _WBTC) public onlyOwner {
+        require(!isWBTCSet, "WBTC already set");
+        WBTC = IERC20(_WBTC);
+        isWBTCSet = true;
+    }
+
+    function setSZBTCAddress(address _sZBTC) public onlyOwner {
+        sZBTC = SZBTC(_sZBTC);
+    }
+
+    function mint(uint256 amount) public nonReentrant {
+        require(!paused, "Contract paused");
+        _mint(msg.sender, amount);
+        WBTC.safeTransferFrom(msg.sender, address(this), amount);
+    }
+
+    // If sufficient balance of sZBTC is not available, this function will fail
+    // Otherwise, add the extra balance to the holder's balance in order to allow the extra stake accumulated to l3 withdrawals
+    function addExtraHolderBalance(
+        address _holder,
+        uint256 amount
+    ) public nonReentrant {
+        require(!pausedExtraHolderBalance, "Extra holder balance paused");
+        uint256 sZBTCBalance = sZBTC.balanceOf(_holder);
+        require(sZBTCBalance >= amount, "Insufficient sZBTC balance");
+        // Burn the sZBTC
+        sZBTC.burn(_holder, amount);
+        // Mint the lBTC to the holder
+        _mint(_holder, amount);
+    }
+
+    function burn(uint256 amount) public nonReentrant {
+        require(!paused, "Contract paused");
+        _burn(msg.sender, amount);
+        WBTC.transfer(msg.sender, amount);
     }
 }
