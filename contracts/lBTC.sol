@@ -84,21 +84,22 @@ contract ZBTC is
     // If sufficient balance of sZBTC is not available, this function will fail
     // Otherwise, add the extra balance to the holder's balance in order to allow the extra stake accumulated to l3 withdrawals
     function addExtraHolderBalance(
-        address _holder,
         uint256 amount
     ) public nonReentrant {
         require(!pausedExtraHolderBalance, "Extra holder balance paused");
-        uint256 sZBTCBalance = sZBTC.balanceOf(_holder);
+        uint256 sZBTCBalance = sZBTC.balanceOf(msg.sender);
         require(sZBTCBalance >= amount, "Insufficient sZBTC balance");
         // Burn the sZBTC
-        sZBTC.burn(_holder, amount);
+        sZBTC.burn(msg.sender, amount);
         // Mint the lBTC to the holder
-        _mint(_holder, amount);
+        _mint(msg.sender, amount);
     }
 
     function burn(uint256 amount) public nonReentrant {
         require(!paused, "Contract paused");
         _burn(msg.sender, amount);
-        WBTC.transfer(msg.sender, amount);
+        // Add allowance to the contract
+        WBTC.approve(address(this), amount);
+        WBTC.safeTransferFrom(address(this), msg.sender, amount);
     }
 }
