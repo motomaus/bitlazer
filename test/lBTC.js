@@ -103,7 +103,7 @@ describe("ZBTC Contract", function () {
     // Set the allowance for the contract to spend the sZBTC
     await sZBTC.connect(addr1Signer).approve(ZBTC.address, mintExtraAmount);
     expect(
-      await ZBTC.addExtraHolderBalance(addr1, mintExtraAmount),
+      await ZBTC.connect(addr1Signer).addExtraHolderBalance(mintExtraAmount),
     ).to.be.ok;
 
     // Try to burn the ZBTC and expect the same amount of WBTC back in the wallet
