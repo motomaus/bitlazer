@@ -6,12 +6,14 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./sZBTC.sol";
 
 contract ZBTC is
     ReentrancyGuardUpgradeable,
     AccessControlUpgradeable,
-    ERC20Upgradeable
+    ERC20Upgradeable,
+    OwnableUpgradeable
 {
     using SafeERC20 for IERC20;
 
@@ -33,20 +35,12 @@ contract ZBTC is
         __AccessControl_init();
         _grantRole(DEFAULT_ADMIN_ROLE, _owner);
         __ReentrancyGuard_init();
+        _transferOwnership(_owner);
     }
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
-    }
-
-    /// *** Modifiers ***
-    modifier onlyOwner() {
-        require(
-            hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
-            "Only owner can call this function"
-        );
-        _;
     }
 
     function pause() public onlyOwner {
@@ -83,9 +77,7 @@ contract ZBTC is
 
     // If sufficient balance of sZBTC is not available, this function will fail
     // Otherwise, add the extra balance to the holder's balance in order to allow the extra stake accumulated to l3 withdrawals
-    function addExtraHolderBalance(
-        uint256 amount
-    ) public nonReentrant {
+    function addExtraHolderBalance(uint256 amount) public nonReentrant {
         require(!pausedExtraHolderBalance, "Extra holder balance paused");
         uint256 sZBTCBalance = sZBTC.balanceOf(msg.sender);
         require(sZBTCBalance >= amount, "Insufficient sZBTC balance");
