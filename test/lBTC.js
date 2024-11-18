@@ -19,8 +19,6 @@ describe("ZBTC Contract", function () {
     const WBTCContract = await ethers.getContractFactory("WBTC");
     WBTC = await WBTCContract.deploy(owner, "WBTC", "WBTC");
 
-
-
     // Deploy the contract
     const lBTCContract = await ethers.getContractFactory("ZBTC");
 
@@ -46,6 +44,15 @@ describe("ZBTC Contract", function () {
     expect(await ZBTC.setSZBTCAddress(sZBTC.address)).to.be.ok;
     expect(await ZBTC.sZBTC()).to.equal(sZBTC.address);
   });
+
+  it('should allow to transfer ownership over ZBTC to a new wallet and back', async function () {
+    const newOwner = addr1;
+    expect(await ZBTC.owner()).to.equal(owner);
+    expect(await ZBTC.transferOwnership(newOwner)).to.be.ok;
+    expect(await ZBTC.owner()).to.equal(newOwner);
+    expect(await ZBTC.connect(addr1Signer).transferOwnership(owner)).to.be.ok;
+    expect(await ZBTC.owner()).to.equal(owner);
+  })
 
   it("Should allow the holder to mint & burn ZBTC", async function () {
     const mintAmount = ethers.utils.parseUnits("0.5", 18);
