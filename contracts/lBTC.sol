@@ -90,8 +90,7 @@ contract ZBTC is
     function burn(uint256 amount) public nonReentrant {
         require(!paused, "Contract paused");
         _burn(msg.sender, amount);
-        // Add allowance to the contract
-        WBTC.approve(address(this), amount);
-        WBTC.safeTransferFrom(address(this), msg.sender, amount);
+        // Return WBTC to original holder
+        WBTC.safeTransfer(msg.sender, amount);
     }
 }
