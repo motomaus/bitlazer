@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract lBTC is ERC20, ReentrancyGuard {
+contract lzrBTC is ERC20, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     address public owner;

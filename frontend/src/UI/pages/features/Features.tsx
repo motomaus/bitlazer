@@ -84,7 +84,7 @@ const Features: FC<IFeatures> = () => {
               <div className="flex-1 flex flex-col gap-4">
                 <div className="uppercase text-xl">Native BTC Yield</div>
                 <div className="text-base tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
-                  Users can stake their L3-native Bitcoin (LBTC) to earn passive BTC rewards. This yield is generated
+                  Users can stake their L3-native Bitcoin (lzrBTC) to earn passive BTC rewards. This yield is generated
                   from the network’s activity and gas fees, providing a powerful incentive to hold and stake BTC within
                   the Bitlazer ecosystem, unlocking new opportunities for liquidity growth.
                 </div>

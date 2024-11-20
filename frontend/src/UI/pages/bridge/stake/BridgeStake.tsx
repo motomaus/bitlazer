@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { useBalance, useAccount, useSwitchChain } from 'wagmi'
 import { waitForTransactionReceipt, writeContract } from '@wagmi/core'
-import { stakeLBTC_abi } from 'src/assets/abi/stakeLBTC'
+import { stakelzrBTC_abi } from 'src/assets/abi/stakelzrBTC'
 import { formatEther, parseEther } from 'ethers/lib/utils'
 import { testnet } from 'src/web3/chains'
 import { handleChainSwitch } from 'src/web3/functions'
@@ -53,7 +53,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
   const onStakeSubmit = async (data: any) => {
     console.log('Stake Data:', data)
     const args = {
-      abi: stakeLBTC_abi,
+      abi: stakelzrBTC_abi,
       address: '0xD9A158f561E0DfD1842DF7A5c1549cD3D065d319',
       functionName: 'stake',
       args: [parseEther(data.stakeAmount)],
@@ -77,7 +77,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
     console.log('Unstake Data:', data)
 
     const args = {
-      abi: stakeLBTC_abi,
+      abi: stakelzrBTC_abi,
       address: '0xD9A158f561E0DfD1842DF7A5c1549cD3D065d319',
       functionName: 'unstake',
       args: [parseEther(data.unstakeAmount)],
@@ -122,7 +122,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-              Balance: {formatEther(userBalance.data?.value || '0')} LBTC
+              Balance: {formatEther(userBalance.data?.value || '0')} lzrBTC
             </div>
             <button
               className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
@@ -186,7 +186,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-              Balance: {formatEther(userBalance.data?.value || '0')} LBTC
+              Balance: {formatEther(userBalance.data?.value || '0')} lzrBTC
             </div>
             <button
               className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
