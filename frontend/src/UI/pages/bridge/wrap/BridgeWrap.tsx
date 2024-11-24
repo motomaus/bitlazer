@@ -7,7 +7,7 @@ import { waitForTransactionReceipt, writeContract } from '@wagmi/core'
 import { arbitrumSepolia, mainnet } from 'wagmi/chains'
 import { config } from 'src/web3/config'
 import { ERC20_CONTRACT_ADDRESS, TokenKeys, WRAP_CONTRACT } from 'src/web3/contracts'
-import { LBTC_abi } from 'src/assets/abi/lbtc'
+import { lzrBTC_abi } from 'src/assets/abi/lzrBTC'
 import { parseEther, formatEther } from 'ethers/lib/utils'
 import { toast } from 'react-toastify'
 import { BigNumber } from 'ethers/lib/ethers'
@@ -63,9 +63,9 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     scopeKey: refresh.toString(),
   })
 
-  const { data: lbtcBalanceData, isLoading: lbtcBalanceLoading } = useBalance({
+  const { data: lzrBTCBalanceData, isLoading: lzrBTCBalanceLoading } = useBalance({
     address,
-    token: ERC20_CONTRACT_ADDRESS['lbtc'],
+    token: ERC20_CONTRACT_ADDRESS['lzrBTC'],
     chainId: arbitrumSepolia.id,
     scopeKey: refresh.toString(),
   })
@@ -113,7 +113,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   // getHolderBalance
 
   const { data: abtcHolderBalance } = useReadContract({
-    abi: LBTC_abi,
+    abi: lzrBTC_abi,
     address: WRAP_CONTRACT,
     functionName: 'getHolderBalance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS['abtc']],
@@ -122,7 +122,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   })
 
   const { data: wbtcHolderBalance } = useReadContract({
-    abi: LBTC_abi,
+    abi: lzrBTC_abi,
     address: WRAP_CONTRACT,
     functionName: 'getHolderBalance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS['wbtc']],
@@ -131,7 +131,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   })
 
   const { data: tbtcHolderBalance } = useReadContract({
-    abi: LBTC_abi,
+    abi: lzrBTC_abi,
     address: WRAP_CONTRACT,
     functionName: 'getHolderBalance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS['tbtc']],
@@ -161,7 +161,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
   const handleApprove = async () => {
     const approvalArgs = {
-      abi: LBTC_abi,
+      abi: lzrBTC_abi,
       address: ERC20_CONTRACT_ADDRESS[selectedToken],
       functionName: 'approve',
       args: [WRAP_CONTRACT, parseEther(getValues('amount'))],
@@ -190,7 +190,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
   const handleDeposit = async () => {
     const args = {
-      abi: LBTC_abi,
+      abi: lzrBTC_abi,
       address: WRAP_CONTRACT,
       functionName: 'mint',
       args: [parseEther(getValues('amount')), ERC20_CONTRACT_ADDRESS[selectedToken]],
@@ -225,7 +225,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
   const handleUnwrap = async () => {
     const args = {
-      abi: LBTC_abi,
+      abi: lzrBTC_abi,
       address: WRAP_CONTRACT,
       functionName: 'burn',
       args: [parseEther(unwrapGetValues('amount')), ERC20_CONTRACT_ADDRESS[selectedTokenUnwrap]],
@@ -264,36 +264,17 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     <div className="flex flex-col gap-7">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7">
         <div className="flex flex-col relative gap-[0.75rem]">
-          <label className="text-lightgreen-100">## WRAP {selectedToken.toUpperCase()} TO LBTC</label>
-          <div className="relative">
-            <div className="font-ocrx w-full rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex items-center">
-              <select
-                value={selectedToken}
-                onChange={(e) => setSelectedToken(e.target.value as TokenKeys)}
-                className="bg-darkslategray-200 text-lightgreen-100 rounded-[.115rem] h-full text-[1.25rem] p-2 pr-8 appearance-none focus:outline-none focus:bg-gray-700 border border-lightgreen-100"
-              >
-                <option value="" disabled>
-                  Select a token
-                </option>
-                {Object.keys(ERC20_CONTRACT_ADDRESS).map((token) => (
-                  <>
-                    {token.toLowerCase() !== 'lbtc' && (
-                      <option
-                        key={token}
-                        value={token}
-                        disabled={
-                          (token.toLowerCase() === 'wbtc' && BigNumber.from(wbtcBalance?.value || '0').eq(0)) ||
-                          (token.toLowerCase() === 'abtc' && BigNumber.from(abtcBalance?.value || '0').eq(0)) ||
-                          (token.toLowerCase() === 'tbtc' && BigNumber.from(tbtcBalance?.value || '0').eq(0))
-                        }
-                      >
-                        {token.toUpperCase()}
-                      </option>
-                    )}
-                  </>
-                ))}
-              </select>
-              <span className="ml-2">-&gt; LBTC</span>
+          <label className="text-lightgreen-100">## WRAP {selectedToken.toUpperCase()} TO lzrBTC</label>
+          <div className="font-ocrx w-full rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex border border-solid border-lightgreen-100 ">
+            <div className="flex-1 flex items-center justify-center h-full">
+              <span className="text-lightgreen-100">WBTC</span>
+            </div>
+            <div className="flex items-center justify-center h-full">
+              <span className="text-lightgreen-100 mx-2">→</span>
+            </div>
+
+            <div className="flex-1 flex items-center justify-center h-full">
+              <span className="text-lightgreen-100">lzrBTC</span>
             </div>
           </div>
         </div>
@@ -371,36 +352,17 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         className="flex flex-col gap-7"
       >
         <div className="flex flex-col relative gap-[0.75rem]">
-          <label className="text-lightgreen-100">## UNWRAP LBTC TO {selectedTokenUnwrap.toUpperCase()}</label>
-          <div className="relative">
-            <div className="font-ocrx w-full rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex items-center">
-              <span className="ml-2 w-[50%]">LBTC</span>
-              <select
-                value={selectedTokenUnwrap}
-                onChange={(e) => setSelectedTokenUnwrap(e.target.value as TokenKeys)}
-                className="ml-2 bg-darkslategray-200 text-lightgreen-100 rounded-[.115rem] h-full text-[1.25rem] p-2 pr-8 appearance-none focus:outline-none focus:bg-gray-700 border border-lightgreen-100"
-              >
-                <option value="" disabled>
-                  Select a token
-                </option>
-                {Object.keys(ERC20_CONTRACT_ADDRESS).map((token) => (
-                  <>
-                    {token.toLowerCase() !== 'lbtc' && (
-                      <option
-                        key={token}
-                        value={token}
-                        disabled={
-                          (token.toLowerCase() === 'wbtc' && BigNumber.from(wbtcHolderBalance ?? 0).eq(0)) ||
-                          (token.toLowerCase() === 'abtc' && BigNumber.from(abtcHolderBalance ?? 0).eq(0)) ||
-                          (token.toLowerCase() === 'tbtc' && BigNumber.from(tbtcHolderBalance ?? 0).eq(0))
-                        }
-                      >
-                        -&gt; {token.toUpperCase()}
-                      </option>
-                    )}
-                  </>
-                ))}
-              </select>
+          <label className="text-lightgreen-100">## UNWRAP lzrBTC TO {selectedTokenUnwrap.toUpperCase()}</label>
+          <div className="font-ocrx w-full rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex border border-solid border-lightgreen-100 ">
+            <div className="flex-1 flex items-center justify-center h-full">
+              <span className="text-lightgreen-100">lzrBTC</span>
+            </div>
+            <div className="flex items-center justify-center h-full">
+              <span className="text-lightgreen-100 mx-2">→</span>
+            </div>
+
+            <div className="flex-1 flex items-center justify-center h-full">
+              <span className="text-lightgreen-100">WBTC</span>
             </div>
           </div>
         </div>
@@ -429,10 +391,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-              Balance:{' '}
-              {lbtcBalanceLoading
-                ? 'Loading...'
-                : `${formatEther(holderBalance?.toString() || '0')} ${lbtcBalanceData?.symbol}`}
+              Balance: {lzrBTCBalanceLoading ? 'Loading...' : `${formatEther(holderBalance?.toString() || '0')} lzrBTC`}
             </div>
             <button
               onClick={(e) => {

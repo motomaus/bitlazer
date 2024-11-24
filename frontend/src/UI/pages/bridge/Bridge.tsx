@@ -6,7 +6,7 @@ import BridgeWithdraw from './crosschain/BridgeCrosschain'
 import { useAccount, useReadContract } from 'wagmi'
 import BridgeConnect from './connect/BridgeConnect'
 import clsx from 'clsx'
-import { LBTC_abi } from 'src/assets/abi/lbtc'
+import { lzrBTC_abi } from 'src/assets/abi/lzrBTC'
 import { ERC20_CONTRACT_ADDRESS } from 'src/web3/contracts'
 import Cookies from 'universal-cookie'
 
@@ -114,7 +114,7 @@ const Bridge: FC<IBridge> = () => {
                         <span> ] </span>
                       </div>
                       <div className="tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
-                        Embark on a secure and efficient journey as you transform your Bitcoin (BTC) into LBTC. This
+                        Embark on a secure and efficient journey as you transform your Bitcoin (BTC) into lzrBTC. This
                         innovative process allows you to harness the power of Bitcoin while enjoying the benefits of
                         enhanced liquidity and flexibility. By wrapping your BTC, you’re not just converting your
                         assets; you’re entering a world of possibilities. Our platform ensures that this transition is

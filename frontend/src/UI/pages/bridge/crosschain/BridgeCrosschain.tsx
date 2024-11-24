@@ -14,7 +14,7 @@ import { BigNumber, ethers } from 'ethers'
 import { toast } from 'react-toastify'
 import { formatEther, parseEther } from 'ethers/lib/utils'
 import { config } from 'src/web3/config'
-import { LBTC_abi } from 'src/assets/abi/lbtc'
+import { lzrBTC_abi } from 'src/assets/abi/lzrBTC'
 import Cookies from 'universal-cookie'
 import { testnet } from 'src/web3/chains'
 import { handleChainSwitch } from 'src/web3/functions'
@@ -52,7 +52,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     mode: 'onChange',
   })
 
-  const [selectedToken, setSelectedToken] = useState<TokenKeys>('lbtc')
+  const [selectedToken, setSelectedToken] = useState<TokenKeys>('lzrBTC')
   const { switchChain } = useSwitchChain()
   const { address, isConnected, chainId, connector } = useAccount()
   const [approval, setApproval] = useState<boolean>(false)
@@ -60,8 +60,8 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
   const [isWaitingForBridgeTx, setIsWaitingForBridgeTx] = useState(false)
 
   const { data: approvalData } = useReadContract({
-    abi: LBTC_abi,
-    address: ERC20_CONTRACT_ADDRESS['lbtc'],
+    abi: lzrBTC_abi,
+    address: ERC20_CONTRACT_ADDRESS['lzrBTC'],
     functionName: 'allowance',
     args: [address, L2_GATEWAY_ROUTER],
     chainId: arbitrumSepolia.id,
@@ -86,8 +86,8 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
 
   const handleApprove = async () => {
     const approvalArgs = {
-      abi: LBTC_abi,
-      address: ERC20_CONTRACT_ADDRESS['lbtc'],
+      abi: lzrBTC_abi,
+      address: ERC20_CONTRACT_ADDRESS['lzrBTC'],
       functionName: 'approve',
       args: [L2_GATEWAY_ROUTER, parseEther(getValues('amount'))],
     }
@@ -186,7 +186,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     refetch: refetchBalance,
   } = useBalance({
     address,
-    token: ERC20_CONTRACT_ADDRESS['lbtc'],
+    token: ERC20_CONTRACT_ADDRESS['lzrBTC'],
     chainId: arbitrumSepolia.id,
   })
 
@@ -203,7 +203,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     <div className="flex flex-col gap-7">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7">
         <div className="flex flex-col gap-[0.687rem] max-w-full">
-          <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## BRIDGE TO BITLAZER</div>
+          <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## BRIDGE lzrBTC TO BITLAZER</div>
           <Controller
             name="amount"
             control={control}
@@ -224,7 +224,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-              Balance: {isLoading ? 'Loading...' : `${formatEther(data?.value.toString() || '0')} ${data?.symbol}`}
+              Balance: {isLoading ? 'Loading...' : `${formatEther(data?.value.toString() || '0')} lzrBTC`}
             </div>
             <button
               onClick={(e) => {
@@ -269,7 +269,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
         className="flex flex-col gap-7"
       >
         <div className="flex flex-col gap-[0.687rem] max-w-full">
-          <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## BRIDGE TO ARBITRUM</div>
+          <div className="relative tracking-[-0.06em] leading-[1.25rem] mb-1">## BRIDGE lzrBTC TO ARBITRUM</div>
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
               Balance:{' '}
