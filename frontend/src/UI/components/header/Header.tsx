@@ -89,9 +89,9 @@ const Header: FC<IHeader> = () => {
               >
                 X
               </button>
-              <div className="items-center gap-[4.875rem] md:gap-16 flex md:flex-row flex-col md:ml-auto">
+              <div className="items-center gap-[4.875rem] md:gap-16 flex md:flex-row flex-col justify-center">
                 <nav className="whitespace-nowrap text-[1.25rem] text-lightgreen-100 font-ocrx text-extrathin md:mx-auto">
-                  <ul className="flex md:flex-row flex-col items-center gap-8 md:gap-8">
+                  <ul className="flex md:flex-row flex-col items-center justify-center gap-8 md:gap-8">
                     <li>
                       <Link
                         to="/about"
@@ -163,27 +163,25 @@ const Header: FC<IHeader> = () => {
                     </li>
                   </ul>
                 </nav>
-                <div className="flex items-center space-x-0">
-                  {isConnected && (
-                    <Button className="w-auto uppercase">
-                      {l3isLoading
-                        ? 'Loading...'
-                        : `${formatBalance(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
-                    </Button>
-                  )}
-                  <Button
-                    onClick={() => {
-                      if (!isConnected) {
-                        setOpenConnectWalletModal(!openConnectWalletModal)
-                        closeMenu()
-                      }
-                    }}
-                    className="!w-auto"
-                  >
-                    {isConnected ? <Account /> : 'CONNECT WALLET'}
-                  </Button>
-                </div>
               </div>
+            </div>
+            <div className="flex items-center space-x-0">
+              {isConnected && (
+                <Button className="w-auto uppercase">
+                  {l3isLoading ? 'Loading...' : `${formatBalance(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
+                </Button>
+              )}
+              <Button
+                onClick={() => {
+                  if (!isConnected) {
+                    setOpenConnectWalletModal(!openConnectWalletModal)
+                    closeMenu()
+                  }
+                }}
+                className="!w-auto"
+              >
+                {isConnected ? <Account /> : 'CONNECT WALLET'}
+              </Button>
             </div>
           </div>
         </div>
