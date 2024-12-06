@@ -195,12 +195,63 @@ footer {
   }
 }
 
+// .container {
+//   max-width: 106.25rem;
+//   width: 100%;
+//   padding: 0 1.25rem;
+//   margin: 0 auto;
+// }
+
 .container {
-  max-width: 106.25rem;
   width: 100%;
-  padding: 0 1.25rem;
-  margin: 0 auto;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 1rem;
+  padding-left: 1rem;
 }
+
+@media (min-width: 375px) {
+  .container {
+    max-width: 375px;
+  }
+}
+
+@media (min-width: 450px) {
+  .container {
+    max-width: 450px;
+  }
+}
+
+@media (min-width: 575px) {
+  .container {
+    max-width: 575px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 992px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1400px;
+  }
+}
+
 @keyframes randomRotate {
   0% {
     transform: rotate(calc(var(--initial-rotate, 0deg)));

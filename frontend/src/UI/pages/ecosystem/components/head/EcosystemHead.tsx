@@ -6,9 +6,9 @@ interface IEcosystemHead {}
 
 const EcosystemHead: FC<IEcosystemHead> = () => {
   return (
-    <section className="flex flex-col justify-center min-h-[85vh] pt-36 pb-5 items-center text-center text-[2.5rem] text-white font-ocrx">
+    <section className="flex flex-col justify-center min-h-[85vh] pt-36 pb-5 items-center text-center text-[2.5rem] md:text-6xl leading-none text-white font-ocrx">
       <div className="container">
-        <section className="self-stretch relative z-10 gap-[1.875rem] flex flex-col items-center text-center text-[2.5rem] text-white font-ocrx">
+        <section className="self-stretch relative z-10 gap-[1.875rem] flex flex-col items-center text-center text-[2.5rem] md:text-6xl leading-none text-white font-ocrx">
           <div className="flex flex-col gap-[1.625rem]">
             <h1 className="m-0 max-w-[32.1rem] w-full text-inherit uppercase font-normal">
               Explore the <br /> Bitlazer{' '}
