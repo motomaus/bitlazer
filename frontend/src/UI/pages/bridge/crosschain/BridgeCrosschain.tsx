@@ -16,7 +16,7 @@ import { formatEther, parseEther } from 'ethers/lib/utils'
 import { config } from 'src/web3/config'
 import { lzrBTC_abi } from 'src/assets/abi/lzrBTC'
 import Cookies from 'universal-cookie'
-import { testnet } from 'src/web3/chains'
+import { mainnet } from 'src/web3/chains'
 import { handleChainSwitch } from 'src/web3/functions'
 
 interface IBridgeCrosschain {}
@@ -196,7 +196,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     refetch: refetchBalanceL3,
   } = useBalance({
     address,
-    chainId: testnet.id,
+    chainId: mainnet.id,
   })
 
   return (
@@ -278,7 +278,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
           </div>
         </div>
         <div className="flex flex-col gap-[0.687rem]">
-          <Button link="https://bitlazer-sepolia.bridge.caldera.xyz/" target="_blank" className="w-auto uppercase">
+          <Button link="https://bitlazer.bridge.caldera.xyz" target="_blank" className="w-auto uppercase">
             Bridge via Caldera
           </Button>
         </div>
