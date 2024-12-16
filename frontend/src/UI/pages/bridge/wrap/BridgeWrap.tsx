@@ -306,7 +306,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
               Balance:{' '}
               {balanceLoading
                 ? 'Loading...'
-                : `${formatEther(balanceData?.value.toString() || '0')} ${balanceData?.symbol}`}
+                : `${formatEther(balanceData?.value.toString() || '0')} ${selectedToken.toUpperCase()}`}
             </div>
             <button
               onClick={(e) => {
