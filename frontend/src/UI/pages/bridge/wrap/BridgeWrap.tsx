@@ -70,21 +70,6 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     scopeKey: refresh.toString(),
   })
 
-  // Balances of all tokens
-  const { data: abtcBalance, isLoading: abtcBalanceLoading } = useBalance({
-    address,
-    token: ERC20_CONTRACT_ADDRESS['abtc'],
-    chainId: arbitrum.id,
-    scopeKey: refresh.toString(),
-  })
-
-  const { data: tbtcBalance, isLoading: tbtcBalanceLoading } = useBalance({
-    address,
-    token: ERC20_CONTRACT_ADDRESS['tbtc'],
-    chainId: arbitrum.id,
-    scopeKey: refresh.toString(),
-  })
-
   const { data: wbtcBalance, isLoading: wbtcBalanceLoading } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['wbtc'],
@@ -112,15 +97,6 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
   // getHolderBalance
 
-  const { data: abtcHolderBalance } = useReadContract({
-    abi: lzrBTC_abi,
-    address: WRAP_CONTRACT,
-    functionName: 'getHolderBalance',
-    args: [address || '0x', ERC20_CONTRACT_ADDRESS['abtc']],
-    chainId: arbitrum.id,
-    scopeKey: refresh.toString(),
-  })
-
   const { data: wbtcHolderBalance } = useReadContract({
     abi: lzrBTC_abi,
     address: WRAP_CONTRACT,
@@ -130,24 +106,11 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     scopeKey: refresh.toString(),
   })
 
-  const { data: tbtcHolderBalance } = useReadContract({
-    abi: lzrBTC_abi,
-    address: WRAP_CONTRACT,
-    functionName: 'getHolderBalance',
-    args: [address || '0x', ERC20_CONTRACT_ADDRESS['tbtc']],
-    chainId: arbitrum.id,
-    scopeKey: refresh.toString(),
-  })
-
   useEffect(() => {
     if (selectedTokenUnwrap === 'wbtc') {
       setHolderBalance(wbtcHolderBalance as string)
-    } else if (selectedTokenUnwrap === 'abtc') {
-      setHolderBalance(abtcHolderBalance as string)
-    } else if (selectedTokenUnwrap === 'tbtc') {
-      setHolderBalance(tbtcHolderBalance as string)
     }
-  }, [selectedTokenUnwrap, wbtcHolderBalance, abtcHolderBalance, tbtcHolderBalance])
+  }, [selectedTokenUnwrap, wbtcHolderBalance])
 
   useEffect(() => {
     if (approvalData !== undefined) {

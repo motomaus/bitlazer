@@ -1,6 +1,6 @@
 import { getWalletClient } from '@wagmi/core'
 import { config } from './config'
-import { arbitrumSepolia } from 'wagmi/chains'
+import { arbitrum } from 'wagmi/chains'
 import { mainnet } from './chains'
 
 export const handleChainSwitch = async (toMainnet: boolean) => {
@@ -16,10 +16,10 @@ export const handleChainSwitch = async (toMainnet: boolean) => {
     })
   } else {
     await walletClient.addChain({
-      chain: arbitrumSepolia,
+      chain: arbitrum,
     })
     await walletClient.switchChain({
-      id: arbitrumSepolia.id,
+      id: arbitrum.id,
     })
   }
 }
