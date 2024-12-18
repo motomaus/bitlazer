@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { useAccount, useBalance, useReadContract, useSwitchChain } from 'wagmi'
 import { erc20Abi } from 'viem'
 import { waitForTransactionReceipt, writeContract } from '@wagmi/core'
-import { arbitrumSepolia, mainnet } from 'wagmi/chains'
+import { arbitrum, mainnet } from 'wagmi/chains'
 import { config } from 'src/web3/config'
 import { ERC20_CONTRACT_ADDRESS, TokenKeys, WRAP_CONTRACT } from 'src/web3/contracts'
 import { lzrBTC_abi } from 'src/assets/abi/lzrBTC'
@@ -59,14 +59,14 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   const { data: balanceData, isLoading: balanceLoading } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS[selectedToken],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
     scopeKey: refresh.toString(),
   })
 
   const { data: lzrBTCBalanceData, isLoading: lzrBTCBalanceLoading } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['lzrBTC'],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
     scopeKey: refresh.toString(),
   })
 
@@ -74,21 +74,21 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   const { data: abtcBalance, isLoading: abtcBalanceLoading } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['abtc'],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
     scopeKey: refresh.toString(),
   })
 
   const { data: tbtcBalance, isLoading: tbtcBalanceLoading } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['tbtc'],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
     scopeKey: refresh.toString(),
   })
 
   const { data: wbtcBalance, isLoading: wbtcBalanceLoading } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['wbtc'],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
     scopeKey: refresh.toString(),
   })
 
@@ -97,7 +97,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     address: ERC20_CONTRACT_ADDRESS[selectedToken],
     functionName: 'allowance',
     args: [address || '0x', WRAP_CONTRACT],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
     scopeKey: refresh.toString(),
   })
 
@@ -106,7 +106,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     address: WRAP_CONTRACT,
     functionName: 'allowance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS[selectedToken]],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
     scopeKey: refresh.toString(),
   })
 
@@ -117,7 +117,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     address: WRAP_CONTRACT,
     functionName: 'getHolderBalance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS['abtc']],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
     scopeKey: refresh.toString(),
   })
 
@@ -126,7 +126,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     address: WRAP_CONTRACT,
     functionName: 'getHolderBalance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS['wbtc']],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
     scopeKey: refresh.toString(),
   })
 
@@ -135,7 +135,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     address: WRAP_CONTRACT,
     functionName: 'getHolderBalance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS['tbtc']],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
     scopeKey: refresh.toString(),
   })
 
@@ -322,7 +322,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           </div>
         </div>
         <div className="flex flex-col gap-[0.687rem]">
-          {chainId === arbitrumSepolia.id ? (
+          {chainId === arbitrum.id ? (
             <>
               <Button type="submit" disabled={!isValid || isLoadingApproval}>
                 {approval ? 'WRAP' : 'APPROVE'}
@@ -412,7 +412,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           <div className="relative tracking-[-0.06em] leading-[1.25rem] inline-block min-w-[4.188rem]">GAS FEE</div>
           <div className="w-[2.75rem] relative tracking-[-0.06em] leading-[1.25rem] text-right inline-block">00.00</div>
         </div> */}
-          {chainId === arbitrumSepolia.id ? (
+          {chainId === arbitrum.id ? (
             <Button type="submit" disabled={!isUnwrapValid || holderBalance === '0'}>
               UNWRAP
             </Button>

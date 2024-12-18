@@ -1,7 +1,7 @@
 import { Button, InputField, TXToast } from '@components/index'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { arbitrumSepolia } from 'wagmi/chains'
+import { arbitrum } from 'wagmi/chains'
 import {
   ERC20_CONTRACT_ADDRESS,
   L2_GATEWAY_ROUTER,
@@ -64,7 +64,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     address: ERC20_CONTRACT_ADDRESS['lzrBTC'],
     functionName: 'allowance',
     args: [address, L2_GATEWAY_ROUTER],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
     scopeKey: refreshApproval.toString(),
   })
 
@@ -187,7 +187,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
   } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['lzrBTC'],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
   })
 
   const {
@@ -241,7 +241,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
           </div>
         </div>
         <div className="flex flex-col gap-[0.687rem]">
-          {chainId === arbitrumSepolia.id ? (
+          {chainId === arbitrum.id ? (
             <>
               <Button type="submit" disabled={!isValid || isWaitingForBridgeTx} aria-busy={isWaitingForBridgeTx}>
                 {approval ? 'BRIDGE' : 'APPROVE'}
