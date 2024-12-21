@@ -5,12 +5,12 @@ html {
   box-sizing: border-box;
   scroll-behavior: smooth;
 
-  font-size: 0.941175vw;
+  font-size: 16px;
   font-weight: 200;
 
   scrollbar-color: #3d8938 rgba(0, 0, 0, 0.1);
 
-  @media (max-width: 1499.98px) {
+  @media (max-width: 1399.98px) {
     font-size: 1vw;
   }
   @media (max-width: 1299.98px) {
