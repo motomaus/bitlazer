@@ -265,7 +265,7 @@ footer {
 }
 
 .rotate-line {
-  animation: randomRotate 3s ease-in-out infinite;
+  animation: randomRotate 5s ease-in-out infinite;
   pointer-events: all !important;
 
   position: relative;
@@ -282,7 +282,7 @@ footer {
   // }
 
   div {
-    animation: widthLine 1.5s;
+    animation: widthLine 4s ease-in-out;
   }
 }
 
