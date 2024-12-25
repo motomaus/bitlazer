@@ -38,7 +38,6 @@ const MainLayout = () => {
       line.style.setProperty('--random-offset', `${randomOffset}deg`)
       line.style.setProperty('top', randomTop) // Устанавливаем случайный top для всех линий
       line.dataset.rotate = `${randomAngle}` // Обновляем атрибут data-rotate
-      line.style.transform = `rotate(${randomAngle}deg)` // Применяем поворот к линии
     })
     linesRef2.current.forEach((line) => {
       const initialRotate = parseFloat(line.dataset.rotate || '0')
@@ -49,7 +48,6 @@ const MainLayout = () => {
       line.style.setProperty('--random-offset', `${randomOffset}deg`)
       line.style.setProperty('top', randomTop2) // Устанавливаем случайный top для всех линий
       line.dataset.rotate = `${randomAngle}` // Обновляем атрибут data-rotate
-      line.style.transform = `rotate(${randomAngle}deg)` // Применяем поворот к линии
     })
   }, [])
 

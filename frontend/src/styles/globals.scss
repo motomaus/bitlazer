@@ -257,7 +257,6 @@ footer {
     transform: rotate(calc(var(--initial-rotate, 0deg)));
   }
   50% {
-    transform: rotate(calc(var(--initial-rotate, 0deg) + var(--random-offset, 2deg)));
   }
   100% {
     transform: rotate(calc(var(--initial-rotate, 0deg)));
@@ -265,7 +264,7 @@ footer {
 }
 
 .rotate-line {
-  animation: randomRotate 5s ease-in-out infinite;
+  transform: rotate(calc(var(--initial-rotate, 0deg) + var(--random-offset, 2deg)));
   pointer-events: all !important;
 
   position: relative;

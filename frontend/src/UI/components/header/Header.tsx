@@ -90,8 +90,8 @@ const Header: FC<IHeader> = () => {
                 X
               </button>
               <div className="items-center gap-[4.875rem] flex md:flex-row flex-col justify-center">
-                <nav className="whitespace-nowrap text-[1.5rem] leading-[2rem] text-lightgreen-100 font-ocrx text-extrathin md:ml-auto">
-                  <ul className="flex md:flex-row flex-col items-center justify-center gap-8 md:gap-9 ">
+                <nav className="whitespace-nowrap text-[1.5rem] leading-[2rem] text-lightgreen-100 font-ocrx text-extrathin md:mr-auto">
+                  <ul className="flex md:flex-row flex-col items-center justify-center gap-8 md:gap-9 md:pt-3">
                     <li>
                       <Link
                         target="_blank"
@@ -166,7 +166,7 @@ const Header: FC<IHeader> = () => {
                   </ul>
                 </nav>
               </div>
-              <div className="flex md:hidden items-center space-x-0 mt-8 mx-auto">
+              <div className="flex md:hidden items-center space-x-0 mt-8 mx-auto justify-center flex-wrap ">
                 {isConnected && (
                   <Button className="!w-auto uppercase min-w-[12.5rem]">
                     {l3isLoading ? 'Loading...' : `${formatBalance(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
@@ -187,7 +187,7 @@ const Header: FC<IHeader> = () => {
             </div>
             <div className="md:flex hidden items-center space-x-0">
               {isConnected && (
-                <Button className="!w-auto uppercase min-w-[12.5rem]">
+                <Button className="!w-auto uppercase min-w-[12.5rem]  md:min-w-min">
                   {l3isLoading ? 'Loading...' : `${formatBalance(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
                 </Button>
               )}
@@ -198,7 +198,7 @@ const Header: FC<IHeader> = () => {
                     closeMenu()
                   }
                 }}
-                className="!w-auto min-w-[12.5rem]"
+                className="!w-auto min-w-[12.5rem]  md:min-w-min"
               >
                 {isConnected ? <Account /> : 'CONNECT WALLET'}
               </Button>
