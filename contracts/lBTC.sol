@@ -93,4 +93,6 @@ contract ZBTC is
         // Return WBTC to original holder
         WBTC.safeTransfer(msg.sender, amount);
     }
+
+    uint256[48] private __gap;
 }
