@@ -6,7 +6,11 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
-contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuardUpgradeable {
+contract StakeLBTC is
+    ERC20Upgradeable,
+    AccessControlUpgradeable,
+    ReentrancyGuardUpgradeable
+{
     uint256 public totalStaked;
     uint256 public totalStakers;
 
@@ -22,11 +26,18 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
     }
 
     modifier onlyOwner() {
-        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Only owner can call this function");
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
+            "Only owner can call this function"
+        );
         _;
     }
 
-    function initialize(address _owner, string memory name, string memory symbol) public initializer {
+    function initialize(
+        address _owner,
+        string memory name,
+        string memory symbol
+    ) public initializer {
         __ERC20_init(name, symbol);
 
         _grantRole(DEFAULT_ADMIN_ROLE, _owner);
@@ -39,7 +50,10 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
     }
 
     function charge(uint256 amount) public payable {
-        require(msg.value == amount, "Amount argument must be equal to attached native value");
+        require(
+            msg.value == amount,
+            "Amount argument must be equal to attached native value"
+        );
         require(amount > 0, "Amount must be greater than 0");
 
         uint256 contractBalance = address(this).balance;
@@ -73,7 +87,10 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
     }
 
     function stake(uint256 amount) public payable {
-        require(msg.value == amount, "Amount argument must be equal to attached native value");
+        require(
+            msg.value == amount,
+            "Amount argument must be equal to attached native value"
+        );
         require(amount > 0, "Amount must be greater than 0");
 
         totalStaked += amount;
@@ -83,7 +100,10 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
 
     function unstake(uint256 amount) public nonReentrant {
         require(amount > 0, "Amount must be greater than 0");
-        require(balanceOf(msg.sender) >= amount, "Insufficient balance to unstake");
+        require(
+            balanceOf(msg.sender) >= amount,
+            "Insufficient balance to unstake"
+        );
 
         totalStaked -= amount;
 
@@ -96,7 +116,10 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
 
     function _addHolder(address account) internal {
         if (
-            balanceOf(account) > 0 && holders[account] == address(0) && account != firstHolder && account != lastHolder
+            balanceOf(account) > 0 &&
+            holders[account] == address(0) &&
+            account != firstHolder &&
+            account != lastHolder
         ) {
             if (firstHolder == address(0)) {
                 // This is the first holder
@@ -121,7 +144,9 @@ contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuar
         } else {
             // Traverse the list to find the previous holder
             address currentHolder = firstHolder;
-            while (currentHolder != address(0) && holders[currentHolder] != account) {
+            while (
+                currentHolder != address(0) && holders[currentHolder] != account
+            ) {
                 currentHolder = holders[currentHolder];
             }
             if (currentHolder != address(0)) {

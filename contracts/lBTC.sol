@@ -9,7 +9,7 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./sZBTC.sol";
 
-contract ZBTC is
+contract lzrBTC is
     ReentrancyGuardUpgradeable,
     AccessControlUpgradeable,
     ERC20Upgradeable,
@@ -24,6 +24,12 @@ contract ZBTC is
     IERC20 public WBTC;
 
     bool public isWBTCSet;
+    bool public __apply8To18DecimalsConversion;
+
+    address dustCollector;
+
+    event DustCollected(address indexed dustCollector, uint256 dust);
+    event NativeReceived(address indexed sender, uint256 value);
 
     function initialize(
         string memory name,
@@ -51,8 +57,24 @@ contract ZBTC is
         paused = false;
     }
 
+    fallback() external payable {
+        revert("Fallback function not allowed");
+    }
+
+    receive() external payable {
+        emit NativeReceived(msg.sender, msg.value);
+    }
+
+    function apply8To18DecimalsConversion() public onlyOwner {
+        __apply8To18DecimalsConversion = true;
+    }
+
     function pauseExtraHolderBalance() public onlyOwner {
         pausedExtraHolderBalance = true;
+    }
+
+    function setDustCollector(address _dustCollector) public onlyOwner {
+        dustCollector = _dustCollector;
     }
 
     function unpauseExtraHolderBalance() public onlyOwner {
@@ -71,7 +93,10 @@ contract ZBTC is
 
     function mint(uint256 amount) public nonReentrant {
         require(!paused, "Contract paused");
-        _mint(msg.sender, amount);
+        uint256 mintAmount = __apply8To18DecimalsConversion
+            ? amount * 10 ** 10
+            : amount;
+        _mint(msg.sender, mintAmount);
         WBTC.safeTransferFrom(msg.sender, address(this), amount);
     }
 
@@ -90,8 +115,19 @@ contract ZBTC is
     function burn(uint256 amount) public nonReentrant {
         require(!paused, "Contract paused");
         _burn(msg.sender, amount);
-        // Return WBTC to original holder
-        WBTC.safeTransfer(msg.sender, amount);
+        // Add allowance to the contract
+        uint256 burnAmount = __apply8To18DecimalsConversion
+            ? (amount / 10 ** 10)
+            : amount;
+        uint256 dust = __apply8To18DecimalsConversion
+            ? amount - burnAmount * 10 ** 10
+            : 0;
+        if (dust > 0 && dustCollector != address(0)) {
+            emit DustCollected(dustCollector, dust);
+            // Transfer dust to the dust collector
+            _mint(dustCollector, dust);
+        }
+        WBTC.safeTransfer(msg.sender, burnAmount);
     }
 
     uint256[48] private __gap;
