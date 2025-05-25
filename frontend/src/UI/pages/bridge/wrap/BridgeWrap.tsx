@@ -2,7 +2,7 @@ import { Button, InputField, TXToast } from '@components/index'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useAccount, useBalance, useReadContract, useSwitchChain } from 'wagmi'
-import { erc20Abi } from 'viem'
+import { erc20Abi, formatUnits } from 'viem'
 import { waitForTransactionReceipt, writeContract } from '@wagmi/core'
 import { arbitrum, mainnet } from 'wagmi/chains'
 import { config } from 'src/web3/config'
@@ -248,9 +248,9 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
             control={control}
             rules={{
               required: 'Amount is required',
-              min: { value: 0.001, message: 'Amount must be greater than 0.001' },
+              min: { value: 0.00001, message: 'Amount must be greater than 0.00001' },
               max: {
-                value: formatEther(balanceData?.value.toString() || '0'),
+                value: balanceData?.formatted || '0',
                 message: 'Amount must be less than balance',
               },
             }}
@@ -267,14 +267,12 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
               Balance:{' '}
-              {balanceLoading
-                ? 'Loading...'
-                : `${formatEther(balanceData?.value.toString() || '0')} ${selectedToken.toUpperCase()}`}
+              {balanceLoading ? 'Loading...' : `${balanceData?.formatted || '0'} ${selectedToken.toUpperCase()}`}
             </div>
             <button
               onClick={(e) => {
                 e.preventDefault()
-                setValue('amount', formatEther(balanceData?.value.toString() || '0'))
+                setValue('amount', balanceData?.formatted || '0')
               }}
               className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
             >
