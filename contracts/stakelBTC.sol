@@ -6,7 +6,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
-contract StakeLBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuardUpgradeable {
+contract StakelzrBTC is ERC20Upgradeable, AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     uint256 public totalStaked;
     uint256 public totalStakers;
 

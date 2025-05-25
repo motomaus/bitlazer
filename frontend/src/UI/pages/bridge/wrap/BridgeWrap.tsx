@@ -4,10 +4,10 @@ import { useForm, Controller } from 'react-hook-form'
 import { useAccount, useBalance, useReadContract, useSwitchChain } from 'wagmi'
 import { erc20Abi } from 'viem'
 import { waitForTransactionReceipt, writeContract } from '@wagmi/core'
-import { arbitrumSepolia, mainnet } from 'wagmi/chains'
+import { arbitrum, mainnet } from 'wagmi/chains'
 import { config } from 'src/web3/config'
 import { ERC20_CONTRACT_ADDRESS, TokenKeys, WRAP_CONTRACT } from 'src/web3/contracts'
-import { LBTC_abi } from 'src/assets/abi/lbtc'
+import { lzrBTC_abi } from 'src/assets/abi/lzrBTC'
 import { parseEther, formatEther } from 'ethers/lib/utils'
 import { toast } from 'react-toastify'
 import { BigNumber } from 'ethers/lib/ethers'
@@ -23,6 +23,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   const { switchChain } = useSwitchChain()
   const { address, isConnected, chainId } = useAccount()
   const [approval, setApproval] = useState<boolean>(false)
+  const [refresh, setRefresh] = useState<boolean>(false)
   const [reverseApproval, setReverseApproval] = useState<boolean>(false)
   const [holderBalance, setHolderBalance] = useState<string | undefined>(undefined)
 
@@ -58,40 +59,31 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   const { data: balanceData, isLoading: balanceLoading } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS[selectedToken],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
+    scopeKey: refresh.toString(),
   })
 
-  const { data: lbtcBalanceData, isLoading: lbtcBalanceLoading } = useBalance({
+  const { data: lzrBTCBalanceData, isLoading: lzrBTCBalanceLoading } = useBalance({
     address,
-    token: ERC20_CONTRACT_ADDRESS['lbtc'],
-    chainId: arbitrumSepolia.id,
-  })
-
-  // Balances of all tokens
-  const { data: abtcBalance, isLoading: abtcBalanceLoading } = useBalance({
-    address,
-    token: ERC20_CONTRACT_ADDRESS['abtc'],
-    chainId: arbitrumSepolia.id,
-  })
-
-  const { data: tbtcBalance, isLoading: tbtcBalanceLoading } = useBalance({
-    address,
-    token: ERC20_CONTRACT_ADDRESS['tbtc'],
-    chainId: arbitrumSepolia.id,
+    token: ERC20_CONTRACT_ADDRESS['lzrBTC'],
+    chainId: arbitrum.id,
+    scopeKey: refresh.toString(),
   })
 
   const { data: wbtcBalance, isLoading: wbtcBalanceLoading } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['wbtc'],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
+    scopeKey: refresh.toString(),
   })
 
-  const { data: approvalData } = useReadContract({
+  const { data: approvalData, isLoading: isLoadingApproval } = useReadContract({
     abi: erc20Abi,
     address: ERC20_CONTRACT_ADDRESS[selectedToken],
     functionName: 'allowance',
     args: [address || '0x', WRAP_CONTRACT],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
+    scopeKey: refresh.toString(),
   })
 
   const { data: reverseApprovalData } = useReadContract({
@@ -99,94 +91,69 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     address: WRAP_CONTRACT,
     functionName: 'allowance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS[selectedToken]],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
+    scopeKey: refresh.toString(),
   })
 
   // getHolderBalance
 
-  const { data: abtcHolderBalance } = useReadContract({
-    abi: LBTC_abi,
-    address: WRAP_CONTRACT,
-    functionName: 'getHolderBalance',
-    args: [address || '0x', ERC20_CONTRACT_ADDRESS['abtc']],
-    chainId: arbitrumSepolia.id,
-  })
-
   const { data: wbtcHolderBalance } = useReadContract({
-    abi: LBTC_abi,
+    abi: lzrBTC_abi,
     address: WRAP_CONTRACT,
     functionName: 'getHolderBalance',
     args: [address || '0x', ERC20_CONTRACT_ADDRESS['wbtc']],
-    chainId: arbitrumSepolia.id,
-  })
-
-  const { data: tbtcHolderBalance } = useReadContract({
-    abi: LBTC_abi,
-    address: WRAP_CONTRACT,
-    functionName: 'getHolderBalance',
-    args: [address || '0x', ERC20_CONTRACT_ADDRESS['tbtc']],
-    chainId: arbitrumSepolia.id,
+    chainId: arbitrum.id,
+    scopeKey: refresh.toString(),
   })
 
   useEffect(() => {
     if (selectedTokenUnwrap === 'wbtc') {
       setHolderBalance(wbtcHolderBalance as string)
-    } else if (selectedTokenUnwrap === 'abtc') {
-      setHolderBalance(abtcHolderBalance as string)
-    } else if (selectedTokenUnwrap === 'tbtc') {
-      setHolderBalance(tbtcHolderBalance as string)
     }
-  }, [selectedTokenUnwrap, wbtcHolderBalance, abtcHolderBalance, tbtcHolderBalance])
+  }, [selectedTokenUnwrap, wbtcHolderBalance])
 
   useEffect(() => {
-    if (approvalData) {
-      if (BigNumber.from(approvalData).gte(parseEther(getValues("amount") || '0'))) {
-        setApproval(true);
+    if (approvalData !== undefined) {
+      if (BigNumber.from(approvalData).gte(parseEther(getValues('amount') || '0'))) {
+        setApproval(true)
       } else {
         setApproval(false)
       }
-    } else {
-      console.log('Approval data not found')
     }
-  }, [approvalData, watch('amount')])
-
-  useEffect(() => {
-    if (approvalData) {
-      const approvalAmount = approvalData as unknown as string
-      if (BigNumber.from(approvalAmount).gte(parseEther(unwrapGetValues('amount') || '0'))) {
-        setReverseApproval(true)
-      } else {
-        setReverseApproval(false)
-      }
-    } else {
-      console.log('Approval data not found')
-    }
-  }, [reverseApprovalData, unwrapWatch('amount')])
+  }, [approvalData, watch('amount'), refresh])
 
   const handleApprove = async () => {
     const approvalArgs = {
-      abi: LBTC_abi,
+      abi: lzrBTC_abi,
       address: ERC20_CONTRACT_ADDRESS[selectedToken],
       functionName: 'approve',
       args: [WRAP_CONTRACT, parseEther(getValues('amount'))],
     }
-    const approvalTransactionHash = await writeContract(config, approvalArgs)
+
+    let approvalTransactionHash
+    try {
+      approvalTransactionHash = await writeContract(config, approvalArgs)
+    } catch (error) {
+      console.log('Error: ', error)
+      toast(<TXToast {...{ message: 'Approval failed', error }} />)
+      return
+    }
     const approvalReceipt = await waitForTransactionReceipt(config, {
       hash: approvalTransactionHash,
     })
+    setRefresh((prev) => !prev)
     if (approvalReceipt.status === 'success') {
       const txHash = approvalReceipt.transactionHash
       toast(<TXToast {...{ message: 'Approval successful', txHash }} />)
     } else {
       toast(<TXToast {...{ message: 'Transaction failed' }} />)
     }
-    setApproval(true);
-    await handleDeposit();
+    setApproval(true)
   }
 
-  const handleDeposit = async (firstTime: Boolean = true) => {
+  const handleDeposit = async () => {
     const args = {
-      abi: LBTC_abi,
+      abi: lzrBTC_abi,
       address: WRAP_CONTRACT,
       functionName: 'mint',
       args: [parseEther(getValues('amount')), ERC20_CONTRACT_ADDRESS[selectedToken]],
@@ -205,22 +172,23 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       } else {
         toast(<TXToast {...{ message: 'Wrap failed' }} />)
       }
-   } catch (error: any) {
-      // console.log("Error: ", error)
-      if (!error.message.includes("User rejected the request.")) {
-        toast(<TXToast {... { message: "Failed to Wrap. Increasing Allowance." }} />);
-        console.log(error.message);
-        await handleApprove();
-        handleDeposit(firstTime = false);
+    } catch (error: any) {
+      console.log('Error: ', error)
+      if (!error.message.includes('User rejected the request.')) {
+        toast(<TXToast {...{ message: 'Failed to Wrap.' }} />)
+        console.log(error.message)
       } else {
-        toast(<TXToast {... { message: "Transaction Rejected." }} />);
+        toast(<TXToast {...{ message: 'Transaction Rejected.' }} />)
       }
     }
+    setTimeout(() => {
+      setRefresh((prev) => !prev)
+    }, 1000)
   }
 
   const handleUnwrap = async () => {
     const args = {
-      abi: LBTC_abi,
+      abi: lzrBTC_abi,
       address: WRAP_CONTRACT,
       functionName: 'burn',
       args: [parseEther(unwrapGetValues('amount')), ERC20_CONTRACT_ADDRESS[selectedTokenUnwrap]],
@@ -239,13 +207,16 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       } else {
         toast(<TXToast {...{ message: 'Unwrap failed' }} />)
       }
-      } catch (error: any) {
-      if (!error.message.includes("User rejected the request.")) {
-        toast(<TXToast {... { message: "Failed to Unwrap" }} />);
+    } catch (error: any) {
+      if (!error.message.includes('User rejected the request.')) {
+        toast(<TXToast {...{ message: 'Failed to Unwrap' }} />)
       } else {
-        toast(<TXToast {... { message: "Transaction Rejected." }} />);
+        toast(<TXToast {...{ message: 'Transaction Rejected.' }} />)
       }
     }
+    setTimeout(() => {
+      setRefresh((prev) => !prev)
+    }, 1000)
   }
 
   const onSubmit = async (data: any) => {
@@ -256,36 +227,17 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     <div className="flex flex-col gap-7">
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7">
         <div className="flex flex-col relative gap-[0.75rem]">
-          <label className="text-lightgreen-100">## WRAP {selectedToken.toUpperCase()} TO LBTC</label>
-          <div className="relative">
-            <div className="font-ocrx w-full rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex items-center">
-              <select
-                value={selectedToken}
-                onChange={(e) => setSelectedToken(e.target.value as TokenKeys)}
-                className="bg-darkslategray-200 text-lightgreen-100 rounded-[.115rem] h-full text-[1.25rem] p-2 pr-8 appearance-none focus:outline-none focus:bg-gray-700 border border-lightgreen-100"
-              >
-                <option value="" disabled>
-                  Select a token
-                </option>
-                {Object.keys(ERC20_CONTRACT_ADDRESS).map((token) => (
-                  <>
-                    {token.toLowerCase() !== 'lbtc' && (
-                      <option
-                        key={token}
-                        value={token}
-                        disabled={
-                          (token.toLowerCase() === 'wbtc' && BigNumber.from(wbtcBalance?.value || '0').eq(0)) ||
-                          (token.toLowerCase() === 'abtc' && BigNumber.from(abtcBalance?.value || '0').eq(0)) ||
-                          (token.toLowerCase() === 'tbtc' && BigNumber.from(tbtcBalance?.value || '0').eq(0))
-                        }
-                      >
-                        {token.toUpperCase()}
-                      </option>
-                    )}
-                  </>
-                ))}
-              </select>
-              <span className="ml-2">-&gt; LBTC</span>
+          <label className="text-lightgreen-100">## WRAP {selectedToken.toUpperCase()} TO lzrBTC</label>
+          <div className="font-ocrx w-full pt-3 rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex border border-solid border-lightgreen-100 ">
+            <div className="flex-1 flex items-center justify-center h-full">
+              <span className="text-lightgreen-100">WBTC</span>
+            </div>
+            <div className="flex items-center justify-center h-full">
+              <span className="text-lightgreen-100 mx-2">→</span>
+            </div>
+
+            <div className="flex-1 flex items-center justify-center h-full">
+              <span className="text-lightgreen-100">lzrBTC</span>
             </div>
           </div>
         </div>
@@ -317,7 +269,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
               Balance:{' '}
               {balanceLoading
                 ? 'Loading...'
-                : `${formatEther(balanceData?.value.toString() || '0')} ${balanceData?.symbol}`}
+                : `${formatEther(balanceData?.value.toString() || '0')} ${selectedToken.toUpperCase()}`}
             </div>
             <button
               onClick={(e) => {
@@ -333,19 +285,11 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           </div>
         </div>
         <div className="flex flex-col gap-[0.687rem]">
-          {/* <div className="flex flex-row items-center justify-between gap-[1.25rem]">
-          <div className="relative tracking-[-0.06em] leading-[1.25rem] inline-block min-w-[4.188rem]">GAS FEE</div>
-          <div className="w-[2.75rem] relative tracking-[-0.06em] leading-[1.25rem] text-right inline-block">00.00</div>
-        </div> */}
-          {chainId === arbitrumSepolia.id ? (
+          {chainId === arbitrum.id ? (
             <>
-              {approval ? (
-                <Button type="submit" disabled={!isValid}>
-                  WRAP
-                </Button>
-              ) : (
-                <Button type="submit">APPROVE</Button>
-              )}
+              <Button type="submit" disabled={!isValid || isLoadingApproval}>
+                {approval ? 'WRAP' : 'APPROVE'}
+              </Button>
             </>
           ) : (
             <Button
@@ -358,9 +302,6 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
               SWITCH CHAIN
             </Button>
           )}
-          {/* <div className="h-[0.688rem] relative tracking-[-0.06em] leading-[1.25rem] text-gray-200 inline-block">
-          Transaction number
-        </div> */}
         </div>
       </form>
 
@@ -374,36 +315,17 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         className="flex flex-col gap-7"
       >
         <div className="flex flex-col relative gap-[0.75rem]">
-          <label className="text-lightgreen-100">## UNWRAP LBTC TO {selectedTokenUnwrap.toUpperCase()}</label>
-          <div className="relative">
-            <div className="font-ocrx w-full rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex items-center">
-              <span className="ml-2 w-[50%]">LBTC</span>
-              <select
-                value={selectedTokenUnwrap}
-                onChange={(e) => setSelectedTokenUnwrap(e.target.value as TokenKeys)}
-                className="ml-2 bg-darkslategray-200 text-lightgreen-100 rounded-[.115rem] h-full text-[1.25rem] p-2 pr-8 appearance-none focus:outline-none focus:bg-gray-700 border border-lightgreen-100"
-              >
-                <option value="" disabled>
-                  Select a token
-                </option>
-                {Object.keys(ERC20_CONTRACT_ADDRESS).map((token) => (
-                  <>
-                    {token.toLowerCase() !== 'lbtc' && (
-                      <option
-                        key={token}
-                        value={token}
-                        disabled={
-                          (token.toLowerCase() === 'wbtc' && BigNumber.from(wbtcHolderBalance ?? 0).eq(0)) ||
-                          (token.toLowerCase() === 'abtc' && BigNumber.from(abtcHolderBalance ?? 0).eq(0)) ||
-                          (token.toLowerCase() === 'tbtc' && BigNumber.from(tbtcHolderBalance ?? 0).eq(0))
-                        }
-                      >
-                        -&gt; {token.toUpperCase()}
-                      </option>
-                    )}
-                  </>
-                ))}
-              </select>
+          <label className="text-lightgreen-100">## UNWRAP lzrBTC TO {selectedTokenUnwrap.toUpperCase()}</label>
+          <div className="font-ocrx w-full pt-3 rounded-[.115rem] h-[2.875rem] text-lightgreen-100 text-[1.25rem] whitespace-nowrap bg-darkslategray-200 flex border border-solid border-lightgreen-100 ">
+            <div className="flex-1 flex items-center justify-center h-full">
+              <span className="text-lightgreen-100">lzrBTC</span>
+            </div>
+            <div className="flex items-center justify-center h-full">
+              <span className="text-lightgreen-100 mx-2">→</span>
+            </div>
+
+            <div className="flex-1 flex items-center justify-center h-full">
+              <span className="text-lightgreen-100">WBTC</span>
             </div>
           </div>
         </div>
@@ -432,10 +354,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-              Balance:{' '}
-              {lbtcBalanceLoading
-                ? 'Loading...'
-                : `${formatEther(holderBalance?.toString() || '0')} ${lbtcBalanceData?.symbol}`}
+              Balance: {lzrBTCBalanceLoading ? 'Loading...' : `${formatEther(holderBalance?.toString() || '0')} lzrBTC`}
             </div>
             <button
               onClick={(e) => {
@@ -456,7 +375,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           <div className="relative tracking-[-0.06em] leading-[1.25rem] inline-block min-w-[4.188rem]">GAS FEE</div>
           <div className="w-[2.75rem] relative tracking-[-0.06em] leading-[1.25rem] text-right inline-block">00.00</div>
         </div> */}
-          {chainId === arbitrumSepolia.id ? (
+          {chainId === arbitrum.id ? (
             <Button type="submit" disabled={!isUnwrapValid || holderBalance === '0'}>
               UNWRAP
             </Button>

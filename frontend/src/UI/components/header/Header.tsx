@@ -11,7 +11,7 @@ import Features from '@pages/features/Features'
 import clsx from 'clsx'
 import { useAccount, useBalance } from 'wagmi'
 import { Account } from '@pages/connect-wallet/Account'
-import { testnet } from 'src/web3/chains'
+import { mainnet } from 'src/web3/chains'
 import { formatEther } from 'viem'
 
 interface IHeader {}
@@ -60,15 +60,15 @@ const Header: FC<IHeader> = () => {
     // refetch: refetchBalanceL3,
   } = useBalance({
     address,
-    chainId: testnet.id,
+    chainId: mainnet.id,
   })
 
   return (
     <>
       <header className="w-full fixed md:absolute top-0 left-0 z-50 bg-black md:bg-transparent md:pointer-events-auto md:[&_*]:pointer-events-auto">
         <div className="container">
-          <div className="flex flex-row items-center justify-between gap-4">
-            <Link to={'/'} className="h-[5.625rem] w-[9.606rem] flex items-center justify-center flex-shrink-0">
+          <div className="flex flex-row items-center justify-between gap-4 md:gap-16">
+            <Link to={'/'} className="h-[5.625rem] w-[9.606rem] flex items-center justify-center flex-shrink-0 p-px">
               <img className="w-full h-full object-contain" loading="lazy" alt="" src={logo} />
             </Link>
             <button
@@ -89,13 +89,15 @@ const Header: FC<IHeader> = () => {
               >
                 X
               </button>
-              <div className="items-center gap-[4.875rem] flex md:flex-row flex-col">
-                <nav className="whitespace-nowrap text-[1.25rem] text-lightgreen-100 font-ocrx text-extrathin md:mx-auto">
-                  <ul className="flex md:flex-row flex-col items-center gap-8 md:gap-8">
+              <div className="items-center gap-[4.875rem] flex md:flex-row flex-col justify-center">
+                <nav className="whitespace-nowrap text-[1.5rem] leading-[2rem] text-lightgreen-100 font-ocrx text-extrathin md:mr-auto">
+                  <ul className="flex md:flex-row flex-col items-center justify-center gap-8 md:gap-9 md:pt-3">
                     <li>
                       <Link
-                        to="/about"
-                        className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/about' ? 'line-through pointer-events-none' : ''}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        to="https://bitlazer.gitbook.io"
+                        className={`text-lightgreen-100  inline-block hover:scale-105 hover:line-through ${location.pathname === '/about' ? 'line-through pointer-events-none' : ''}`}
                         onClick={closeMenu}
                       >
                         [ABOUT]
@@ -104,7 +106,7 @@ const Header: FC<IHeader> = () => {
                     <li>
                       <Link
                         to="/bridge"
-                        className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/bridge' ? 'line-through pointer-events-none' : ''}`}
+                        className={`text-lightgreen-100 inline-block hover:scale-105 hover:line-through ${location.pathname === '/bridge' ? 'line-through pointer-events-none' : ''}`}
                         onClick={closeMenu}
                       >
                         [BRIDGE]
@@ -113,7 +115,7 @@ const Header: FC<IHeader> = () => {
                     <li>
                       <Link
                         to="/ecosystem"
-                        className={`text-lightgreen-100 hover:opacity-80 ${location.pathname === '/ecosystem' ? 'line-through pointer-events-none' : ''}`}
+                        className={`text-lightgreen-100 inline-block hover:scale-105 hover:line-through ${location.pathname === '/ecosystem' ? 'line-through pointer-events-none' : ''}`}
                         onClick={closeMenu}
                       >
                         [ECOSYSTEM]
@@ -122,7 +124,7 @@ const Header: FC<IHeader> = () => {
                     <li>
                       <button
                         className={clsx(
-                          'text-lightgreen-100 hover:opacity-80',
+                          'text-lightgreen-100 inline-block hover:scale-105 hover:line-through',
                           openHowItWorksModal && 'line-through select-none',
                         )}
                         onClick={() => {
@@ -136,7 +138,7 @@ const Header: FC<IHeader> = () => {
                     <li>
                       <button
                         className={clsx(
-                          'text-lightgreen-100 hover:opacity-80',
+                          'text-lightgreen-100 inline-block hover:scale-105 hover:line-through',
                           openFeaturesModal && 'line-through select-none',
                         )}
                         onClick={() => {
@@ -150,7 +152,7 @@ const Header: FC<IHeader> = () => {
                     <li>
                       <button
                         className={clsx(
-                          'text-lightgreen-100 hover:opacity-80',
+                          'text-lightgreen-100 inline-block hover:scale-105 hover:line-through',
                           openRoadmapModal && 'line-through select-none',
                         )}
                         onClick={() => {
@@ -163,27 +165,43 @@ const Header: FC<IHeader> = () => {
                     </li>
                   </ul>
                 </nav>
-                <div className="flex items-center space-x-0">
-                  {isConnected && (
-                    <Button className="w-auto uppercase">
-                      {l3isLoading
-                        ? 'Loading...'
-                        : `${formatBalance(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
-                    </Button>
-                  )}
-                  <Button
-                    onClick={() => {
-                      if (!isConnected) {
-                        setOpenConnectWalletModal(!openConnectWalletModal)
-                        closeMenu()
-                      }
-                    }}
-                    className="!w-auto"
-                  >
-                    {isConnected ? <Account /> : 'CONNECT WALLET'}
-                  </Button>
-                </div>
               </div>
+              <div className="flex md:hidden items-center space-x-0 mt-8 mx-auto justify-center flex-wrap ">
+                {isConnected && (
+                  <Button className="!w-auto uppercase min-w-[12.5rem]">
+                    {l3isLoading ? 'Loading...' : `${formatBalance(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
+                  </Button>
+                )}
+                <Button
+                  onClick={() => {
+                    if (!isConnected) {
+                      setOpenConnectWalletModal(!openConnectWalletModal)
+                      closeMenu()
+                    }
+                  }}
+                  className="!w-auto min-w-[12.5rem]"
+                >
+                  {isConnected ? <Account /> : 'CONNECT WALLET'}
+                </Button>
+              </div>
+            </div>
+            <div className="md:flex hidden items-center space-x-0">
+              {isConnected && (
+                <Button className="!w-auto uppercase min-w-[12.5rem]  md:min-w-min">
+                  {l3isLoading ? 'Loading...' : `${formatBalance(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
+                </Button>
+              )}
+              <Button
+                onClick={() => {
+                  if (!isConnected) {
+                    setOpenConnectWalletModal(!openConnectWalletModal)
+                    closeMenu()
+                  }
+                }}
+                className="!w-auto min-w-[12.5rem]  md:min-w-min"
+              >
+                {isConnected ? <Account /> : 'CONNECT WALLET'}
+              </Button>
             </div>
           </div>
         </div>

@@ -5,14 +5,16 @@ html {
   box-sizing: border-box;
   scroll-behavior: smooth;
 
-  font-size: 0.941175vw;
+  font-size: 16px;
   font-weight: 200;
-
 
   scrollbar-color: #3d8938 rgba(0, 0, 0, 0.1);
 
+  @media (max-width: 1399.98px) {
+    font-size: 1vw;
+  }
   @media (max-width: 1299.98px) {
-    font-size: 1.5vw;
+    font-size: 1.2vw;
   }
   @media (max-width: 991.98px) {
     font-size: 2.5vw;
@@ -193,18 +195,68 @@ footer {
   }
 }
 
+// .container {
+//   max-width: 106.25rem;
+//   width: 100%;
+//   padding: 0 1.25rem;
+//   margin: 0 auto;
+// }
+
 .container {
-  max-width: 106.25rem;
   width: 100%;
-  padding: 0 1.25rem;
-  margin: 0 auto;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 1rem;
+  padding-left: 1rem;
 }
+
+@media (min-width: 375px) {
+  .container {
+    max-width: 375px;
+  }
+}
+
+@media (min-width: 450px) {
+  .container {
+    max-width: 450px;
+  }
+}
+
+@media (min-width: 575px) {
+  .container {
+    max-width: 575px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 992px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1400px;
+  }
+}
+
 @keyframes randomRotate {
   0% {
     transform: rotate(calc(var(--initial-rotate, 0deg)));
   }
   50% {
-    transform: rotate(calc(var(--initial-rotate, 0deg) + var(--random-offset, 2deg)));
   }
   100% {
     transform: rotate(calc(var(--initial-rotate, 0deg)));
@@ -212,7 +264,7 @@ footer {
 }
 
 .rotate-line {
-  animation: randomRotate 3s ease-in-out infinite;
+  transform: rotate(calc(var(--initial-rotate, 0deg) + var(--random-offset, 2deg)));
   pointer-events: all !important;
 
   position: relative;
@@ -229,7 +281,7 @@ footer {
   // }
 
   div {
-    animation: widthLine 1.5s;
+    animation: widthLine 4s ease-in-out;
   }
 }
 
@@ -238,7 +290,7 @@ footer {
     width: 0;
   }
   to {
-    width: 110vw;
+    width: 170vw;
   }
 }
 

@@ -1,6 +1,6 @@
 import { Abi } from 'viem'
 
-export const stakeLBTC_abi: Abi = [
+export const stakelzrBTC_abi: Abi = [
   {
     inputs: [],
     stateMutability: 'nonpayable',

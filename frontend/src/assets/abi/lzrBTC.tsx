@@ -1,6 +1,6 @@
 import { Abi } from 'viem'
 
-export const LBTC_abi: Abi = [
+export const lzrBTC_abi: Abi = [
   {
     inputs: [
       {
