@@ -16,9 +16,9 @@ interface BridgeTab {
 
 const Bridge: FC<IBridge> = () => {
   const tabs: BridgeTab[] = [
-    { id: 'deposit', name: 'WRAP' },
+    { id: 'deposit', name: '(UN)WRAP' },
     { id: 'withdraw', name: 'BRIDGE' },
-    { id: 'stake', name: 'STAKE' },
+    { id: 'stake', name: '(UN)STAKE' },
     { id: 'connect', name: 'CONNECT WALLET' },
   ]
 
@@ -112,7 +112,7 @@ const Bridge: FC<IBridge> = () => {
                         <span> ] </span>
                       </div>
                       <div className="tracking-[-0.06em] leading-[1.313rem] ">
-                        Easily convert your Wrapped Bitcoin (WBTC) to lzrBTC with minimal fees and lightning-fast speed.
+                        Convert your Wrapped Bitcoin (WBTC) in Arbitrum to lzrBTC in Arbitrum
                       </div>
                     </div>
                     <div className="flex flex-col gap-4">
@@ -123,8 +123,7 @@ const Bridge: FC<IBridge> = () => {
                       </div>
                       <div className="tracking-[-0.06em] leading-[1.313rem] ">
                         <p className="m-0">
-                          Securely bridge your lzrBTC from Ethereum to Bitlazer's cutting-edge Arbitrum L3 in just a few
-                          clicks.
+                          Securely bridge your lzrBTC in Arbitrum to Bitlazer
                         </p>
                       </div>
                     </div>
@@ -136,22 +135,19 @@ const Bridge: FC<IBridge> = () => {
                       </div>
                       <div className="tracking-[-0.06em] leading-[1.313rem] ">
                         <p className="m-0">
-                          Seamlessly stake your lzrBTC to earn native Bitcoin gas fee rewards and LZR tokens, alongside
-                          all other incentives.
+                          Seamlessly stake your lzrBTC in Bitlazer to earn native Bitcoin gas fee rewards and LZR tokens
                         </p>
                       </div>
                     </div>
                     <div className="flex flex-col gap-4">
                       <div className="text-2xl">
                         <span>[ Step 4 | </span>
-                        <span className="text-fuchsia">Unstake and Collet Rewards </span>
+                        <span className="text-fuchsia">Unstake and Collect Rewards </span>
                         <span> ] </span>
                       </div>
                       <div className="tracking-[-0.06em] leading-[1.313rem] ">
                         <p className="m-0">
-                          Easily unstake and unwrap your lzrBTC and instantly claim your earned rewards. Enjoy complete
-                          flexibility with immediate access to Bitcoin gas payouts, LZR tokens, and all accrued
-                          benefits, on your terms.
+                          Unstake and unwrap your lzrBTC to claim your rewards
                         </p>
                       </div>
                     </div>

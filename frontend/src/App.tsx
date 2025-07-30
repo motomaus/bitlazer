@@ -24,12 +24,13 @@ function App() {
           <RouterProvider router={router} />
 
           <ToastContainer
-            autoClose={5000}
+            autoClose={false}
             position={'top-right'}
             theme="dark"
             hideProgressBar={true}
             newestOnTop={false}
-            closeOnClick
+            closeOnClick={false}
+            closeButton={true}
             z-index={9999}
           />
         </QueryClientProvider>
