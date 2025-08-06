@@ -33,6 +33,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     setValue,
     watch,
     getValues,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
@@ -106,6 +107,16 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     scopeKey: refresh.toString(),
   })
 
+  // Check if WBTC is supported
+  const { data: supportedWBTC } = useReadContract({
+    abi: lzrBTC_abi,
+    address: WRAP_CONTRACT,
+    functionName: 'supportedWrappers',
+    args: [ERC20_CONTRACT_ADDRESS['wbtc']],
+    chainId: arbitrum.id,
+    scopeKey: refresh.toString(),
+  })
+
   useEffect(() => {
     if (selectedTokenUnwrap === 'wbtc') {
       setHolderBalance(wbtcHolderBalance as string)
@@ -123,24 +134,46 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   }, [approvalData, watch('amount'), refresh])
 
   const handleApprove = async () => {
+    const amount = getValues('amount')
+    const amountInWei = parseEther(amount)
+    
+    console.log('=== APPROVE TRANSACTION DEBUG ===')
+    console.log('1. Approval amount (string):', amount)
+    console.log('2. Approval amount in Wei:', amountInWei.toString())
+    console.log('3. Token to approve:', selectedToken)
+    console.log('4. Token contract address:', ERC20_CONTRACT_ADDRESS[selectedToken])
+    console.log('5. Spender (WRAP_CONTRACT):', WRAP_CONTRACT)
+    
     const approvalArgs = {
-      abi: lzrBTC_abi,
+      abi: erc20Abi, // Use standard ERC20 ABI for approval
       address: ERC20_CONTRACT_ADDRESS[selectedToken],
       functionName: 'approve',
-      args: [WRAP_CONTRACT, parseEther(getValues('amount'))],
+      args: [WRAP_CONTRACT, amountInWei],
     }
+    
+    console.log('6. Approval args:', {
+      address: approvalArgs.address,
+      functionName: approvalArgs.functionName,
+      args: approvalArgs.args.map((arg: any) => arg.toString ? arg.toString() : arg),
+    })
 
     let approvalTransactionHash
     try {
+      console.log('7. Calling writeContract for approval...')
       approvalTransactionHash = await writeContract(config, approvalArgs)
-    } catch (error) {
-      console.log('Error: ', error)
+      console.log('8. Approval transaction hash:', approvalTransactionHash)
+    } catch (error: any) {
+      console.log('=== APPROVAL ERROR ===')
+      console.log('Error object:', error)
+      console.log('Error message:', error.message)
+      console.log('Error details:', error.details)
       toast(<TXToast {...{ message: 'Approval failed', error }} />)
       return
     }
     const approvalReceipt = await waitForTransactionReceipt(config, {
       hash: approvalTransactionHash,
     })
+    console.log('9. Approval receipt:', approvalReceipt)
     setRefresh((prev) => !prev)
     if (approvalReceipt.status === 'success') {
       const txHash = approvalReceipt.transactionHash
@@ -152,18 +185,51 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   }
 
   const handleDeposit = async () => {
+    const amount = getValues('amount')
+    const amountInWei = parseEther(amount)
+    
+    console.log('=== WRAP TRANSACTION DEBUG ===')
+    console.log('1. Input amount (string):', amount)
+    console.log('2. Amount in Wei (BigNumber):', amountInWei.toString())
+    console.log('3. Selected token:', selectedToken)
+    console.log('4. Token address:', ERC20_CONTRACT_ADDRESS[selectedToken])
+    console.log('5. Wrap contract address:', WRAP_CONTRACT)
+    console.log('6. User address:', address)
+    console.log('7. Chain ID:', chainId)
+    console.log('8. Is WBTC supported in contract?:', supportedWBTC)
+    console.log('9. Supported WBTC address from contract:', supportedWBTC !== '0x0000000000000000000000000000000000000000' ? supportedWBTC : 'NOT SET')
+    
+    // Check if WBTC is properly configured
+    if (supportedWBTC === '0x0000000000000000000000000000000000000000' || !supportedWBTC) {
+      console.error('ERROR: WBTC is not configured as a supported wrapper in the contract!')
+      toast(<TXToast {...{ message: 'WBTC is not configured in the contract. Please contact admin.' }} />)
+      return
+    }
+    
     const args = {
       abi: lzrBTC_abi,
       address: WRAP_CONTRACT,
       functionName: 'mint',
-      args: [parseEther(getValues('amount')), ERC20_CONTRACT_ADDRESS[selectedToken]],
+      args: [amountInWei, ERC20_CONTRACT_ADDRESS[selectedToken]],
     } as any
+    
+    console.log('10. Transaction args:', {
+      address: args.address,
+      functionName: args.functionName,
+      args: args.args.map((arg: any) => arg.toString ? arg.toString() : arg),
+    })
+    console.log('11. ABI being used has mint function?:', lzrBTC_abi.find((item: any) => item.name === 'mint'))
 
     try {
+      console.log('9. Calling writeContract...')
       const transactionHash = await writeContract(config, args)
+      console.log('10. Transaction hash received:', transactionHash)
+      
       const receipt = await waitForTransactionReceipt(config, {
         hash: transactionHash,
       })
+      console.log('11. Transaction receipt:', receipt)
+      
       if (receipt.status === 'success') {
         const txHash = receipt.transactionHash
         toast(<TXToast {...{ message: 'Wrap successful', txHash }} />)
@@ -173,7 +239,12 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         toast(<TXToast {...{ message: 'Wrap failed' }} />)
       }
     } catch (error: any) {
-      console.log('Error: ', error)
+      console.log('=== WRAP TRANSACTION ERROR ===')
+      console.log('Error object:', error)
+      console.log('Error message:', error.message)
+      console.log('Error details:', error.details)
+      console.log('Error cause:', error.cause)
+      
       if (!error.message.includes('User rejected the request.')) {
         toast(<TXToast {...{ message: 'Failed to Wrap.' }} />)
         console.log(error.message)
@@ -273,6 +344,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
               onClick={(e) => {
                 e.preventDefault()
                 setValue('amount', balanceData?.formatted || '0')
+                trigger('amount')
               }}
               className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
             >

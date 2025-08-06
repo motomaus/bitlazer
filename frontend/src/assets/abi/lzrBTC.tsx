@@ -161,7 +161,7 @@ export const lzrBTC_abi: Abi = [
       },
       {
         internalType: 'address',
-        name: 'receiver',
+        name: '_WBTC',
         type: 'address',
       },
     ],
@@ -277,7 +277,7 @@ export const lzrBTC_abi: Abi = [
       },
       {
         internalType: 'address',
-        name: 'receiver',
+        name: '_WBTC',
         type: 'address',
       },
     ],
@@ -305,6 +305,25 @@ export const lzrBTC_abi: Abi = [
     outputs: [
       {
         internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    name: 'supportedWrappers',
+    outputs: [
+      {
+        internalType: 'contract IERC20',
         name: '',
         type: 'address',
       },
