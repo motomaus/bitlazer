@@ -35,17 +35,6 @@ const Footer: FC<IFooter> = () => {
                   EXPLORER
                 </a>
               </li>
-              |
-              <li>
-                <a
-                  className="hover:scale-105 hover:line-through inline-block"
-                  href="https://faucet.testnet.bitlazer.io"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  TESTNET FAUCET
-                </a>
-              </li>
             </ul>
           </nav>
           <ul className="flex items-center gap-5 tracking-[-0.02em]">
