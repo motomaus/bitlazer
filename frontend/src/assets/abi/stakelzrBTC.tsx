@@ -2,699 +2,630 @@ import { Abi } from 'viem'
 
 export const stakelzrBTC_abi: Abi = [
   {
-    inputs: [],
-    stateMutability: 'nonpayable',
-    type: 'constructor',
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
   {
-    inputs: [],
-    name: 'AccessControlBadConfirmation',
-    type: 'error',
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "Approval",
+    "type": "event"
   },
   {
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-      {
-        internalType: 'bytes32',
-        name: 'neededRole',
-        type: 'bytes32',
-      },
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
+      }
     ],
-    name: 'AccessControlUnauthorizedAccount',
-    type: 'error',
+    "name": "Initialized",
+    "type": "event"
   },
   {
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        internalType: 'address',
-        name: 'spender',
-        type: 'address',
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
       },
       {
-        internalType: 'uint256',
-        name: 'allowance',
-        type: 'uint256',
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "previousAdminRole",
+        "type": "bytes32"
       },
       {
-        internalType: 'uint256',
-        name: 'needed',
-        type: 'uint256',
-      },
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "newAdminRole",
+        "type": "bytes32"
+      }
     ],
-    name: 'ERC20InsufficientAllowance',
-    type: 'error',
+    "name": "RoleAdminChanged",
+    "type": "event"
   },
   {
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        internalType: 'address',
-        name: 'sender',
-        type: 'address',
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
       },
       {
-        internalType: 'uint256',
-        name: 'balance',
-        type: 'uint256',
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
       },
       {
-        internalType: 'uint256',
-        name: 'needed',
-        type: 'uint256',
-      },
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
     ],
-    name: 'ERC20InsufficientBalance',
-    type: 'error',
+    "name": "RoleGranted",
+    "type": "event"
   },
   {
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        internalType: 'address',
-        name: 'approver',
-        type: 'address',
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
       },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
     ],
-    name: 'ERC20InvalidApprover',
-    type: 'error',
+    "name": "RoleRevoked",
+    "type": "event"
   },
   {
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        internalType: 'address',
-        name: 'receiver',
-        type: 'address',
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
       },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
     ],
-    name: 'ERC20InvalidReceiver',
-    type: 'error',
+    "name": "Transfer",
+    "type": "event"
   },
   {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'sender',
-        type: 'address',
-      },
-    ],
-    name: 'ERC20InvalidSender',
-    type: 'error',
+    "stateMutability": "payable",
+    "type": "fallback"
   },
   {
-    inputs: [
+    "inputs": [],
+    "name": "DEFAULT_ADMIN_ROLE",
+    "outputs": [
       {
-        internalType: 'address',
-        name: 'spender',
-        type: 'address',
-      },
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
     ],
-    name: 'ERC20InvalidSpender',
-    type: 'error',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'InvalidInitialization',
-    type: 'error',
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      }
+    ],
+    "name": "allowance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'NotInitializing',
-    type: 'error',
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "approve",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    anonymous: false,
-    inputs: [
+    "inputs": [
       {
-        indexed: true,
-        internalType: 'address',
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'spender',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'value',
-        type: 'uint256',
-      },
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
     ],
-    name: 'Approval',
-    type: 'event',
+    "name": "balanceOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    anonymous: false,
-    inputs: [
+    "inputs": [
       {
-        indexed: false,
-        internalType: 'uint64',
-        name: 'version',
-        type: 'uint64',
-      },
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
     ],
-    name: 'Initialized',
-    type: 'event',
+    "name": "charge",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    anonymous: false,
-    inputs: [
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [
       {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'previousAdminRole',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'newAdminRole',
-        type: 'bytes32',
-      },
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
     ],
-    name: 'RoleAdminChanged',
-    type: 'event',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    anonymous: false,
-    inputs: [
+    "inputs": [
       {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
       },
       {
-        indexed: true,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'sender',
-        type: 'address',
-      },
+        "internalType": "uint256",
+        "name": "subtractedValue",
+        "type": "uint256"
+      }
     ],
-    name: 'RoleGranted',
-    type: 'event',
+    "name": "decreaseAllowance",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    anonymous: false,
-    inputs: [
+    "inputs": [
       {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'sender',
-        type: 'address',
-      },
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      }
     ],
-    name: 'RoleRevoked',
-    type: 'event',
+    "name": "getRoleAdmin",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    anonymous: false,
-    inputs: [
+    "inputs": [
       {
-        indexed: true,
-        internalType: 'address',
-        name: 'from',
-        type: 'address',
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
       },
       {
-        indexed: true,
-        internalType: 'address',
-        name: 'to',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'value',
-        type: 'uint256',
-      },
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
     ],
-    name: 'Transfer',
-    type: 'event',
+    "name": "grantRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    stateMutability: 'payable',
-    type: 'fallback',
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "hasRole",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'DEFAULT_ADMIN_ROLE',
-    outputs: [
+    "inputs": [
       {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
       },
+      {
+        "internalType": "uint256",
+        "name": "addedValue",
+        "type": "uint256"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "name": "increaseAllowance",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'address',
-        name: 'owner',
-        type: 'address',
+        "internalType": "address",
+        "name": "_owner",
+        "type": "address"
       },
       {
-        internalType: 'address',
-        name: 'spender',
-        type: 'address',
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
       },
+      {
+        "internalType": "string",
+        "name": "symbol",
+        "type": "string"
+      }
     ],
-    name: 'allowance',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [],
+    "name": "name",
+    "outputs": [
       {
-        internalType: 'address',
-        name: 'spender',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'value',
-        type: 'uint256',
-      },
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
     ],
-    name: 'approve',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [],
+    "name": "readHolders",
+    "outputs": [
       {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
     ],
-    name: 'balanceOf',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
       },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
     ],
-    name: 'charge',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "name": "renounceRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'decimals',
-    outputs: [
+    "inputs": [
       {
-        internalType: 'uint8',
-        name: '',
-        type: 'uint8',
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
       },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "name": "revokeRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
+        "internalType": "bytes32",
+        "name": "_version",
+        "type": "bytes32"
+      }
     ],
-    name: 'getRoleAdmin',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
+    "name": "setVersion",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
     ],
-    name: 'grantRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "name": "stake",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
     ],
-    name: 'hasRole',
-    outputs: [
+    "name": "supportsInterface",
+    "outputs": [
       {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [
       {
-        internalType: 'address',
-        name: '_owner',
-        type: 'address',
-      },
-      {
-        internalType: 'string',
-        name: 'name',
-        type: 'string',
-      },
-      {
-        internalType: 'string',
-        name: 'symbol',
-        type: 'string',
-      },
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
     ],
-    name: 'initialize',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'name',
-    outputs: [
+    "inputs": [],
+    "name": "totalStaked",
+    "outputs": [
       {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'readHolders',
-    outputs: [
+    "inputs": [],
+    "name": "totalStakers",
+    "outputs": [
       {
-        internalType: 'address[]',
-        name: '',
-        type: 'address[]',
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [
       {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'callerConfirmation',
-        type: 'address',
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    name: 'renounceRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
       },
       {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
     ],
-    name: 'revokeRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "name": "transfer",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'bytes32',
-        name: '_version',
-        type: 'bytes32',
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
       },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
     ],
-    name: 'setVersion',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
+    "name": "transferFrom",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
     ],
-    name: 'stake',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
+    "name": "unstake",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [
+    "inputs": [],
+    "name": "version",
+    "outputs": [
       {
-        internalType: 'bytes4',
-        name: 'interfaceId',
-        type: 'bytes4',
-      },
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
     ],
-    name: 'supportsInterface',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: 'symbol',
-    outputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'totalStaked',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'totalStakers',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'totalSupply',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'to',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'value',
-        type: 'uint256',
-      },
-    ],
-    name: 'transfer',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'from',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'to',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'value',
-        type: 'uint256',
-      },
-    ],
-    name: 'transferFrom',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'amount',
-        type: 'uint256',
-      },
-    ],
-    name: 'unstake',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'version',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    stateMutability: 'payable',
-    type: 'receive',
-  },
+    "stateMutability": "payable",
+    "type": "receive"
+  }
 ]

@@ -175,7 +175,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       let requiredApproval: bigint
       try {
         if (selectedToken === 'wbtc') {
-          // The new contract expects 8 decimals for WBTC
+          // Contract expects 8 decimals for WBTC
           requiredApproval = parseUnits(amount, 8)
         } else {
           requiredApproval = parseUnits(amount, 18)
@@ -282,6 +282,8 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         toast(<TXToast {...{ message: 'Wrap successful', txHash }} />)
         const cookies = new Cookies()
         cookies.set('hasWrapped', 'true', { path: '/' })
+        // Clear the input field after successful wrap
+        setValue('amount', '')
       } else {
         toast(<TXToast {...{ message: 'Wrap failed' }} />)
       }
@@ -323,6 +325,8 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       if (receipt.status === 'success') {
         const txHash = receipt.transactionHash
         toast(<TXToast {...{ message: 'Unwrap successful', txHash }} />)
+        // Clear the input field after successful unwrap
+        unwrapSetValue('amount', '')
         setTimeout(() => {
           setRefresh((prev) => !prev)
         }, 2000)
