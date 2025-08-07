@@ -175,10 +175,8 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       let requiredApproval: bigint
       try {
         if (selectedToken === 'wbtc') {
-          // When __apply8To18DecimalsConversion is true, the contract expects 18 decimals
-          // So we need to check if the user has approved the 18-decimal amount
-          const amountIn8Decimals = parseUnits(amount, 8)
-          requiredApproval = amountIn8Decimals * BigInt(10 ** 10) // Convert to 18 decimals
+          // The new contract expects 8 decimals for WBTC
+          requiredApproval = parseUnits(amount, 8)
         } else {
           requiredApproval = parseUnits(amount, 18)
         }
@@ -199,54 +197,30 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   const handleApprove = async () => {
     const amount = getValues('amount')
     
-    // For WBTC with __apply8To18DecimalsConversion, we need to approve the 18-decimal amount!
     let amountForApproval: bigint
     if (selectedToken === 'wbtc') {
-      // The contract expects 18 decimals, so approve that amount
-      const amountIn8Decimals = parseUnits(amount, 8)
-      amountForApproval = amountIn8Decimals * BigInt(10 ** 10) // Convert to 18 decimals for approval
-      console.log('WBTC approval: ', amount, ' WBTC -> ', amountIn8Decimals.toString(), ' (8 dec) -> ', amountForApproval.toString(), ' (18 dec for approval)')
+      amountForApproval = parseUnits(amount, 8)
     } else {
-      amountForApproval = parseUnits(amount, 18) // Standard ERC20 has 18 decimals
+      amountForApproval = parseUnits(amount, 18)
     }
     
-    console.log('=== APPROVE TRANSACTION DEBUG ===')
-    console.log('1. Approval amount (string):', amount)
-    console.log('2. Approval amount (bigint):', amountForApproval.toString())
-    console.log('3. Token to approve:', selectedToken)
-    console.log('4. Token contract address:', ERC20_CONTRACT_ADDRESS[selectedToken])
-    console.log('5. Spender (WRAP_CONTRACT):', WRAP_CONTRACT)
-    
     const approvalArgs = {
-      abi: erc20Abi, // Use standard ERC20 ABI for approval
+      abi: erc20Abi,
       address: ERC20_CONTRACT_ADDRESS[selectedToken] as `0x${string}`,
       functionName: 'approve' as const,
       args: [WRAP_CONTRACT as `0x${string}`, amountForApproval] as const,
     }
-    
-    console.log('6. Approval args:', {
-      address: approvalArgs.address,
-      functionName: approvalArgs.functionName,
-      args: approvalArgs.args.map((arg: any) => arg.toString ? arg.toString() : arg),
-    })
 
     let approvalTransactionHash
     try {
-      console.log('7. Calling writeContract for approval...')
       approvalTransactionHash = await writeContract(config, approvalArgs)
-      console.log('8. Approval transaction hash:', approvalTransactionHash)
     } catch (error: any) {
-      console.log('=== APPROVAL ERROR ===')
-      console.log('Error object:', error)
-      console.log('Error message:', error.message)
-      console.log('Error details:', error.details)
       toast(<TXToast {...{ message: 'Approval failed', error }} />)
       return
     }
     const approvalReceipt = await waitForTransactionReceipt(config, {
       hash: approvalTransactionHash,
     })
-    console.log('9. Approval receipt:', approvalReceipt)
     setRefresh((prev) => !prev)
     if (approvalReceipt.status === 'success') {
       const txHash = approvalReceipt.transactionHash
@@ -259,63 +233,27 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
   const handleDeposit = async () => {
     const amount = getValues('amount')
-    // IMPORTANT: When __apply8To18DecimalsConversion is true, the contract expects 18 decimals!
     let amountToSend: bigint
     if (selectedToken === 'wbtc') {
-      // Convert WBTC from 8 decimals to 18 decimals for the contract
-      const amountIn8Decimals = parseUnits(amount, 8)
-      amountToSend = amountIn8Decimals * BigInt(10 ** 10) // Convert to 18 decimals
-      console.log('WBTC amount for mint: ', amount, ' WBTC -> ', amountIn8Decimals.toString(), ' (8 dec) -> ', amountToSend.toString(), ' (18 dec for contract)')
+      amountToSend = parseUnits(amount, 8)
     } else {
       amountToSend = parseUnits(amount, 18)
     }
-    
-    console.log('=== WRAP TRANSACTION DEBUG ===')
-    console.log('1. Input amount (string):', amount)
-    console.log('2. Amount to send (bigint):', amountToSend.toString())
-    console.log('3. Selected token:', selectedToken)
-    console.log('4. Token address:', ERC20_CONTRACT_ADDRESS[selectedToken])
-    console.log('5. Wrap contract address:', WRAP_CONTRACT)
-    console.log('6. User address:', address)
-    console.log('7. Chain ID:', chainId)
-    console.log('8. Contract is paused?:', isPaused)
-    console.log('9. Decimals conversion enabled?:', decimalsConversion)
-    console.log('10. User WBTC balance:', balanceData?.formatted)
-    console.log('11. WBTC supported wrapper address:', supportedWBTCAddress)
-    console.log('12. Is WBTC configured?:', supportedWBTCAddress !== '0x0000000000000000000000000000000000000000')
-    console.log('13. Current WBTC allowance:', approvalData?.toString())
     
     const args = {
       abi: lzrBTC_abi,
       address: WRAP_CONTRACT as `0x${string}`,
       functionName: 'mint' as const,
-      args: [amountToSend, ERC20_CONTRACT_ADDRESS[selectedToken] as `0x${string}`] as const,
+      args: [amountToSend] as const,
     }
-    
-    console.log('14. Transaction args:', {
-      address: args.address,
-      functionName: args.functionName,
-      args: args.args.map((arg: any) => arg.toString ? arg.toString() : arg),
-    })
-    console.log('15. ABI being used has mint function?:', lzrBTC_abi.find((item: any) => item.name === 'mint'))
 
     try {
-      console.log('16. Calling writeContract...')
-      
-      // First, let's try to estimate gas to see if the transaction would succeed
       try {
-        const { request } = await simulateContract(config, {
+        await simulateContract(config, {
           ...args,
           account: address as `0x${string}`,
         })
-        console.log('17. Simulation successful, request:', request)
       } catch (simulationError: any) {
-        console.error('=== SIMULATION ERROR ===')
-        console.error('Simulation failed:', simulationError)
-        console.error('Error message:', simulationError.message)
-        console.error('Error cause:', simulationError.cause)
-        
-        // Check for specific revert reasons
         if (simulationError.message?.includes('Wrapper not supported')) {
           toast(<TXToast {...{ message: 'WBTC is not configured as a supported wrapper' }} />)
           return
@@ -329,18 +267,15 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           return
         }
         
-        // If simulation fails, the transaction will likely fail too
         toast(<TXToast {...{ message: `Transaction will fail: ${simulationError.message || 'Unknown error'}` }} />)
         return
       }
       
       const transactionHash = await writeContract(config, args)
-      console.log('18. Transaction hash received:', transactionHash)
       
       const receipt = await waitForTransactionReceipt(config, {
         hash: transactionHash,
       })
-      console.log('19. Transaction receipt:', receipt)
       
       if (receipt.status === 'success') {
         const txHash = receipt.transactionHash
@@ -351,15 +286,8 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         toast(<TXToast {...{ message: 'Wrap failed' }} />)
       }
     } catch (error: any) {
-      console.log('=== WRAP TRANSACTION ERROR ===')
-      console.log('Error object:', error)
-      console.log('Error message:', error.message)
-      console.log('Error details:', error.details)
-      console.log('Error cause:', error.cause)
-      
       if (!error.message.includes('User rejected the request.')) {
         toast(<TXToast {...{ message: 'Failed to Wrap.' }} />)
-        console.log(error.message)
       } else {
         toast(<TXToast {...{ message: 'Transaction Rejected.' }} />)
       }
@@ -372,10 +300,9 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   const handleUnwrap = async () => {
     const amount = unwrapGetValues('amount')
     let amountToSend: bigint
+    
     if (selectedTokenUnwrap === 'wbtc') {
-      // Convert to 18 decimals when __apply8To18DecimalsConversion is true
-      const amountIn8Decimals = parseUnits(amount, 8)
-      amountToSend = amountIn8Decimals * BigInt(10 ** 10)
+      amountToSend = parseUnits(amount, 18)
     } else {
       amountToSend = parseUnits(amount, 18)
     }
@@ -384,7 +311,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       abi: lzrBTC_abi,
       address: WRAP_CONTRACT as `0x${string}`,
       functionName: 'burn' as const,
-      args: [amountToSend, ERC20_CONTRACT_ADDRESS[selectedTokenUnwrap] as `0x${string}`] as const,
+      args: [amountToSend] as const,
     }
 
     try {
@@ -392,11 +319,13 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       const receipt = await waitForTransactionReceipt(config, {
         hash: transactionHash,
       })
+      
       if (receipt.status === 'success') {
         const txHash = receipt.transactionHash
-        toast(<TXToast {...{ message: 'Deposit successful', txHash }} />)
-        const cookies = new Cookies()
-        cookies.set('hasWrapped', 'true', { path: '/' })
+        toast(<TXToast {...{ message: 'Unwrap successful', txHash }} />)
+        setTimeout(() => {
+          setRefresh((prev) => !prev)
+        }, 2000)
       } else {
         toast(<TXToast {...{ message: 'Unwrap failed' }} />)
       }
@@ -418,24 +347,6 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
   return (
     <div className="flex flex-col gap-7">
-      {/* Show balances */}
-      <div className="bg-darkslategray-200 border border-lightgreen-100 rounded p-4">
-        <div className="text-lightgreen-100 font-bold mb-2">Your Balances:</div>
-        <div className="text-gray-200">
-          WBTC: {balanceData?.formatted || '0'} WBTC (raw: {balanceData?.value?.toString() || '0'})
-        </div>
-        <div className="text-gray-200">
-          lzrBTC: {lzrBTCBalanceData?.formatted || '0'} lzrBTC
-        </div>
-        <div className="text-gray-200">
-          Current Allowance: {approvalData?.toString() || '0'} 
-          {selectedToken === 'wbtc' && decimalsConversion && (
-            <span className="text-yellow-400">
-              (needs 18-decimal format due to contract conversion)
-            </span>
-          )}
-        </div>
-      </div>
       
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7">
         <div className="flex flex-col relative gap-[0.75rem]">
@@ -575,9 +486,9 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
             control={unwrapControl}
             rules={{
               required: 'Amount is required',
-              min: { value: 0.001, message: 'Amount must be greater than 0.001' },
+              min: { value: 0.00001, message: 'Amount must be greater than 0.00001' },
               max: {
-                value: formatEther(holderBalance?.toString() || '0'),
+                value: parseFloat(lzrBTCBalanceData?.formatted || '0'),
                 message: 'Amount must be less than balance',
               },
             }}
@@ -593,12 +504,12 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-              Balance: {lzrBTCBalanceLoading ? 'Loading...' : `${formatEther(holderBalance?.toString() || '0')} lzrBTC`}
+              Balance: {lzrBTCBalanceLoading ? 'Loading...' : `${lzrBTCBalanceData?.formatted || '0'} lzrBTC`}
             </div>
             <button
               onClick={(e) => {
                 e.preventDefault()
-                unwrapSetValue('amount', formatEther(holderBalance?.toString() || '0'))
+                unwrapSetValue('amount', lzrBTCBalanceData?.formatted || '0')
                 unwrapTrigger('amount')
               }}
               className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
@@ -615,7 +526,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           <div className="w-[2.75rem] relative tracking-[-0.06em] leading-[1.25rem] text-right inline-block">00.00</div>
         </div> */}
           {chainId === arbitrum.id ? (
-            <Button type="submit" disabled={!isUnwrapValid || holderBalance === '0'}>
+            <Button type="submit" disabled={!isUnwrapValid || !lzrBTCBalanceData?.value || lzrBTCBalanceData.value === 0n}>
               UNWRAP
             </Button>
           ) : (
