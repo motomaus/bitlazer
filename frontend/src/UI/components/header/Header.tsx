@@ -31,7 +31,14 @@ const Header: FC<IHeader> = () => {
   const formatBalance = (balance: string) => {
     if (!balance) return '0'
     const etherValue = formatEther(BigInt(balance))
-    return Number(etherValue).toFixed(5)
+    // Use string manipulation to avoid rounding - just truncate after 8 decimals
+    const parts = etherValue.split('.')
+    if (parts.length === 1) return parts[0] // No decimals
+    // Take up to 8 decimal places without rounding
+    const decimals = parts[1].substring(0, 8)
+    // Remove trailing zeros for cleaner display
+    const trimmedDecimals = decimals.replace(/0+$/, '')
+    return trimmedDecimals ? `${parts[0]}.${trimmedDecimals}` : parts[0]
   }
 
   const toggleMenu = () => {
