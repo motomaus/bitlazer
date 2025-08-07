@@ -167,8 +167,13 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   useEffect(() => {
     if (approvalData !== undefined) {
       const amount = getValues('amount') || '0'
+      
+      // Check if there's any existing approval
+      const hasAnyApproval = BigInt(approvalData) > BigInt(0)
+      
       if (!amount || amount === '0') {
-        setApproval(false)
+        // If no amount entered but has existing approval, keep showing WRAP
+        setApproval(hasAnyApproval)
         return
       }
       
@@ -188,8 +193,8 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           setApproval(false)
         }
       } catch (error) {
-        // Invalid amount format
-        setApproval(false)
+        // Invalid amount format but has existing approval
+        setApproval(hasAnyApproval)
       }
     }
   }, [approvalData, watch('amount'), refresh, selectedToken])
