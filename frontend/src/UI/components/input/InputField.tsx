@@ -12,6 +12,7 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   control?: Control<any>
   error?: any
   isLarge?: boolean
+  withoutShadow?: boolean
   required?: boolean
   type?: string
   iconBefore?: JSX.Element
@@ -34,6 +35,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       type = 'text',
       button,
       iconBefore,
+      withoutShadow,
       ...props
     },
     ref,
@@ -63,16 +65,24 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             {label && <span className="tracking-[-0.06em] leading-[1.25rem]">{label}</span>}
           </div>
         )}
-        <label className="shadow-[0px_0px_12px_#68d861] rounded-[1.84px] relative w-full ">
+        <label
+          className={clsx(!withoutShadow && ' shadow-[0px_0px_12px_#68d861] rounded-[1.84px]', ' relative w-full ')}
+        >
           {iconBefore && (
             <span className="icon fill-white absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none">
               {iconBefore}
             </span>
           )}
-          <span className="shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.31)_inset,_1.8px_1.8px_1.84px_rgba(104,_216,_97,_0.22)_inset] rounded-[.115rem] w-full block h-full">
+          <span
+            className={clsx(
+              !withoutShadow &&
+                'shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.31)_inset,_1.8px_1.8px_1.84px_rgba(104,_216,_97,_0.22)_inset]  rounded-[.115rem]',
+              ' w-full block h-full',
+            )}
+          >
             <input
               className={clsx(
-                'placeholder:text-lightgreen-300 text-lightgreen-100 py-[0.812rem] px-[1.25rem] text-[1.25rem] rounded-[.115rem] w-full font-ocr-x-trial text-center disabled:opacity-40 disabled:pointer-events-none disabled:touch-none',
+                'placeholder:text-lightgreen-300 text-lightgreen-100 py-[0.5rem] px-[1.25rem] pt-5 text-[1.45rem] rounded-[.115rem] w-full font-ocrx text-center disabled:opacity-40 disabled:pointer-events-none disabled:touch-none',
                 iconBefore && '!pl-12',
                 inputClassName,
               )}

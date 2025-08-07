@@ -27,27 +27,36 @@
     }
   }
   :global(.my-select__control) {
-    box-shadow: none;
     outline: none;
 
-    border-radius: 1rem;
-    border: 0.0625rem solid rgba(242, 191, 251, 0.15);
+    border: 0.125rem solid #393a3a;
+    border-top-width: 0.1875rem;
+    border-bottom-width: 0.1875rem;
+    border-radius: 0.1153rem;
+    background: #393a3a;
+    box-shadow:
+      -0.1153rem -0.0576rem 0.2305rem 0rem rgba(215, 215, 215, 0.18) inset,
+      0.1153rem 0.1153rem 0.1153rem 0rem rgba(0, 0, 0, 0.91) inset;
 
     padding: 0.625rem 1rem;
     text-align: center;
 
-    background: #1b1f27;
-
-    height: 3rem;
-    min-height: 3rem;
+    height: 2.875rem;
+    min-height: 2.875rem;
 
     font-family: inherit;
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-style: normal;
-    font-weight: 300;
+    font-weight: 400;
     line-height: normal;
 
-    cursor: pointer;
+    @media (max-width: 991.98px) {
+      font-size: 0.875rem;
+      padding-left: 0;
+      padding-right: 0.5rem;
+    }
+
+    // cursor: pointer;
 
     &:hover {
       background: rgba(255, 255, 255, 0.2);
@@ -67,7 +76,7 @@
 
     transition: 0.3s;
 
-    border-radius: 0.5rem;
+    border-radius: 0.1153rem;
     padding: 0.5rem;
 
     display: flex;
@@ -106,10 +115,14 @@
 
     min-width: 9.375rem;
 
-    border-radius: 1rem;
-    border: 0.0625rem solid rgba(242, 191, 251, 0.15);
-    background: #32353d;
-    backdrop-filter: blur(1.5625rem);
+    border: 0.125rem solid #393a3a;
+    border-top-width: 0.1875rem;
+    border-bottom-width: 0.1875rem;
+    border-radius: 0.1153rem;
+    background: #393a3a;
+    box-shadow:
+      -0.1153rem -0.0576rem 0.2305rem 0rem rgba(215, 215, 215, 0.18) inset,
+      0.1153rem 0.1153rem 0.1153rem 0rem rgba(0, 0, 0, 0.91) inset;
 
     padding: 0.5rem;
   }

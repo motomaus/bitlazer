@@ -38,26 +38,44 @@ const config = {
         },
         fuchsia: '#ff00ff',
         darkgreen: 'rgba(30, 101, 27, 0.3)',
+        'neutral-800': '#393a3a',
       },
       spacing: {},
       fontFamily: {
         sans: [
           '"Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
         ],
-        'maison-neue-trial':
+        'maison-neue':
           '"Maison Neue Mono", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
-        'ocr-x-trial':
-          '"OCR-X TTF", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+        ocrx: '"OCRX", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
         arial: 'Arial',
       },
       borderRadius: {
         '12xs': '1px',
         '11xs-8': '1.8px',
       },
+      animation: {
+        'loading-dots': 'loading 2s infinite',
+        'loading-pulse': 'loadingPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      keyframes: {
+        loading: {
+          '0%': { opacity: '0.2' },
+          '20%': { opacity: '1' },
+          '100%': { opacity: '0.2' },
+        },
+        loadingPulse: {
+          '0%, 100%': { opacity: '0.2' },
+          '50%': { opacity: '0.8' },
+        },
+      },
     },
     fontSize: {
       base: '1rem',
       xl: '1.25rem',
+      '2xl': '1.45rem',
+      '4xl': '4.25rem',
+      '6xl': '3.75rem',
       'lgi-7': '1.231rem',
       smi: '0.813rem',
       inherit: 'inherit',

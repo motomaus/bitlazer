@@ -1,6 +1,6 @@
 import { Abi } from 'viem'
 
-export const LBTC_abi: Abi = [
+export const lzrBTC_abi: Abi = [
   {
     inputs: [
       {
@@ -159,6 +159,11 @@ export const LBTC_abi: Abi = [
         name: 'amount',
         type: 'uint256',
       },
+      {
+        internalType: 'address',
+        name: 'receiver',
+        type: 'address',
+      },
     ],
     name: 'burn',
     outputs: [],
@@ -219,6 +224,30 @@ export const LBTC_abi: Abi = [
     inputs: [
       {
         internalType: 'address',
+        name: '_holder',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_WBTC',
+        type: 'address',
+      },
+    ],
+    name: 'getHolderBalance',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
         name: 'spender',
         type: 'address',
       },
@@ -245,6 +274,11 @@ export const LBTC_abi: Abi = [
         internalType: 'uint256',
         name: 'amount',
         type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'receiver',
+        type: 'address',
       },
     ],
     name: 'mint',
