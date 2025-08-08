@@ -14,6 +14,8 @@
     "fmtsol": "prettier --write --plugin=prettier-plugin-solidity 'contracts/**/*.sol'",
     "fmtsol:check": "prettier --check --plugin=prettier-plugin-solidity 'contracts/**/*.sol'",
     "contracts:compile": "hardhat compile",
+    "abi:generate": "node scripts/generate-abi.js",
+    "contracts:build": "npm run contracts:compile && npm run abi:generate",
     "scripts:wrap-1lbtc": "hardhat run scripts/wrap-1lbtc.ts --network arbitrum-sepolia",
     "prepare": "husky"
   },

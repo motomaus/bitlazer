@@ -17,11 +17,23 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
       
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 9
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+        cache-dependency-path: frontend/pnpm-lock.yaml
+        
     - name: Build
       working-directory: ./frontend
       run: |
-        yarn
-        yarn build
+        pnpm install --frozen-lockfile
+        pnpm build
 
     - name: "Deploy to AWS S3"
       working-directory: ./frontend

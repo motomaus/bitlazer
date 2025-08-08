@@ -8,7 +8,11 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract WBTC is ERC20 {
     address private owner;
 
-    constructor(address _owner, string memory name, string memory symbol) ERC20(name, symbol) {
+    constructor(
+        address _owner,
+        string memory name,
+        string memory symbol
+    ) ERC20(name, symbol) {
         owner = _owner;
     }
 
@@ -19,5 +23,9 @@ contract WBTC is ERC20 {
 
     function mint(address to, uint256 amount) public onlyOwner {
         _mint(to, amount);
+    }
+
+    function decimals() public view override returns (uint8) {
+        return 8;
     }
 }

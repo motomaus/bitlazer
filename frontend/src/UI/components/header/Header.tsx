@@ -11,7 +11,8 @@ import Features from '@pages/features/Features'
 import clsx from 'clsx'
 import { useAccount, useBalance } from 'wagmi'
 import { Account } from '@pages/connect-wallet/Account'
-import { mainnet } from 'src/web3/chains'
+import { arbitrum } from 'wagmi/chains'
+import { ERC20_CONTRACT_ADDRESS } from 'src/web3/contracts'
 import { formatEther } from 'viem'
 
 interface IHeader {}
@@ -22,6 +23,7 @@ const Header: FC<IHeader> = () => {
   const [openConnectWalletModal, setOpenConnectWalletModal] = useState(false)
   const [openRoadmapModal, setOpenRoadmapModal] = useState(false)
   const [openFeaturesModal, setOpenFeaturesModal] = useState(false)
+  const [refresh, setRefresh] = useState(false)
   const { address, isConnected } = useAccount()
 
   const location = useLocation()
@@ -29,7 +31,14 @@ const Header: FC<IHeader> = () => {
   const formatBalance = (balance: string) => {
     if (!balance) return '0'
     const etherValue = formatEther(BigInt(balance))
-    return Number(etherValue).toFixed(4)
+    // Use string manipulation to avoid rounding - just truncate after 8 decimals
+    const parts = etherValue.split('.')
+    if (parts.length === 1) return parts[0] // No decimals
+    // Take up to 8 decimal places without rounding
+    const decimals = parts[1].substring(0, 8)
+    // Remove trailing zeros for cleaner display
+    const trimmedDecimals = decimals.replace(/0+$/, '')
+    return trimmedDecimals ? `${parts[0]}.${trimmedDecimals}` : parts[0]
   }
 
   const toggleMenu = () => {
@@ -55,13 +64,25 @@ const Header: FC<IHeader> = () => {
   }, [isConnected])
 
   const {
-    data: l3Data,
-    isLoading: l3isLoading,
-    // refetch: refetchBalanceL3,
+    data: lzrBTCData,
+    isLoading: lzrBTCLoading,
+    refetch: refetchLzrBTC,
   } = useBalance({
     address,
-    chainId: mainnet.id,
+    token: ERC20_CONTRACT_ADDRESS['lzrBTC'],
+    chainId: arbitrum.id,
+    scopeKey: refresh.toString(),
   })
+  
+  // Refresh balance every 10 seconds when connected
+  useEffect(() => {
+    if (isConnected) {
+      const interval = setInterval(() => {
+        setRefresh(prev => !prev)
+      }, 10000)
+      return () => clearInterval(interval)
+    }
+  }, [isConnected])
 
   return (
     <>
@@ -141,7 +162,7 @@ const Header: FC<IHeader> = () => {
               <div className="flex md:hidden items-center space-x-0 mt-8 mx-auto justify-center flex-wrap ">
                 {isConnected && (
                   <Button className="!w-auto uppercase min-w-[12.5rem]">
-                    {l3isLoading ? 'Loading...' : `${formatBalance(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
+                    {lzrBTCLoading ? 'Loading...' : `${formatBalance(lzrBTCData?.value.toString() || '0')} lzrBTC`}
                   </Button>
                 )}
                 <Button
@@ -160,7 +181,7 @@ const Header: FC<IHeader> = () => {
             <div className="md:flex hidden items-center space-x-0">
               {isConnected && (
                 <Button className="!w-auto uppercase min-w-[12.5rem]  md:min-w-min">
-                  {l3isLoading ? 'Loading...' : `${formatBalance(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
+                  {lzrBTCLoading ? 'Loading...' : `${formatBalance(lzrBTCData?.value.toString() || '0')} lzrBTC`}
                 </Button>
               )}
               <Button
