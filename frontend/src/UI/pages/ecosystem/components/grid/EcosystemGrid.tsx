@@ -218,24 +218,19 @@ const EcosystemGrid: FC<IEcosystemGrid> = () => {
   return (
     <div className="flex flex-col gap-10 md:gap-20">
       <div className="w-full flex flex-col gap-2 md:gap-4 [&_*]:!pointer-events-auto">
-        <div className="flex items-center justify-between gap-2 md:gap-4">
-          <div className="grid grid-cols-2 gap-2 md:gap-4 flex-1">
-            <MySelect
-              placeholder="Filter by tags"
-              options={tagOptions}
-              value={selectedTag ? { value: selectedTag, label: selectedTag } : null}
-              onChange={(option) => setSelectedTag(option?.value as TypeEcosystemTag)}
-            />
-            <MySelect
-              placeholder="Filter by liveness"
-              options={livenessOptions}
-              value={selectedLiveness ? { value: selectedLiveness, label: selectedLiveness } : null}
-              onChange={(option) => setSelectedLiveness(option?.value as TypeEcosystemLiveness)}
-            />
-          </div>
-          <button onClick={handleResetFilters} className="h-[2.875rem] w-[2.875rem] custom-button">
-            X
-          </button>
+        <div className="grid grid-cols-2 gap-2 md:gap-4 w-full">
+          <MySelect
+            placeholder="Filter by tags"
+            options={tagOptions}
+            value={selectedTag ? { value: selectedTag, label: selectedTag } : null}
+            onChange={(option) => setSelectedTag(option?.value as TypeEcosystemTag)}
+          />
+          <MySelect
+            placeholder="Filter by liveness"
+            options={livenessOptions}
+            value={selectedLiveness ? { value: selectedLiveness, label: selectedLiveness } : null}
+            onChange={(option) => setSelectedLiveness(option?.value as TypeEcosystemLiveness)}
+          />
         </div>
         <InputField
           withoutShadow

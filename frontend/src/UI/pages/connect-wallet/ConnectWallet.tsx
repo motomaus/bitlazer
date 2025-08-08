@@ -19,8 +19,8 @@ const ConnectWallet: FC<IConnectWallet> = () => {
   })
 
   return (
-    <div className="flex-1 rounded-12xs bg-black border-forestgreen border-[.1875rem] border-solid box-border flex flex-col py-[1.25rem] px-[0.562rem] gap-[1.668rem] ">
-      <div className="tracking-[-0.06em] leading-[1.25rem]">
+    <div className="flex-1 rounded-12xs bg-black font-ocrx border-forestgreen border-[.1875rem] border-solid box-border flex flex-col py-[1.25rem] px-[0.562rem] gap-[1.668rem] ">
+      <div className="tracking-[-0.06em] leading-[1.875rem] text-[1.5rem] text-center">
         {isConnected ? 'Your wallet is connected' : 'Choose wallet to connect:'}
       </div>
       <div className="flex-1 flex flex-col gap-[0.562rem]">

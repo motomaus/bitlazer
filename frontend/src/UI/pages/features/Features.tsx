@@ -39,7 +39,7 @@ const Features: FC<IFeatures> = () => {
               </div>
               <div className="flex-1 flex flex-col gap-4 pr-4">
                 <div className="uppercase text-xl md:text-[1.5rem]">Native BTC Yield</div>
-                <div className="text-base tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
+                <div className="text-2xl tracking-[-0.06em] leading-[1.313rem]">
                   Users can stake their L3 Bitcoin and earn dual staking rewards. Yield is generated from the network's
                   activity and gas fees that are directed to stakers, offering an incentive to hold Bitcoin within the
                   Bitlazer ecosystem, while expanding earning potential.
@@ -55,7 +55,7 @@ const Features: FC<IFeatures> = () => {
               </div>
               <div className="flex-1 flex flex-col gap-4 pr-4">
                 <div className="uppercase text-xl md:text-[1.5rem]">Seamless Bridging</div>
-                <div className="text-base tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
+                <div className="text-2xl tracking-[-0.06em] leading-[1.313rem]">
                   Users can seamlessly transfer WBTC or EVM-compatible BTC into Bitlazer's Layer 3, enabling secure,
                   efficient interactions while optimizing cross-chain operations and unlocking greater yield potential
                   for their Bitcoin.
@@ -70,7 +70,7 @@ const Features: FC<IFeatures> = () => {
               </div>
               <div className="flex-1 flex flex-col gap-4 pr-4">
                 <div className="uppercase text-xl md:text-[1.5rem]">Fast Settlements</div>
-                <div className="text-base tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
+                <div className="text-2xl tracking-[-0.06em] leading-[1.313rem]">
                   With Bitlazer's L3, users experience lightning-fast settlements. This speed ensures efficient staking,
                   withdrawals and cross-chain interactions, creating a smooth and responsive user experience.
                 </div>
@@ -84,7 +84,7 @@ const Features: FC<IFeatures> = () => {
               </div>
               <div className="flex-1 flex flex-col gap-4 pr-4">
                 <div className="uppercase text-xl md:text-[1.5rem]">Low Fees</div>
-                <div className="text-base tracking-[-0.06em] leading-[1.313rem] font-maison-neue">
+                <div className="text-2xl tracking-[-0.06em] leading-[1.313rem]">
                   Bitlazer's L3 infrastructure ensures transaction fees always remaim below a cent, enabling
                   cost-efficient interactions with the technology and seamless utility across the ecosystem.
                 </div>
