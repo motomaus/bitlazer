@@ -1,5 +1,6 @@
 import { Button, InputField, TXToast } from '@components/index'
 import Loading from '@components/loading/Loading'
+import { fmtHash } from 'src/utils/fmt'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { arbitrum } from 'wagmi/chains'
@@ -62,6 +63,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
   const [isApproving, setIsApproving] = useState<boolean>(false)
   const [isBridging, setIsBridging] = useState<boolean>(false)
   const [isBridgingBack, setIsBridgingBack] = useState<boolean>(false)
+  const [bridgeSuccessInfo, setBridgeSuccessInfo] = useState<{ txHash: string } | null>(null)
 
   const { data: approvalData } = useReadContract({
     abi: lzrBTC_abi,
@@ -182,6 +184,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
         if (toL3) {
           setValue('amount', '')
           setApproval(false)
+          setBridgeSuccessInfo({ txHash })
         }
         // Single refresh after successful transaction
         setRefreshApproval((prev) => !prev)
@@ -293,6 +296,35 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
             </Button>
           )}
         </div>
+        {bridgeSuccessInfo && (
+          <div className="mt-4 p-2.5 bg-darkslategray-200 border border-lightgreen-100 rounded-[.115rem] text-gray-200 text-[13px]">
+            <div className="mb-1.5">
+              <span className="text-lightgreen-100">Transaction: </span>
+              <a 
+                href={`https://arbiscan.io/tx/${bridgeSuccessInfo.txHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-lightgreen-100 underline hover:text-lightgreen-200"
+              >
+                {fmtHash(bridgeSuccessInfo.txHash)}
+              </a>
+            </div>
+            <div className="mb-1.5">
+              ⚠️ Balance may take a while to be confirmed on Bitlazer network.
+            </div>
+            <div>
+              Track status{' '}
+              <a 
+                href="https://bitlazer.bridge.caldera.xyz/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-lightgreen-100 underline hover:text-lightgreen-200"
+              >
+                here
+              </a>
+            </div>
+          </div>
+        )}
       </form>
       <div className="h-px w-full bg-[#6c6c6c]"></div>
       <form
