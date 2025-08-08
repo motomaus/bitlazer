@@ -124,7 +124,7 @@ const Header: FC<IHeader> = () => {
                 X
               </button>
               <div className="items-center gap-[4.875rem] flex md:flex-row flex-col justify-center">
-                <nav className="whitespace-nowrap text-[1.5rem] leading-[2rem] text-lightgreen-100 font-ocrx text-extrathin md:mr-auto">
+                <nav className="whitespace-nowrap text-[1.5rem] leading-[2rem] text-lightgreen-100 font-ocrx text-extrathin">
                   <ul className="flex md:flex-row flex-col items-center justify-center gap-8 md:gap-9 md:pt-3">
                     <li>
                       <Link
@@ -134,7 +134,7 @@ const Header: FC<IHeader> = () => {
                         className={`text-lightgreen-100  inline-block hover:scale-105 hover:line-through ${location.pathname === '/about' ? 'line-through pointer-events-none' : ''}`}
                         onClick={closeMenu}
                       >
-                        [ABOUT]
+                        [DOCS]
                       </Link>
                     </li>
                     <li>
@@ -145,29 +145,6 @@ const Header: FC<IHeader> = () => {
                       >
                         [BRIDGE]
                       </Link>
-                    </li>
-                    <li>
-                      <Link
-                        to="/ecosystem"
-                        className={`text-lightgreen-100 inline-block hover:scale-105 hover:line-through ${location.pathname === '/ecosystem' ? 'line-through pointer-events-none' : ''}`}
-                        onClick={closeMenu}
-                      >
-                        [ECOSYSTEM]
-                      </Link>
-                    </li>
-                    <li>
-                      <button
-                        className={clsx(
-                          'text-lightgreen-100 inline-block hover:scale-105 hover:line-through',
-                          openHowItWorksModal && 'line-through select-none',
-                        )}
-                        onClick={() => {
-                          setOpenHowItWorksModal(!openHowItWorksModal)
-                          closeMenu()
-                        }}
-                      >
-                        [HOW IT WORKS]
-                      </button>
                     </li>
                     <li>
                       <button
@@ -184,18 +161,13 @@ const Header: FC<IHeader> = () => {
                       </button>
                     </li>
                     <li>
-                      <button
-                        className={clsx(
-                          'text-lightgreen-100 inline-block hover:scale-105 hover:line-through',
-                          openRoadmapModal && 'line-through select-none',
-                        )}
-                        onClick={() => {
-                          setOpenRoadmapModal(!openRoadmapModal)
-                          closeMenu()
-                        }}
+                      <Link
+                        to="/ecosystem"
+                        className={`text-lightgreen-100 inline-block hover:scale-105 hover:line-through ${location.pathname === '/ecosystem' ? 'line-through pointer-events-none' : ''}`}
+                        onClick={closeMenu}
                       >
-                        [ROADMAP]
-                      </button>
+                        [ECOSYSTEM]
+                      </Link>
                     </li>
                   </ul>
                 </nav>

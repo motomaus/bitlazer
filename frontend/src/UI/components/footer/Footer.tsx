@@ -28,33 +28,11 @@ const Footer: FC<IFooter> = () => {
               <li>
                 <a
                   className="hover:scale-105 hover:line-through inline-block"
-                  href="https://bitlazer.gitbook.io/bitlazer"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  DOCUMENTATION
-                </a>
-              </li>
-              |
-              <li>
-                <a
-                  className="hover:scale-105 hover:line-through inline-block"
                   href="https://explorer.testnet.bitlazer.io"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   EXPLORER
-                </a>
-              </li>
-              |
-              <li>
-                <a
-                  className="hover:scale-105 hover:line-through inline-block"
-                  href="https://faucet.testnet.bitlazer.io"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  TESTNET FAUCET
                 </a>
               </li>
             </ul>
@@ -68,16 +46,6 @@ const Footer: FC<IFooter> = () => {
                 rel="noopener noreferrer"
               >
                 TWITTER
-              </a>
-            </li>
-            <li>
-              <a
-                className="text-gray-100 hover:scale-105 hover:line-through inline-block"
-                href="https://t.me/bitlazer_io"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                TELEGRAM
               </a>
             </li>
           </ul>
