@@ -33,11 +33,11 @@ const Header: FC<IHeader> = () => {
   const formatBalance = (balance: string) => {
     if (!balance) return '0'
     const etherValue = formatEther(BigInt(balance))
-    // Use string manipulation to avoid rounding - just truncate after 8 decimals
+    // Use string manipulation to avoid rounding - just truncate after 6 decimals
     const parts = etherValue.split('.')
     if (parts.length === 1) return parts[0] // No decimals
-    // Take up to 8 decimal places without rounding
-    const decimals = parts[1].substring(0, 8)
+    // Take up to 6 decimal places without rounding
+    const decimals = parts[1].substring(0, 6)
     // Remove trailing zeros for cleaner display
     const trimmedDecimals = decimals.replace(/0+$/, '')
     return trimmedDecimals ? `${parts[0]}.${trimmedDecimals}` : parts[0]
@@ -202,18 +202,20 @@ const Header: FC<IHeader> = () => {
               </div>
               <div className="flex md:hidden items-center space-x-0 mt-8 mx-auto justify-center flex-wrap ">
                 {isConnected && (
-                  <Button className="!w-auto uppercase min-w-[12.5rem] relative">
-                    <div className="flex items-center gap-2">
+                  <Button className="!w-auto uppercase min-w-[12.5rem] relative overflow-hidden">
+                    <div className="flex items-center gap-2 min-h-[1.25rem]">
                       {showArbitrum ? (
                         <>
-                          <img src="/icons/crypto/arbitrum.svg" alt="ARB" className="w-5 h-5 brightness-0 invert" />
+                          <div className="w-5 h-5 flex-shrink-0 overflow-hidden">
+                          <img src="/icons/crypto/arbitrum.svg" alt="ARB" className="w-full h-full object-contain brightness-0 invert" />
+                        </div>
                           <span className="text-xs">
                             {arbitrumLoading ? 'Loading...' : `${formatBalance(arbitrumData?.value.toString() || '0')} lzrBTC`}
                           </span>
                         </>
                       ) : (
                         <>
-                          <img src="/safari-pinned-tab.svg" alt="BLZ" className="w-10 h-10 brightness-0 invert" />
+                          <img src="/safari-pinned-tab.svg" alt="BLZ" className="w-12 h-12 flex-shrink-0 brightness-0 invert" />
                           <span className="text-xs">
                             {bitlazerLoading ? 'Loading...' : `${formatBalance(bitlazerData?.value.toString() || '0')} lzrBTC`}
                           </span>
@@ -247,11 +249,13 @@ const Header: FC<IHeader> = () => {
             </div>
             <div className="md:flex hidden items-center space-x-0">
               {isConnected && (
-                <Button className="!w-auto uppercase min-w-[12.5rem] md:min-w-min relative">
-                  <div className="flex items-center gap-2">
+                <Button className="!w-auto uppercase min-w-[12.5rem] md:min-w-min relative overflow-hidden">
+                  <div className="flex items-center gap-2 min-h-[1.25rem]">
                     {showArbitrum ? (
                       <>
-                        <img src="/icons/crypto/arbitrum.svg" alt="ARB" className="w-5 h-5 brightness-0 invert" />
+                        <div className="w-5 h-5 flex-shrink-0 overflow-hidden">
+                          <img src="/icons/crypto/arbitrum.svg" alt="ARB" className="w-full h-full object-contain brightness-0 invert" />
+                        </div>
                         <span className="text-xs">
                           {arbitrumLoading ? 'Loading...' : `${formatBalance(arbitrumData?.value.toString() || '0')} lzrBTC`}
                         </span>
