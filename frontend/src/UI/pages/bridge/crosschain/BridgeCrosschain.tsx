@@ -76,11 +76,22 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     const fetchApprovalData = () => {
       const amount = getValues('amount')
 
+      // If no amount entered, always show APPROVE
+      if (!amount || amount === '0' || amount === '') {
+        setApproval(false)
+        return
+      }
+
       if (approvalData !== undefined) {
-        const approvalAmount = approvalData as unknown as string
-        if (BigNumber.from(approvalAmount).gte(parseEther(amount || '0'))) {
-          setApproval(true)
-        } else {
+        try {
+          const approvalAmount = approvalData as unknown as string
+          if (BigNumber.from(approvalAmount).gte(parseEther(amount))) {
+            setApproval(true)
+          } else {
+            setApproval(false)
+          }
+        } catch (error) {
+          // Invalid amount format - show APPROVE
           setApproval(false)
         }
       }
@@ -167,36 +178,28 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
         toast(<TXToast {...{ message: 'Bridge successful', txHash }} />)
         const cookies = new Cookies()
         cookies.set('hasBridged', 'true', { path: '/' })
+        // Clear input and refresh balances
+        if (toL3) {
+          setValue('amount', '')
+          setApproval(false)
+        }
+        // Single refresh after successful transaction
+        setRefreshApproval((prev) => !prev)
+        refetchBalance()
+        refetchBalanceL3()
       } else {
         toast(<TXToast {...{ message: 'Bridge failed' }} />)
       }
     } catch (error) {
       toast(<TXToast {...{ message: 'Failed to Bridge tokens' }} />)
+    } finally {
+      setIsWaitingForBridgeTx(false)
+      if (toL3) {
+        setIsBridging(false)
+      } else {
+        setIsBridgingBack(false)
+      }
     }
-    if (toL3) {
-      setIsBridging(false)
-    } else {
-      setIsBridgingBack(false)
-    }
-    setTimeout(() => {
-      setRefreshApproval((prev) => !prev)
-      refetchBalance()
-      refetchBalanceL3()
-    }, 1000)
-    setTimeout(() => {
-      setRefreshApproval((prev) => !prev)
-      refetchBalance()
-      refetchBalanceL3()
-    }, 5000)
-    setTimeout(() => {
-      refetchBalanceL3()
-    }, 15000)
-    setTimeout(() => {
-      refetchBalanceL3()
-    }, 20000)
-    setTimeout(() => {
-      refetchBalanceL3()
-    }, 25000)
   }
 
   const onSubmit = async (data: any) => {
@@ -270,7 +273,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
         <div className="flex flex-col gap-[0.687rem]">
           {chainId === arbitrum.id ? (
             <>
-              <Button type="submit" disabled={!isValid || isWaitingForBridgeTx || isApproving || isBridging} aria-busy={isWaitingForBridgeTx || isApproving || isBridging}>
+              <Button type="submit" disabled={!isValid || !watch('amount') || watch('amount') === '' || isWaitingForBridgeTx || isApproving || isBridging} aria-busy={isWaitingForBridgeTx || isApproving || isBridging}>
                 {approval ? (isBridging ? <Loading text="BRIDGING" /> : 'BRIDGE') : (isApproving ? <Loading text="APPROVING" /> : 'APPROVE')}
               </Button>
             </>

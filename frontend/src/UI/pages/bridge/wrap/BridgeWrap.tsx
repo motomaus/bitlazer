@@ -172,12 +172,9 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     if (approvalData !== undefined) {
       const amount = getValues('amount') || '0'
       
-      // Check if there's any existing approval
-      const hasAnyApproval = BigInt(approvalData) > BigInt(0)
-      
+      // If no amount entered, always show APPROVE
       if (!amount || amount === '0') {
-        // If no amount entered but has existing approval, keep showing WRAP
-        setApproval(hasAnyApproval)
+        setApproval(false)
         return
       }
       
@@ -197,8 +194,8 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           setApproval(false)
         }
       } catch (error) {
-        // Invalid amount format but has existing approval
-        setApproval(hasAnyApproval)
+        // Invalid amount format - show APPROVE
+        setApproval(false)
       }
     }
   }, [approvalData, watch('amount'), refresh, selectedToken])
@@ -232,14 +229,17 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     const approvalReceipt = await waitForTransactionReceipt(config, {
       hash: approvalTransactionHash,
     })
-    setRefresh((prev) => !prev)
+    
     if (approvalReceipt.status === 'success') {
       const txHash = approvalReceipt.transactionHash
       toast(<TXToast {...{ message: 'Approval successful', txHash }} />)
+      setApproval(true)
+      // Trigger refresh to update allowance
+      setRefresh((prev) => !prev)
     } else {
       toast(<TXToast {...{ message: 'Transaction failed' }} />)
+      setApproval(false)
     }
-    setApproval(true)
     setIsApproving(false)
   }
 
@@ -299,22 +299,23 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         toast(<TXToast {...{ message: 'Wrap successful', txHash }} />)
         const cookies = new Cookies()
         cookies.set('hasWrapped', 'true', { path: '/' })
-        // Clear the input field after successful wrap
+        // Clear the input field and reset approval after successful wrap
         setValue('amount', '')
+        setApproval(false)
+        // Single refresh after successful transaction
+        setRefresh((prev) => !prev)
       } else {
         toast(<TXToast {...{ message: 'Wrap failed' }} />)
       }
+      setIsWrapping(false)
     } catch (error: any) {
+      setIsWrapping(false)
       if (!error.message.includes('User rejected the request.')) {
         toast(<TXToast {...{ message: 'Failed to Wrap.' }} />)
       } else {
         toast(<TXToast {...{ message: 'Transaction Rejected.' }} />)
       }
     }
-    setTimeout(() => {
-      setRefresh((prev) => !prev)
-    }, 1000)
-    setIsWrapping(false)
   }
 
   const handleUnwrap = async () => {
@@ -346,23 +347,20 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         toast(<TXToast {...{ message: 'Unwrap successful', txHash }} />)
         // Clear the input field after successful unwrap
         unwrapSetValue('amount', '')
-        setTimeout(() => {
-          setRefresh((prev) => !prev)
-        }, 2000)
+        // Single refresh after successful transaction
+        setRefresh((prev) => !prev)
       } else {
         toast(<TXToast {...{ message: 'Unwrap failed' }} />)
       }
+      setIsUnwrapping(false)
     } catch (error: any) {
+      setIsUnwrapping(false)
       if (!error.message.includes('User rejected the request.')) {
         toast(<TXToast {...{ message: 'Failed to Unwrap' }} />)
       } else {
         toast(<TXToast {...{ message: 'Transaction Rejected.' }} />)
       }
     }
-    setTimeout(() => {
-      setRefresh((prev) => !prev)
-    }, 1000)
-    setIsUnwrapping(false)
   }
 
   const onSubmit = async (data: any) => {
@@ -462,7 +460,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
                   RESET ALLOWANCE (Required)
                 </Button>
               )}
-              <Button type="submit" disabled={!isValid || isLoadingApproval || isApproving || isWrapping}>
+              <Button type="submit" disabled={!isValid || !watch('amount') || watch('amount') === '' || isLoadingApproval || isApproving || isWrapping}>
                 {approval ? (isWrapping ? <Loading text="WRAPPING" /> : 'WRAP') : (isApproving ? <Loading text="APPROVING" /> : 'APPROVE')}
               </Button>
             </>
@@ -552,7 +550,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           <div className="w-[2.75rem] relative tracking-[-0.06em] leading-[1.25rem] text-right inline-block">00.00</div>
         </div> */}
           {chainId === arbitrum.id ? (
-            <Button type="submit" disabled={!isUnwrapValid || !lzrBTCBalanceData?.value || lzrBTCBalanceData.value === 0n || isUnwrapping}>
+            <Button type="submit" disabled={!isUnwrapValid || !unwrapWatch('amount') || unwrapWatch('amount') === '' || !lzrBTCBalanceData?.value || lzrBTCBalanceData.value === 0n || isUnwrapping}>
               {isUnwrapping ? <Loading text="UNWRAPPING" /> : 'UNWRAP'}
             </Button>
           ) : (
