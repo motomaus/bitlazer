@@ -1,4 +1,5 @@
 import { Button, InputField, TXToast } from '@components/index'
+import Loading from '@components/loading/Loading'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useAccount, useBalance, useReadContract, useSwitchChain } from 'wagmi'
@@ -27,6 +28,9 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   const [refresh, setRefresh] = useState<boolean>(false)
   const [reverseApproval, setReverseApproval] = useState<boolean>(false)
   const [holderBalance, setHolderBalance] = useState<string | undefined>(undefined)
+  const [isApproving, setIsApproving] = useState<boolean>(false)
+  const [isWrapping, setIsWrapping] = useState<boolean>(false)
+  const [isUnwrapping, setIsUnwrapping] = useState<boolean>(false)
 
   const {
     handleSubmit,
@@ -200,6 +204,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   }, [approvalData, watch('amount'), refresh, selectedToken])
 
   const handleApprove = async () => {
+    setIsApproving(true)
     const amount = getValues('amount')
     
     let amountForApproval: bigint
@@ -221,6 +226,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       approvalTransactionHash = await writeContract(config, approvalArgs)
     } catch (error: any) {
       toast(<TXToast {...{ message: 'Approval failed', error }} />)
+      setIsApproving(false)
       return
     }
     const approvalReceipt = await waitForTransactionReceipt(config, {
@@ -234,9 +240,11 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       toast(<TXToast {...{ message: 'Transaction failed' }} />)
     }
     setApproval(true)
+    setIsApproving(false)
   }
 
   const handleDeposit = async () => {
+    setIsWrapping(true)
     const amount = getValues('amount')
     let amountToSend: bigint
     if (selectedToken === 'wbtc') {
@@ -261,18 +269,22 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       } catch (simulationError: any) {
         if (simulationError.message?.includes('Wrapper not supported')) {
           toast(<TXToast {...{ message: 'WBTC is not configured as a supported wrapper' }} />)
+          setIsWrapping(false)
           return
         }
         if (simulationError.message?.includes('paused')) {
           toast(<TXToast {...{ message: 'Contract is paused' }} />)
+          setIsWrapping(false)
           return
         }
         if (simulationError.message?.includes('Insufficient')) {
           toast(<TXToast {...{ message: 'Insufficient WBTC balance' }} />)
+          setIsWrapping(false)
           return
         }
         
         toast(<TXToast {...{ message: `Transaction will fail: ${simulationError.message || 'Unknown error'}` }} />)
+        setIsWrapping(false)
         return
       }
       
@@ -302,9 +314,11 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     setTimeout(() => {
       setRefresh((prev) => !prev)
     }, 1000)
+    setIsWrapping(false)
   }
 
   const handleUnwrap = async () => {
+    setIsUnwrapping(true)
     const amount = unwrapGetValues('amount')
     let amountToSend: bigint
     
@@ -348,6 +362,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     setTimeout(() => {
       setRefresh((prev) => !prev)
     }, 1000)
+    setIsUnwrapping(false)
   }
 
   const onSubmit = async (data: any) => {
@@ -393,6 +408,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
                 type="number"
                 {...field}
                 error={errors.amount ? errors.amount.message : null}
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
               />
             )}
           />
@@ -446,8 +462,8 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
                   RESET ALLOWANCE (Required)
                 </Button>
               )}
-              <Button type="submit" disabled={!isValid || isLoadingApproval}>
-                {approval ? 'WRAP' : 'APPROVE'}
+              <Button type="submit" disabled={!isValid || isLoadingApproval || isApproving || isWrapping}>
+                {approval ? (isWrapping ? <Loading text="WRAPPING" /> : 'WRAP') : (isApproving ? <Loading text="APPROVING" /> : 'APPROVE')}
               </Button>
             </>
           ) : (
@@ -508,6 +524,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
                 type="number"
                 {...field}
                 error={unwrapErrors.amount ? unwrapErrors.amount.message : null}
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
               />
             )}
           />
@@ -535,8 +552,8 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           <div className="w-[2.75rem] relative tracking-[-0.06em] leading-[1.25rem] text-right inline-block">00.00</div>
         </div> */}
           {chainId === arbitrum.id ? (
-            <Button type="submit" disabled={!isUnwrapValid || !lzrBTCBalanceData?.value || lzrBTCBalanceData.value === 0n}>
-              UNWRAP
+            <Button type="submit" disabled={!isUnwrapValid || !lzrBTCBalanceData?.value || lzrBTCBalanceData.value === 0n || isUnwrapping}>
+              {isUnwrapping ? <Loading text="UNWRAPPING" /> : 'UNWRAP'}
             </Button>
           ) : (
             // <>

@@ -1,4 +1,5 @@
 import { Button, InputField, TXToast } from '@components/index'
+import Loading from '@components/loading/Loading'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { arbitrum } from 'wagmi/chains'
@@ -58,6 +59,9 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
   const [approval, setApproval] = useState<boolean>(false)
   const [refreshApproval, setRefreshApproval] = useState(false)
   const [isWaitingForBridgeTx, setIsWaitingForBridgeTx] = useState(false)
+  const [isApproving, setIsApproving] = useState<boolean>(false)
+  const [isBridging, setIsBridging] = useState<boolean>(false)
+  const [isBridgingBack, setIsBridgingBack] = useState<boolean>(false)
 
   const { data: approvalData } = useReadContract({
     abi: lzrBTC_abi,
@@ -85,6 +89,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
   }, [approvalData, watch('amount'), refreshApproval])
 
   const handleApprove = async () => {
+    setIsApproving(true)
     const approvalArgs = {
       abi: lzrBTC_abi,
       address: ERC20_CONTRACT_ADDRESS['lzrBTC'],
@@ -97,6 +102,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
       approvalTransactionHash = await writeContract(config, approvalArgs)
     } catch (error) {
       toast(<TXToast {...{ message: 'Approval failed', error }} />)
+      setIsApproving(false)
       return
     }
     const approvalReceipt = await waitForTransactionReceipt(config, {
@@ -111,14 +117,30 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     } else {
       toast(<TXToast {...{ message: 'Approval failed' }} />)
     }
+    setIsApproving(false)
   }
 
   const handleDeposit = async (toL3: boolean) => {
+    if (toL3) {
+      setIsBridging(true)
+    } else {
+      setIsBridgingBack(true)
+    }
     if (!connector) {
+      if (toL3) {
+        setIsBridging(false)
+      } else {
+        setIsBridgingBack(false)
+      }
       return
     }
     const provider = await connector.getProvider()
     if (!provider) {
+      if (toL3) {
+        setIsBridging(false)
+      } else {
+        setIsBridgingBack(false)
+      }
       return
     }
     const web3Provider = new ethers.providers.Web3Provider(provider)
@@ -150,6 +172,11 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
       }
     } catch (error) {
       toast(<TXToast {...{ message: 'Failed to Bridge tokens' }} />)
+    }
+    if (toL3) {
+      setIsBridging(false)
+    } else {
+      setIsBridgingBack(false)
     }
     setTimeout(() => {
       setRefreshApproval((prev) => !prev)
@@ -243,8 +270,8 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
         <div className="flex flex-col gap-[0.687rem]">
           {chainId === arbitrum.id ? (
             <>
-              <Button type="submit" disabled={!isValid || isWaitingForBridgeTx} aria-busy={isWaitingForBridgeTx}>
-                {approval ? 'BRIDGE' : 'APPROVE'}
+              <Button type="submit" disabled={!isValid || isWaitingForBridgeTx || isApproving || isBridging} aria-busy={isWaitingForBridgeTx || isApproving || isBridging}>
+                {approval ? (isBridging ? <Loading text="BRIDGING" /> : 'BRIDGE') : (isApproving ? <Loading text="APPROVING" /> : 'APPROVE')}
               </Button>
             </>
           ) : (
