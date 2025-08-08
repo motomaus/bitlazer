@@ -396,7 +396,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
               min: { value: 0.00001, message: 'Amount must be greater than 0.00001' },
               max: {
                 value: balanceData?.formatted || '0',
-                message: 'Amount must be less than balance',
+                message: 'Insufficient balance',
               },
             }}
             render={({ field }) => (
@@ -512,7 +512,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
               min: { value: 0.00001, message: 'Amount must be greater than 0.00001' },
               max: {
                 value: parseFloat(lzrBTCBalanceData?.formatted || '0'),
-                message: 'Amount must be less than balance',
+                message: 'Insufficient balance',
               },
             }}
             render={({ field }) => (

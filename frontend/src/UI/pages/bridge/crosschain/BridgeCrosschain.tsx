@@ -239,7 +239,11 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
             control={control}
             rules={{
               required: 'Amount is required',
-              min: { value: 0.00000001, message: 'Amount must be greater than 0' },
+              min: { value: 0.00000001, message: 'Amount must be greater than 0.00000001' },
+              max: {
+                value: data?.formatted || '0',
+                message: 'Insufficient balance',
+              },
             }}
             render={({ field }) => (
               <InputField
