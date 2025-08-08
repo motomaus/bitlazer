@@ -309,8 +309,20 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
                 {fmtHash(bridgeSuccessInfo.txHash)}
               </a>
             </div>
-            <div className="mb-1.5">
-              ⚠️ Balance may take a while to be confirmed on Bitlazer network.
+            <div className="mb-1.5 flex items-start">
+              <svg 
+                width="16" 
+                height="16" 
+                viewBox="0 0 16 16" 
+                fill="none" 
+                className="mr-1.5 mt-0.5 flex-shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="8" cy="8" r="7" stroke="#66d560" strokeWidth="1.5"/>
+                <path d="M8 7V11" stroke="#66d560" strokeWidth="1.5" strokeLinecap="round"/>
+                <circle cx="8" cy="5" r="0.5" fill="#66d560"/>
+              </svg>
+              <span>Balance may take a while to be confirmed on Bitlazer network.</span>
             </div>
             <div>
               Track status{' '}
