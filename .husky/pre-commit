@@ -1,1 +1,27 @@
-cd frontend && yarn build
+#!/bin/sh
+
+# Navigate to frontend directory and run checks
+cd frontend
+
+echo "🔍 Checking for TypeScript errors..."
+# Only check for TypeScript errors in our code (not node_modules), skip library checks
+npx tsc --noEmit --skipLibCheck 2>&1 | grep -v "node_modules" | grep -E "error TS" > /tmp/tsc_errors.txt || true
+
+if [ -s /tmp/tsc_errors.txt ]; then
+  echo "❌ TypeScript errors found in source code! Please fix them before committing."
+  cat /tmp/tsc_errors.txt
+  rm /tmp/tsc_errors.txt
+  exit 1
+fi
+rm -f /tmp/tsc_errors.txt
+
+echo "🔍 Checking for ESLint errors..."
+# Run ESLint and only fail on errors (exit code 1), not warnings (exit code 0)
+npm run lint
+
+if [ $? -ne 0 ]; then
+  echo "❌ ESLint errors found! Please fix them before committing."
+  exit 1
+fi
+
+echo "✅ All checks passed! (Warnings are allowed)"

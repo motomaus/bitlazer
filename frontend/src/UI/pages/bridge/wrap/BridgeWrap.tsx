@@ -69,7 +69,11 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     scopeKey: refresh.toString(),
   })
 
-  const { data: lzrBTCBalanceData, isLoading: lzrBTCBalanceLoading, refetch: refetchLzrBTC } = useBalance({
+  const {
+    data: lzrBTCBalanceData,
+    isLoading: lzrBTCBalanceLoading,
+    refetch: refetchLzrBTC,
+  } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['lzrBTC'],
     chainId: arbitrum.id,
@@ -161,7 +165,6 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     chainId: arbitrum.id,
   })
 
-
   useEffect(() => {
     if (selectedTokenUnwrap === 'wbtc') {
       setHolderBalance(wbtcHolderBalance as string)
@@ -171,13 +174,13 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   useEffect(() => {
     if (approvalData !== undefined) {
       const amount = getValues('amount') || '0'
-      
+
       // If no amount entered, always show APPROVE
       if (!amount || amount === '0') {
         setApproval(false)
         return
       }
-      
+
       let requiredApproval: bigint
       try {
         if (selectedToken === 'wbtc') {
@@ -186,7 +189,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         } else {
           requiredApproval = parseUnits(amount, 18)
         }
-        
+
         // approvalData is already a bigint from the contract read
         if (BigInt(approvalData) >= requiredApproval) {
           setApproval(true)
@@ -203,14 +206,14 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   const handleApprove = async () => {
     setIsApproving(true)
     const amount = getValues('amount')
-    
+
     let amountForApproval: bigint
     if (selectedToken === 'wbtc') {
       amountForApproval = parseUnits(amount, 8)
     } else {
       amountForApproval = parseUnits(amount, 18)
     }
-    
+
     const approvalArgs = {
       abi: erc20Abi,
       address: ERC20_CONTRACT_ADDRESS[selectedToken] as `0x${string}`,
@@ -229,7 +232,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     const approvalReceipt = await waitForTransactionReceipt(config, {
       hash: approvalTransactionHash,
     })
-    
+
     if (approvalReceipt.status === 'success') {
       const txHash = approvalReceipt.transactionHash
       toast(<TXToast {...{ message: 'Approval successful', txHash }} />)
@@ -252,7 +255,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     } else {
       amountToSend = parseUnits(amount, 18)
     }
-    
+
     const args = {
       abi: lzrBTC_abi,
       address: WRAP_CONTRACT as `0x${string}`,
@@ -282,18 +285,18 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           setIsWrapping(false)
           return
         }
-        
+
         toast(<TXToast {...{ message: `Transaction will fail: ${simulationError.message || 'Unknown error'}` }} />)
         setIsWrapping(false)
         return
       }
-      
+
       const transactionHash = await writeContract(config, args)
-      
+
       const receipt = await waitForTransactionReceipt(config, {
         hash: transactionHash,
       })
-      
+
       if (receipt.status === 'success') {
         const txHash = receipt.transactionHash
         toast(<TXToast {...{ message: 'Wrap successful', txHash }} />)
@@ -322,13 +325,13 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     setIsUnwrapping(true)
     const amount = unwrapGetValues('amount')
     let amountToSend: bigint
-    
+
     if (selectedTokenUnwrap === 'wbtc') {
       amountToSend = parseUnits(amount, 18)
     } else {
       amountToSend = parseUnits(amount, 18)
     }
-    
+
     const args = {
       abi: lzrBTC_abi,
       address: WRAP_CONTRACT as `0x${string}`,
@@ -341,7 +344,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
       const receipt = await waitForTransactionReceipt(config, {
         hash: transactionHash,
       })
-      
+
       if (receipt.status === 'success') {
         const txHash = receipt.transactionHash
         toast(<TXToast {...{ message: 'Unwrap successful', txHash }} />)
@@ -369,7 +372,6 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
   return (
     <div className="flex flex-col gap-7">
-      
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7">
         <div className="flex flex-col relative gap-[0.75rem]">
           <label className="text-lightgreen-100">## WRAP {selectedToken.toUpperCase()} TO lzrBTC</label>
@@ -433,35 +435,56 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           {chainId === arbitrum.id ? (
             <>
               {/* Only show reset if allowance is wrong and NOT due to decimals conversion */}
-              {approvalData && selectedToken === 'wbtc' && 
-               !decimalsConversion && // Only show reset if conversion is NOT enabled
-               BigInt(approvalData) > BigInt(balanceData?.value || 0) && (
-                <Button 
-                  type="button"
-                  onClick={async (e) => {
-                    e.preventDefault()
-                    console.log('Resetting WBTC allowance to 0...')
-                    try {
-                      const resetTx = await writeContract(config, {
-                        abi: erc20Abi,
-                        address: ERC20_CONTRACT_ADDRESS[selectedToken] as `0x${string}`,
-                        functionName: 'approve' as const,
-                        args: [WRAP_CONTRACT as `0x${string}`, BigInt(0)] as const,
-                      })
-                      await waitForTransactionReceipt(config, { hash: resetTx })
-                      toast(<TXToast {...{ message: 'Allowance reset to 0. Now approve the correct amount.' }} />)
-                      setRefresh((prev) => !prev)
-                    } catch (error) {
-                      console.error('Reset failed:', error)
-                    }
-                  }}
-                  className="bg-red-600"
-                >
-                  RESET ALLOWANCE (Required)
-                </Button>
-              )}
-              <Button type="submit" disabled={!isValid || !watch('amount') || watch('amount') === '' || isLoadingApproval || isApproving || isWrapping}>
-                {approval ? (isWrapping ? <Loading text="WRAPPING" /> : 'WRAP') : (isApproving ? <Loading text="APPROVING" /> : 'APPROVE')}
+              {approvalData &&
+                selectedToken === 'wbtc' &&
+                !decimalsConversion && // Only show reset if conversion is NOT enabled
+                BigInt(approvalData) > BigInt(balanceData?.value || 0) && (
+                  <Button
+                    type="button"
+                    onClick={async (e) => {
+                      e.preventDefault()
+                      console.log('Resetting WBTC allowance to 0...')
+                      try {
+                        const resetTx = await writeContract(config, {
+                          abi: erc20Abi,
+                          address: ERC20_CONTRACT_ADDRESS[selectedToken] as `0x${string}`,
+                          functionName: 'approve' as const,
+                          args: [WRAP_CONTRACT as `0x${string}`, BigInt(0)] as const,
+                        })
+                        await waitForTransactionReceipt(config, { hash: resetTx })
+                        toast(<TXToast {...{ message: 'Allowance reset to 0. Now approve the correct amount.' }} />)
+                        setRefresh((prev) => !prev)
+                      } catch (error) {
+                        console.error('Reset failed:', error)
+                      }
+                    }}
+                    className="bg-red-600"
+                  >
+                    RESET ALLOWANCE (Required)
+                  </Button>
+                )}
+              <Button
+                type="submit"
+                disabled={
+                  !isValid ||
+                  !watch('amount') ||
+                  watch('amount') === '' ||
+                  isLoadingApproval ||
+                  isApproving ||
+                  isWrapping
+                }
+              >
+                {approval ? (
+                  isWrapping ? (
+                    <Loading text="WRAPPING" />
+                  ) : (
+                    'WRAP'
+                  )
+                ) : isApproving ? (
+                  <Loading text="APPROVING" />
+                ) : (
+                  'APPROVE'
+                )}
               </Button>
             </>
           ) : (
@@ -550,7 +573,17 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           <div className="w-[2.75rem] relative tracking-[-0.06em] leading-[1.25rem] text-right inline-block">00.00</div>
         </div> */}
           {chainId === arbitrum.id ? (
-            <Button type="submit" disabled={!isUnwrapValid || !unwrapWatch('amount') || unwrapWatch('amount') === '' || !lzrBTCBalanceData?.value || lzrBTCBalanceData.value === 0n || isUnwrapping}>
+            <Button
+              type="submit"
+              disabled={
+                !isUnwrapValid ||
+                !unwrapWatch('amount') ||
+                unwrapWatch('amount') === '' ||
+                !lzrBTCBalanceData?.value ||
+                lzrBTCBalanceData.value === 0n ||
+                isUnwrapping
+              }
+            >
               {isUnwrapping ? <Loading text="UNWRAPPING" /> : 'UNWRAP'}
             </Button>
           ) : (

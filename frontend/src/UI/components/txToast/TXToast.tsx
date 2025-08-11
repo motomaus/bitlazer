@@ -11,9 +11,9 @@ const TXToast: FC<ITXToast> = ({ message, txHash }) => {
       <div className="self-stretch shadow-[-1.8px_-0.9px_3.69px_rgba(215,_215,_215,_0.18)_inset,_1.8px_1.8px_1.84px_rgba(0,_0,_0,_0.91)_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-col items-center justify-center flex-1 px-[1.25rem] py-[0.75rem]">
         <div className="text-lightgreen-100 font-ocrx uppercase text-2xl text-center leading-relaxed">{message}</div>
         {txHash && (
-          <a 
-            href={`https://arbiscan.io/tx/${txHash}`} 
-            target="_blank" 
+          <a
+            href={`https://arbiscan.io/tx/${txHash}`}
+            target="_blank"
             rel="noreferrer"
             className="text-lightgreen-100 hover:text-white text-sm mt-2 break-all"
           >

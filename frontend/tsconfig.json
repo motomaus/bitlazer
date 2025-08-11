@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "index.d.ts", "env.d.ts"],
+  "include": ["src", "index.d.ts", "env.d.ts", "vite.config.ts", "plugins/**/*"],
   "extends": "./tsconfig.paths.json",
   "exclude": ["node_modules"]
 }

@@ -8,7 +8,7 @@ export default function obfuscatorPlugin(options: any) {
     name: 'vite-plugin-javascript-obfuscator',
     enforce: 'post' as const, // Explicitly type enforce as 'post'
     apply: 'build' as const, // Explicitly type apply as 'build'
-    transform(code, id) {
+    transform(code: string, id: string) {
       if (!filter(id)) {
         return null
       }
