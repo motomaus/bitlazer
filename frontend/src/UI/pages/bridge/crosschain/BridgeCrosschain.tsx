@@ -1,4 +1,6 @@
 import { Button, InputField, TXToast } from '@components/index'
+import Loading from '@components/loading/Loading'
+import { fmtHash } from 'src/utils/fmt'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { arbitrum } from 'wagmi/chains'
@@ -58,6 +60,10 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
   const [approval, setApproval] = useState<boolean>(false)
   const [refreshApproval, setRefreshApproval] = useState(false)
   const [isWaitingForBridgeTx, setIsWaitingForBridgeTx] = useState(false)
+  const [isApproving, setIsApproving] = useState<boolean>(false)
+  const [isBridging, setIsBridging] = useState<boolean>(false)
+  const [isBridgingBack, setIsBridgingBack] = useState<boolean>(false)
+  const [bridgeSuccessInfo, setBridgeSuccessInfo] = useState<{ txHash: string } | null>(null)
 
   const { data: approvalData } = useReadContract({
     abi: lzrBTC_abi,
@@ -72,11 +78,22 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     const fetchApprovalData = () => {
       const amount = getValues('amount')
 
+      // If no amount entered, always show APPROVE
+      if (!amount || amount === '0' || amount === '') {
+        setApproval(false)
+        return
+      }
+
       if (approvalData !== undefined) {
-        const approvalAmount = approvalData as unknown as string
-        if (BigNumber.from(approvalAmount).gte(parseEther(amount || '0'))) {
-          setApproval(true)
-        } else {
+        try {
+          const approvalAmount = approvalData as unknown as string
+          if (BigNumber.from(approvalAmount).gte(parseEther(amount))) {
+            setApproval(true)
+          } else {
+            setApproval(false)
+          }
+        } catch (error) {
+          // Invalid amount format - show APPROVE
           setApproval(false)
         }
       }
@@ -85,6 +102,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
   }, [approvalData, watch('amount'), refreshApproval])
 
   const handleApprove = async () => {
+    setIsApproving(true)
     const approvalArgs = {
       abi: lzrBTC_abi,
       address: ERC20_CONTRACT_ADDRESS['lzrBTC'],
@@ -97,6 +115,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
       approvalTransactionHash = await writeContract(config, approvalArgs)
     } catch (error) {
       toast(<TXToast {...{ message: 'Approval failed', error }} />)
+      setIsApproving(false)
       return
     }
     const approvalReceipt = await waitForTransactionReceipt(config, {
@@ -111,14 +130,30 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
     } else {
       toast(<TXToast {...{ message: 'Approval failed' }} />)
     }
+    setIsApproving(false)
   }
 
   const handleDeposit = async (toL3: boolean) => {
+    if (toL3) {
+      setIsBridging(true)
+    } else {
+      setIsBridgingBack(true)
+    }
     if (!connector) {
+      if (toL3) {
+        setIsBridging(false)
+      } else {
+        setIsBridgingBack(false)
+      }
       return
     }
     const provider = await connector.getProvider()
     if (!provider) {
+      if (toL3) {
+        setIsBridging(false)
+      } else {
+        setIsBridgingBack(false)
+      }
       return
     }
     const web3Provider = new ethers.providers.Web3Provider(provider)
@@ -145,31 +180,29 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
         toast(<TXToast {...{ message: 'Bridge successful', txHash }} />)
         const cookies = new Cookies()
         cookies.set('hasBridged', 'true', { path: '/' })
+        // Clear input and refresh balances
+        if (toL3) {
+          setValue('amount', '')
+          setApproval(false)
+          setBridgeSuccessInfo({ txHash })
+        }
+        // Single refresh after successful transaction
+        setRefreshApproval((prev) => !prev)
+        refetchBalance()
+        refetchBalanceL3()
       } else {
         toast(<TXToast {...{ message: 'Bridge failed' }} />)
       }
     } catch (error) {
       toast(<TXToast {...{ message: 'Failed to Bridge tokens' }} />)
+    } finally {
+      setIsWaitingForBridgeTx(false)
+      if (toL3) {
+        setIsBridging(false)
+      } else {
+        setIsBridgingBack(false)
+      }
     }
-    setTimeout(() => {
-      setRefreshApproval((prev) => !prev)
-      refetchBalance()
-      refetchBalanceL3()
-    }, 1000)
-    setTimeout(() => {
-      setRefreshApproval((prev) => !prev)
-      refetchBalance()
-      refetchBalanceL3()
-    }, 5000)
-    setTimeout(() => {
-      refetchBalanceL3()
-    }, 15000)
-    setTimeout(() => {
-      refetchBalanceL3()
-    }, 20000)
-    setTimeout(() => {
-      refetchBalanceL3()
-    }, 25000)
   }
 
   const onSubmit = async (data: any) => {
@@ -209,7 +242,11 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
             control={control}
             rules={{
               required: 'Amount is required',
-              min: { value: 0.0001, message: 'Amount must be greater than 0' },
+              min: { value: 0.00000001, message: 'Amount must be greater than 0.00000001' },
+              max: {
+                value: data?.formatted || '0',
+                message: 'Insufficient balance',
+              },
             }}
             render={({ field }) => (
               <InputField
@@ -243,8 +280,8 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
         <div className="flex flex-col gap-[0.687rem]">
           {chainId === arbitrum.id ? (
             <>
-              <Button type="submit" disabled={!isValid || isWaitingForBridgeTx} aria-busy={isWaitingForBridgeTx}>
-                {approval ? 'BRIDGE' : 'APPROVE'}
+              <Button type="submit" disabled={!isValid || !watch('amount') || watch('amount') === '' || isWaitingForBridgeTx || isApproving || isBridging} aria-busy={isWaitingForBridgeTx || isApproving || isBridging}>
+                {approval ? (isBridging ? <Loading text="BRIDGING" /> : 'BRIDGE') : (isApproving ? <Loading text="APPROVING" /> : 'APPROVE')}
               </Button>
             </>
           ) : (
@@ -259,6 +296,47 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
             </Button>
           )}
         </div>
+        {bridgeSuccessInfo && (
+          <div className="mt-4 p-2.5 bg-darkslategray-200 border border-lightgreen-100 rounded-[.115rem] text-gray-200 text-[13px]">
+            <div className="mb-1.5">
+              <span className="text-lightgreen-100">Transaction: </span>
+              <a 
+                href={`https://arbiscan.io/tx/${bridgeSuccessInfo.txHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-lightgreen-100 underline hover:text-lightgreen-200"
+              >
+                {fmtHash(bridgeSuccessInfo.txHash)}
+              </a>
+            </div>
+            <div className="mb-1.5 flex items-start">
+              <svg 
+                width="16" 
+                height="16" 
+                viewBox="0 0 16 16" 
+                fill="none" 
+                className="mr-1.5 mt-0.5 flex-shrink-0"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="8" cy="8" r="7" stroke="#66d560" strokeWidth="1.5"/>
+                <path d="M8 7V11" stroke="#66d560" strokeWidth="1.5" strokeLinecap="round"/>
+                <circle cx="8" cy="5" r="0.5" fill="#66d560"/>
+              </svg>
+              <span>Balance may take a while to be confirmed on Bitlazer network.</span>
+            </div>
+            <div>
+              Track status{' '}
+              <a 
+                href="https://bitlazer.bridge.caldera.xyz/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-lightgreen-100 underline hover:text-lightgreen-200"
+              >
+                here
+              </a>
+            </div>
+          </div>
+        )}
       </form>
       <div className="h-px w-full bg-[#6c6c6c]"></div>
       <form

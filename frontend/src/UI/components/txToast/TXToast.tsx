@@ -12,7 +12,7 @@ const TXToast: FC<ITXToast> = ({ message, txHash }) => {
         <div className="text-lightgreen-100 font-ocrx uppercase text-2xl text-center leading-relaxed">{message}</div>
         {txHash && (
           <a 
-            href={`https://sepolia.arbiscan.io/tx/${txHash}`} 
+            href={`https://arbiscan.io/tx/${txHash}`} 
             target="_blank" 
             rel="noreferrer"
             className="text-lightgreen-100 hover:text-white text-sm mt-2 break-all"

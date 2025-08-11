@@ -117,6 +117,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
                 {...field}
                 error={stakeErrors.stakeAmount ? stakeErrors.stakeAmount.message : null}
                 disabled={!enabled} // Disable input if not enabled
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
               />
             )}
           />
@@ -181,6 +182,7 @@ const BridgeStake: FC<IBridgeStake> = ({ enabled }) => {
                 {...field}
                 error={unstakeErrors.unstakeAmount ? unstakeErrors.unstakeAmount.message : null}
                 disabled={!enabled}
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
               />
             )}
           />

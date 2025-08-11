@@ -11,10 +11,12 @@ import Features from '@pages/features/Features'
 import clsx from 'clsx'
 import { useAccount, useBalance } from 'wagmi'
 import { Account } from '@pages/connect-wallet/Account'
+import { arbitrum } from 'wagmi/chains'
 import { mainnet } from 'src/web3/chains'
+import { ERC20_CONTRACT_ADDRESS } from 'src/web3/contracts'
 import { formatEther } from 'viem'
 
-interface IHeader {}
+interface IHeader { }
 
 const Header: FC<IHeader> = () => {
   const [isActive, setIsActive] = useState(false)
@@ -22,6 +24,8 @@ const Header: FC<IHeader> = () => {
   const [openConnectWalletModal, setOpenConnectWalletModal] = useState(false)
   const [openRoadmapModal, setOpenRoadmapModal] = useState(false)
   const [openFeaturesModal, setOpenFeaturesModal] = useState(false)
+  const [refresh, setRefresh] = useState(false)
+  const [showArbitrum, setShowArbitrum] = useState(true)
   const { address, isConnected } = useAccount()
 
   const location = useLocation()
@@ -29,7 +33,14 @@ const Header: FC<IHeader> = () => {
   const formatBalance = (balance: string) => {
     if (!balance) return '0'
     const etherValue = formatEther(BigInt(balance))
-    return Number(etherValue).toFixed(4)
+    // Use string manipulation to avoid rounding - just truncate after 6 decimals
+    const parts = etherValue.split('.')
+    if (parts.length === 1) return parts[0] // No decimals
+    // Take up to 6 decimal places without rounding
+    const decimals = parts[1].substring(0, 6)
+    // Remove trailing zeros for cleaner display
+    const trimmedDecimals = decimals.replace(/0+$/, '')
+    return trimmedDecimals ? `${parts[0]}.${trimmedDecimals}` : parts[0]
   }
 
   const toggleMenu = () => {
@@ -54,14 +65,38 @@ const Header: FC<IHeader> = () => {
     }
   }, [isConnected])
 
+  // lzrBTC balance on Arbitrum
   const {
-    data: l3Data,
-    isLoading: l3isLoading,
-    // refetch: refetchBalanceL3,
+    data: arbitrumData,
+    isLoading: arbitrumLoading,
+    refetch: refetchArbitrum,
+  } = useBalance({
+    address,
+    token: ERC20_CONTRACT_ADDRESS['lzrBTC'],
+    chainId: arbitrum.id,
+    scopeKey: refresh.toString(),
+  })
+
+  // Native lzrBTC balance on Bitlazer L3
+  const {
+    data: bitlazerData,
+    isLoading: bitlazerLoading,
+    refetch: refetchBitlazer,
   } = useBalance({
     address,
     chainId: mainnet.id,
+    scopeKey: refresh.toString(),
   })
+
+  // Refresh balances every 5 seconds when connected
+  useEffect(() => {
+    if (isConnected) {
+      const interval = setInterval(() => {
+        setRefresh(prev => !prev)
+      }, 5000)
+      return () => clearInterval(interval)
+    }
+  }, [isConnected])
 
   return (
     <>
@@ -79,9 +114,8 @@ const Header: FC<IHeader> = () => {
               <img className="w-full h-full object-contain" src={burger} alt="" />
             </button>
             <div
-              className={`flex h-screen flex-col text-white fixed  md:flex-1 transition-all md:p-0 px-4 py-8 pt-24 duration-300 z-[100] bg-black w-full top-0 overflow-y-auto md:overflow-visible md:top-auto md:w-auto md:h-auto md:bg-transparent md:static md:z-auto ${
-                isActive ? 'right-0' : '-right-[100vw]'
-              }`}
+              className={`flex h-screen flex-col text-white fixed  md:flex-1 transition-all md:p-0 px-4 py-8 pt-24 duration-300 z-[100] bg-black w-full top-0 overflow-y-auto md:overflow-visible md:top-auto md:w-auto md:h-auto md:bg-transparent md:static md:z-auto ${isActive ? 'right-0' : '-right-[100vw]'
+                }`}
             >
               <button
                 onClick={closeMenu}
@@ -140,8 +174,36 @@ const Header: FC<IHeader> = () => {
               </div>
               <div className="flex md:hidden items-center space-x-0 mt-8 mx-auto justify-center flex-wrap ">
                 {isConnected && (
-                  <Button className="!w-auto uppercase min-w-[12.5rem]">
-                    {l3isLoading ? 'Loading...' : `${formatBalance(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
+                  <Button className="!w-auto uppercase min-w-[12.5rem] relative overflow-hidden">
+                    <div className="flex items-center gap-2 min-h-[1.25rem]">
+                      {showArbitrum ? (
+                        <>
+                          <div className="w-5 h-5 flex-shrink-0 overflow-hidden">
+                          <img src="/icons/crypto/arbitrum.svg" alt="ARB" className="w-full h-full object-contain brightness-0 invert" />
+                        </div>
+                          <span className="text-xs">
+                            {arbitrumLoading ? 'Loading...' : `${formatBalance(arbitrumData?.value.toString() || '0')} lzrBTC`}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <img src="/safari-pinned-tab.svg" alt="BLZ" className="w-12 h-12 flex-shrink-0 brightness-0 invert" />
+                          <span className="text-xs">
+                            {bitlazerLoading ? 'Loading...' : `${formatBalance(bitlazerData?.value.toString() || '0')} lzrBTC`}
+                          </span>
+                        </>
+                      )}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setShowArbitrum(!showArbitrum)
+                        }}
+                        className="ml-auto flex flex-col text-white"
+                      >
+                        <span className="text-[10px] leading-[8px]">▲</span>
+                        <span className="text-[10px] leading-[8px]">▼</span>
+                      </button>
+                    </div>
                   </Button>
                 )}
                 <Button
@@ -159,8 +221,36 @@ const Header: FC<IHeader> = () => {
             </div>
             <div className="md:flex hidden items-center space-x-0">
               {isConnected && (
-                <Button className="!w-auto uppercase min-w-[12.5rem]  md:min-w-min">
-                  {l3isLoading ? 'Loading...' : `${formatBalance(l3Data?.value.toString() || '0')} ${l3Data?.symbol}`}
+                <Button className="!w-auto uppercase min-w-[12.5rem] md:min-w-min relative overflow-hidden">
+                  <div className="flex items-center gap-2 min-h-[1.25rem]">
+                    {showArbitrum ? (
+                      <>
+                        <div className="w-5 h-5 flex-shrink-0 overflow-hidden">
+                          <img src="/icons/crypto/arbitrum.svg" alt="ARB" className="w-full h-full object-contain brightness-0 invert" />
+                        </div>
+                        <span className="text-xs">
+                          {arbitrumLoading ? 'Loading...' : `${formatBalance(arbitrumData?.value.toString() || '0')} lzrBTC`}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <img src="/safari-pinned-tab.svg" alt="BLZ" className="w-10 h-10 brightness-0 invert" />
+                        <span className="text-xs">
+                          {bitlazerLoading ? 'Loading...' : `${formatBalance(bitlazerData?.value.toString() || '0')} lzrBTC`}
+                        </span>
+                      </>
+                    )}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setShowArbitrum(!showArbitrum)
+                      }}
+                      className="ml-auto flex flex-col text-white"
+                    >
+                      <span className="text-[10px] leading-[8px]">▲</span>
+                      <span className="text-[10px] leading-[8px]">▼</span>
+                    </button>
+                  </div>
                 </Button>
               )}
               <Button
@@ -219,3 +309,4 @@ const Header: FC<IHeader> = () => {
 }
 
 export default Header
+

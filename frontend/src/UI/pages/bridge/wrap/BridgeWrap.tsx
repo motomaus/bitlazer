@@ -1,16 +1,18 @@
 import { Button, InputField, TXToast } from '@components/index'
+import Loading from '@components/loading/Loading'
 import React, { FC, useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { useAccount, useBalance, useReadContract, useSwitchChain } from 'wagmi'
 import { erc20Abi, formatUnits } from 'viem'
-import { waitForTransactionReceipt, writeContract } from '@wagmi/core'
+import { waitForTransactionReceipt, writeContract, simulateContract } from '@wagmi/core'
 import { arbitrum, mainnet } from 'wagmi/chains'
 import { config } from 'src/web3/config'
 import { ERC20_CONTRACT_ADDRESS, TokenKeys, WRAP_CONTRACT } from 'src/web3/contracts'
 import { lzrBTC_abi } from 'src/assets/abi/lzrBTC'
 import { parseEther, formatEther } from 'ethers/lib/utils'
 import { toast } from 'react-toastify'
-import { BigNumber } from 'ethers/lib/ethers'
+import { BigNumber } from 'ethers'
+import { parseUnits } from 'viem'
 import Cookies from 'universal-cookie'
 import { handleChainSwitch } from 'src/web3/functions'
 import { use } from 'i18next'
@@ -26,6 +28,9 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
   const [refresh, setRefresh] = useState<boolean>(false)
   const [reverseApproval, setReverseApproval] = useState<boolean>(false)
   const [holderBalance, setHolderBalance] = useState<string | undefined>(undefined)
+  const [isApproving, setIsApproving] = useState<boolean>(false)
+  const [isWrapping, setIsWrapping] = useState<boolean>(false)
+  const [isUnwrapping, setIsUnwrapping] = useState<boolean>(false)
 
   const {
     handleSubmit,
@@ -33,6 +38,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     setValue,
     watch,
     getValues,
+    trigger,
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
@@ -63,7 +69,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     scopeKey: refresh.toString(),
   })
 
-  const { data: lzrBTCBalanceData, isLoading: lzrBTCBalanceLoading } = useBalance({
+  const { data: lzrBTCBalanceData, isLoading: lzrBTCBalanceLoading, refetch: refetchLzrBTC } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['lzrBTC'],
     chainId: arbitrum.id,
@@ -106,6 +112,56 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
     scopeKey: refresh.toString(),
   })
 
+  // Check if contract is paused
+  const { data: isPaused } = useReadContract({
+    abi: [
+      {
+        inputs: [],
+        name: 'paused',
+        outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    address: WRAP_CONTRACT,
+    functionName: 'paused',
+    chainId: arbitrum.id,
+  })
+
+  // Check decimals conversion flag
+  const { data: decimalsConversion } = useReadContract({
+    abi: [
+      {
+        inputs: [],
+        name: '__apply8To18DecimalsConversion',
+        outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    address: WRAP_CONTRACT,
+    functionName: '__apply8To18DecimalsConversion',
+    chainId: arbitrum.id,
+  })
+
+  // Check if WBTC is set as supported wrapper
+  const { data: supportedWBTCAddress } = useReadContract({
+    abi: [
+      {
+        inputs: [{ internalType: 'address', name: '', type: 'address' }],
+        name: 'supportedWrappers',
+        outputs: [{ internalType: 'contract IERC20', name: '', type: 'address' }],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    address: WRAP_CONTRACT,
+    functionName: 'supportedWrappers',
+    args: [ERC20_CONTRACT_ADDRESS['wbtc'] as `0x${string}`],
+    chainId: arbitrum.id,
+  })
+
+
   useEffect(() => {
     if (selectedTokenUnwrap === 'wbtc') {
       setHolderBalance(wbtcHolderBalance as string)
@@ -114,109 +170,197 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
   useEffect(() => {
     if (approvalData !== undefined) {
-      if (BigNumber.from(approvalData).gte(parseEther(getValues('amount') || '0'))) {
-        setApproval(true)
-      } else {
+      const amount = getValues('amount') || '0'
+      
+      // If no amount entered, always show APPROVE
+      if (!amount || amount === '0') {
+        setApproval(false)
+        return
+      }
+      
+      let requiredApproval: bigint
+      try {
+        if (selectedToken === 'wbtc') {
+          // Contract expects 8 decimals for WBTC
+          requiredApproval = parseUnits(amount, 8)
+        } else {
+          requiredApproval = parseUnits(amount, 18)
+        }
+        
+        // approvalData is already a bigint from the contract read
+        if (BigInt(approvalData) >= requiredApproval) {
+          setApproval(true)
+        } else {
+          setApproval(false)
+        }
+      } catch (error) {
+        // Invalid amount format - show APPROVE
         setApproval(false)
       }
     }
-  }, [approvalData, watch('amount'), refresh])
+  }, [approvalData, watch('amount'), refresh, selectedToken])
 
   const handleApprove = async () => {
+    setIsApproving(true)
+    const amount = getValues('amount')
+    
+    let amountForApproval: bigint
+    if (selectedToken === 'wbtc') {
+      amountForApproval = parseUnits(amount, 8)
+    } else {
+      amountForApproval = parseUnits(amount, 18)
+    }
+    
     const approvalArgs = {
-      abi: lzrBTC_abi,
-      address: ERC20_CONTRACT_ADDRESS[selectedToken],
-      functionName: 'approve',
-      args: [WRAP_CONTRACT, parseEther(getValues('amount'))],
+      abi: erc20Abi,
+      address: ERC20_CONTRACT_ADDRESS[selectedToken] as `0x${string}`,
+      functionName: 'approve' as const,
+      args: [WRAP_CONTRACT as `0x${string}`, amountForApproval] as const,
     }
 
     let approvalTransactionHash
     try {
       approvalTransactionHash = await writeContract(config, approvalArgs)
-    } catch (error) {
-      console.log('Error: ', error)
+    } catch (error: any) {
       toast(<TXToast {...{ message: 'Approval failed', error }} />)
+      setIsApproving(false)
       return
     }
     const approvalReceipt = await waitForTransactionReceipt(config, {
       hash: approvalTransactionHash,
     })
-    setRefresh((prev) => !prev)
+    
     if (approvalReceipt.status === 'success') {
       const txHash = approvalReceipt.transactionHash
       toast(<TXToast {...{ message: 'Approval successful', txHash }} />)
+      setApproval(true)
+      // Trigger refresh to update allowance
+      setRefresh((prev) => !prev)
     } else {
       toast(<TXToast {...{ message: 'Transaction failed' }} />)
+      setApproval(false)
     }
-    setApproval(true)
+    setIsApproving(false)
   }
 
   const handleDeposit = async () => {
+    setIsWrapping(true)
+    const amount = getValues('amount')
+    let amountToSend: bigint
+    if (selectedToken === 'wbtc') {
+      amountToSend = parseUnits(amount, 8)
+    } else {
+      amountToSend = parseUnits(amount, 18)
+    }
+    
     const args = {
       abi: lzrBTC_abi,
-      address: WRAP_CONTRACT,
-      functionName: 'mint',
-      args: [parseEther(getValues('amount')), ERC20_CONTRACT_ADDRESS[selectedToken]],
-    } as any
+      address: WRAP_CONTRACT as `0x${string}`,
+      functionName: 'mint' as const,
+      args: [amountToSend] as const,
+    }
 
     try {
+      try {
+        await simulateContract(config, {
+          ...args,
+          account: address as `0x${string}`,
+        })
+      } catch (simulationError: any) {
+        if (simulationError.message?.includes('Wrapper not supported')) {
+          toast(<TXToast {...{ message: 'WBTC is not configured as a supported wrapper' }} />)
+          setIsWrapping(false)
+          return
+        }
+        if (simulationError.message?.includes('paused')) {
+          toast(<TXToast {...{ message: 'Contract is paused' }} />)
+          setIsWrapping(false)
+          return
+        }
+        if (simulationError.message?.includes('Insufficient')) {
+          toast(<TXToast {...{ message: 'Insufficient WBTC balance' }} />)
+          setIsWrapping(false)
+          return
+        }
+        
+        toast(<TXToast {...{ message: `Transaction will fail: ${simulationError.message || 'Unknown error'}` }} />)
+        setIsWrapping(false)
+        return
+      }
+      
       const transactionHash = await writeContract(config, args)
+      
       const receipt = await waitForTransactionReceipt(config, {
         hash: transactionHash,
       })
+      
       if (receipt.status === 'success') {
         const txHash = receipt.transactionHash
         toast(<TXToast {...{ message: 'Wrap successful', txHash }} />)
         const cookies = new Cookies()
         cookies.set('hasWrapped', 'true', { path: '/' })
+        // Clear the input field and reset approval after successful wrap
+        setValue('amount', '')
+        setApproval(false)
+        // Single refresh after successful transaction
+        setRefresh((prev) => !prev)
       } else {
         toast(<TXToast {...{ message: 'Wrap failed' }} />)
       }
+      setIsWrapping(false)
     } catch (error: any) {
-      console.log('Error: ', error)
+      setIsWrapping(false)
       if (!error.message.includes('User rejected the request.')) {
         toast(<TXToast {...{ message: 'Failed to Wrap.' }} />)
-        console.log(error.message)
       } else {
         toast(<TXToast {...{ message: 'Transaction Rejected.' }} />)
       }
     }
-    setTimeout(() => {
-      setRefresh((prev) => !prev)
-    }, 1000)
   }
 
   const handleUnwrap = async () => {
+    setIsUnwrapping(true)
+    const amount = unwrapGetValues('amount')
+    let amountToSend: bigint
+    
+    if (selectedTokenUnwrap === 'wbtc') {
+      amountToSend = parseUnits(amount, 18)
+    } else {
+      amountToSend = parseUnits(amount, 18)
+    }
+    
     const args = {
       abi: lzrBTC_abi,
-      address: WRAP_CONTRACT,
-      functionName: 'burn',
-      args: [parseEther(unwrapGetValues('amount')), ERC20_CONTRACT_ADDRESS[selectedTokenUnwrap]],
-    } as any
+      address: WRAP_CONTRACT as `0x${string}`,
+      functionName: 'burn' as const,
+      args: [amountToSend] as const,
+    }
 
     try {
       const transactionHash = await writeContract(config, args)
       const receipt = await waitForTransactionReceipt(config, {
         hash: transactionHash,
       })
+      
       if (receipt.status === 'success') {
         const txHash = receipt.transactionHash
-        toast(<TXToast {...{ message: 'Deposit successful', txHash }} />)
-        const cookies = new Cookies()
-        cookies.set('hasWrapped', 'true', { path: '/' })
+        toast(<TXToast {...{ message: 'Unwrap successful', txHash }} />)
+        // Clear the input field after successful unwrap
+        unwrapSetValue('amount', '')
+        // Single refresh after successful transaction
+        setRefresh((prev) => !prev)
       } else {
         toast(<TXToast {...{ message: 'Unwrap failed' }} />)
       }
+      setIsUnwrapping(false)
     } catch (error: any) {
+      setIsUnwrapping(false)
       if (!error.message.includes('User rejected the request.')) {
         toast(<TXToast {...{ message: 'Failed to Unwrap' }} />)
       } else {
         toast(<TXToast {...{ message: 'Transaction Rejected.' }} />)
       }
     }
-    setTimeout(() => {
-      setRefresh((prev) => !prev)
-    }, 1000)
   }
 
   const onSubmit = async (data: any) => {
@@ -225,6 +369,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
 
   return (
     <div className="flex flex-col gap-7">
+      
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7">
         <div className="flex flex-col relative gap-[0.75rem]">
           <label className="text-lightgreen-100">## WRAP {selectedToken.toUpperCase()} TO lzrBTC</label>
@@ -251,7 +396,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
               min: { value: 0.00001, message: 'Amount must be greater than 0.00001' },
               max: {
                 value: balanceData?.formatted || '0',
-                message: 'Amount must be less than balance',
+                message: 'Insufficient balance',
               },
             }}
             render={({ field }) => (
@@ -261,6 +406,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
                 type="number"
                 {...field}
                 error={errors.amount ? errors.amount.message : null}
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
               />
             )}
           />
@@ -273,6 +419,7 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
               onClick={(e) => {
                 e.preventDefault()
                 setValue('amount', balanceData?.formatted || '0')
+                trigger('amount')
               }}
               className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
             >
@@ -285,8 +432,36 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
         <div className="flex flex-col gap-[0.687rem]">
           {chainId === arbitrum.id ? (
             <>
-              <Button type="submit" disabled={!isValid || isLoadingApproval}>
-                {approval ? 'WRAP' : 'APPROVE'}
+              {/* Only show reset if allowance is wrong and NOT due to decimals conversion */}
+              {approvalData && selectedToken === 'wbtc' && 
+               !decimalsConversion && // Only show reset if conversion is NOT enabled
+               BigInt(approvalData) > BigInt(balanceData?.value || 0) && (
+                <Button 
+                  type="button"
+                  onClick={async (e) => {
+                    e.preventDefault()
+                    console.log('Resetting WBTC allowance to 0...')
+                    try {
+                      const resetTx = await writeContract(config, {
+                        abi: erc20Abi,
+                        address: ERC20_CONTRACT_ADDRESS[selectedToken] as `0x${string}`,
+                        functionName: 'approve' as const,
+                        args: [WRAP_CONTRACT as `0x${string}`, BigInt(0)] as const,
+                      })
+                      await waitForTransactionReceipt(config, { hash: resetTx })
+                      toast(<TXToast {...{ message: 'Allowance reset to 0. Now approve the correct amount.' }} />)
+                      setRefresh((prev) => !prev)
+                    } catch (error) {
+                      console.error('Reset failed:', error)
+                    }
+                  }}
+                  className="bg-red-600"
+                >
+                  RESET ALLOWANCE (Required)
+                </Button>
+              )}
+              <Button type="submit" disabled={!isValid || !watch('amount') || watch('amount') === '' || isLoadingApproval || isApproving || isWrapping}>
+                {approval ? (isWrapping ? <Loading text="WRAPPING" /> : 'WRAP') : (isApproving ? <Loading text="APPROVING" /> : 'APPROVE')}
               </Button>
             </>
           ) : (
@@ -334,10 +509,10 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
             control={unwrapControl}
             rules={{
               required: 'Amount is required',
-              min: { value: 0.001, message: 'Amount must be greater than 0.001' },
+              min: { value: 0.00001, message: 'Amount must be greater than 0.00001' },
               max: {
-                value: formatEther(holderBalance?.toString() || '0'),
-                message: 'Amount must be less than balance',
+                value: parseFloat(lzrBTCBalanceData?.formatted || '0'),
+                message: 'Insufficient balance',
               },
             }}
             render={({ field }) => (
@@ -347,17 +522,18 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
                 type="number"
                 {...field}
                 error={unwrapErrors.amount ? unwrapErrors.amount.message : null}
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
               />
             )}
           />
           <div className="flex flex-row items-center justify-between gap-[1.25rem] text-gray-200">
             <div className="tracking-[-0.06em] leading-[1.25rem] inline-block">
-              Balance: {lzrBTCBalanceLoading ? 'Loading...' : `${formatEther(holderBalance?.toString() || '0')} lzrBTC`}
+              Balance: {lzrBTCBalanceLoading ? 'Loading...' : `${lzrBTCBalanceData?.formatted || '0'} lzrBTC`}
             </div>
             <button
               onClick={(e) => {
                 e.preventDefault()
-                unwrapSetValue('amount', formatEther(holderBalance?.toString() || '0'))
+                unwrapSetValue('amount', lzrBTCBalanceData?.formatted || '0')
                 unwrapTrigger('amount')
               }}
               className="shadow-[1.8px_1.8px_1.84px_#66d560_inset] rounded-[.115rem] bg-darkolivegreen-200 flex flex-row items-start justify-start pt-[0.287rem] pb-[0.225rem] pl-[0.437rem] pr-[0.187rem] shrink-0 text-[0.813rem] text-lightgreen-100 disabled:opacity-40 disabled:pointer-events-none disabled:touch-none"
@@ -374,8 +550,8 @@ const BridgeWrap: FC<IBridgeWrap> = () => {
           <div className="w-[2.75rem] relative tracking-[-0.06em] leading-[1.25rem] text-right inline-block">00.00</div>
         </div> */}
           {chainId === arbitrum.id ? (
-            <Button type="submit" disabled={!isUnwrapValid || holderBalance === '0'}>
-              UNWRAP
+            <Button type="submit" disabled={!isUnwrapValid || !unwrapWatch('amount') || unwrapWatch('amount') === '' || !lzrBTCBalanceData?.value || lzrBTCBalanceData.value === 0n || isUnwrapping}>
+              {isUnwrapping ? <Loading text="UNWRAPPING" /> : 'UNWRAP'}
             </Button>
           ) : (
             // <>
