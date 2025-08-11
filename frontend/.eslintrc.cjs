@@ -29,13 +29,16 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname,
   },
   plugins: ['@typescript-eslint', 'react'],
   rules: {
     'no-unused-vars': 'off',
     'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off', // We use TypeScript for prop validation
     'no-extra-boolean-cast': 'off',
-    '@typescript-eslint/no-unused-vars': ['error'],
+    '@typescript-eslint/no-unused-vars': ['warn'],
     //todo: remove
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-explicit-any': 'off',

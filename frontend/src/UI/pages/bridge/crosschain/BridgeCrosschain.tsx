@@ -280,8 +280,29 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
         <div className="flex flex-col gap-[0.687rem]">
           {chainId === arbitrum.id ? (
             <>
-              <Button type="submit" disabled={!isValid || !watch('amount') || watch('amount') === '' || isWaitingForBridgeTx || isApproving || isBridging} aria-busy={isWaitingForBridgeTx || isApproving || isBridging}>
-                {approval ? (isBridging ? <Loading text="BRIDGING" /> : 'BRIDGE') : (isApproving ? <Loading text="APPROVING" /> : 'APPROVE')}
+              <Button
+                type="submit"
+                disabled={
+                  !isValid ||
+                  !watch('amount') ||
+                  watch('amount') === '' ||
+                  isWaitingForBridgeTx ||
+                  isApproving ||
+                  isBridging
+                }
+                aria-busy={isWaitingForBridgeTx || isApproving || isBridging}
+              >
+                {approval ? (
+                  isBridging ? (
+                    <Loading text="BRIDGING" />
+                  ) : (
+                    'BRIDGE'
+                  )
+                ) : isApproving ? (
+                  <Loading text="APPROVING" />
+                ) : (
+                  'APPROVE'
+                )}
               </Button>
             </>
           ) : (
@@ -300,7 +321,7 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
           <div className="mt-4 p-2.5 bg-darkslategray-200 border border-lightgreen-100 rounded-[.115rem] text-gray-200 text-[13px]">
             <div className="mb-1.5">
               <span className="text-lightgreen-100">Transaction: </span>
-              <a 
+              <a
                 href={`https://arbiscan.io/tx/${bridgeSuccessInfo.txHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -310,25 +331,25 @@ const BridgeCrosschain: FC<IBridgeCrosschain> = () => {
               </a>
             </div>
             <div className="mb-1.5 flex items-start">
-              <svg 
-                width="16" 
-                height="16" 
-                viewBox="0 0 16 16" 
-                fill="none" 
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
                 className="mr-1.5 mt-0.5 flex-shrink-0"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <circle cx="8" cy="8" r="7" stroke="#66d560" strokeWidth="1.5"/>
-                <path d="M8 7V11" stroke="#66d560" strokeWidth="1.5" strokeLinecap="round"/>
-                <circle cx="8" cy="5" r="0.5" fill="#66d560"/>
+                <circle cx="8" cy="8" r="7" stroke="#66d560" strokeWidth="1.5" />
+                <path d="M8 7V11" stroke="#66d560" strokeWidth="1.5" strokeLinecap="round" />
+                <circle cx="8" cy="5" r="0.5" fill="#66d560" />
               </svg>
               <span>Balance may take a while to be confirmed on Bitlazer network.</span>
             </div>
             <div>
               Track status{' '}
-              <a 
-                href="https://bitlazer.bridge.caldera.xyz/" 
-                target="_blank" 
+              <a
+                href="https://bitlazer.bridge.caldera.xyz/"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-lightgreen-100 underline hover:text-lightgreen-200"
               >

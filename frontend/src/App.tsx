@@ -4,7 +4,7 @@ import { RouterProvider } from 'react-router-dom'
 import { router } from './router'
 import '@locales/index'
 import i18n from '@locales/index'
-import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css'
 
 // Web3
 import { WagmiProvider } from 'wagmi'
@@ -31,35 +31,12 @@ function App() {
             newestOnTop={false}
             closeOnClick={false}
             closeButton={true}
-            style={{ 
+            style={{
               zIndex: 9999,
               top: '1rem',
               right: '1rem',
               width: 'auto',
-              maxWidth: 'calc(100vw - 2rem)'
-            }}
-            toastStyle={{
-              backgroundColor: 'transparent',
-              padding: 0,
-              minHeight: 'auto',
-              width: 'auto',
-              maxWidth: '100%'
-            }}
-            closeButtonStyle={{
-              color: '#00ff00',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              background: 'rgba(0, 255, 0, 0.1)',
-              border: '1px solid #00ff00',
-              borderRadius: '3px',
-              width: '24px',
-              height: '24px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              right: '8px',
-              top: '8px',
-              position: 'absolute'
+              maxWidth: 'calc(100vw - 2rem)',
             }}
           />
         </QueryClientProvider>

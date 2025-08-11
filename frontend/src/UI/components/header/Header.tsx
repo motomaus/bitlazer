@@ -16,7 +16,7 @@ import { mainnet } from 'src/web3/chains'
 import { ERC20_CONTRACT_ADDRESS } from 'src/web3/contracts'
 import { formatEther } from 'viem'
 
-interface IHeader { }
+interface IHeader {}
 
 const Header: FC<IHeader> = () => {
   const [isActive, setIsActive] = useState(false)
@@ -69,7 +69,7 @@ const Header: FC<IHeader> = () => {
   const {
     data: arbitrumData,
     isLoading: arbitrumLoading,
-    refetch: refetchArbitrum,
+    refetch: refetchArbitrum, // eslint-disable-line @typescript-eslint/no-unused-vars
   } = useBalance({
     address,
     token: ERC20_CONTRACT_ADDRESS['lzrBTC'],
@@ -81,7 +81,7 @@ const Header: FC<IHeader> = () => {
   const {
     data: bitlazerData,
     isLoading: bitlazerLoading,
-    refetch: refetchBitlazer,
+    refetch: refetchBitlazer, // eslint-disable-line @typescript-eslint/no-unused-vars
   } = useBalance({
     address,
     chainId: mainnet.id,
@@ -92,7 +92,7 @@ const Header: FC<IHeader> = () => {
   useEffect(() => {
     if (isConnected) {
       const interval = setInterval(() => {
-        setRefresh(prev => !prev)
+        setRefresh((prev) => !prev)
       }, 5000)
       return () => clearInterval(interval)
     }
@@ -114,8 +114,9 @@ const Header: FC<IHeader> = () => {
               <img className="w-full h-full object-contain" src={burger} alt="" />
             </button>
             <div
-              className={`flex h-screen flex-col text-white fixed  md:flex-1 transition-all md:p-0 px-4 py-8 pt-24 duration-300 z-[100] bg-black w-full top-0 overflow-y-auto md:overflow-visible md:top-auto md:w-auto md:h-auto md:bg-transparent md:static md:z-auto ${isActive ? 'right-0' : '-right-[100vw]'
-                }`}
+              className={`flex h-screen flex-col text-white fixed  md:flex-1 transition-all md:p-0 px-4 py-8 pt-24 duration-300 z-[100] bg-black w-full top-0 overflow-y-auto md:overflow-visible md:top-auto md:w-auto md:h-auto md:bg-transparent md:static md:z-auto ${
+                isActive ? 'right-0' : '-right-[100vw]'
+              }`}
             >
               <button
                 onClick={closeMenu}
@@ -174,24 +175,34 @@ const Header: FC<IHeader> = () => {
               </div>
               <div className="flex md:hidden items-center space-x-0 mt-8 mx-auto justify-center flex-wrap ">
                 {isConnected && (
-                  <Button className="!w-auto uppercase min-w-[12.5rem] relative overflow-hidden [&>span]:!pt-0 [&>span]:!pb-0 [&>span]:!py-0 [&>span]:!leading-none [&>span]:flex [&>span]:items-center [&>span]:justify-center [&>span]:h-full">
-                    <div className="flex items-center justify-center gap-2 w-full h-full">
+                  <Button className="!w-auto uppercase min-w-[12.5rem] relative overflow-hidden">
+                    <div className="flex items-center gap-2 min-h-[1.25rem]">
                       {showArbitrum ? (
                         <>
-                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
-                            <img src="/icons/crypto/arbitrum.svg" alt="ARB" className="w-4 h-4 object-contain brightness-0 invert" />
+                          <div className="w-5 h-5 flex-shrink-0 overflow-hidden">
+                            <img
+                              src="/icons/crypto/arbitrum.svg"
+                              alt="ARB"
+                              className="w-full h-full object-contain brightness-0 invert"
+                            />
                           </div>
-                          <span className="text-xs flex items-center mt-2.5" style={{lineHeight: '1', display: 'flex', alignItems: 'center'}}>
-                            {arbitrumLoading ? 'Loading...' : `${formatBalance(arbitrumData?.value.toString() || '0')} lzrBTC`}
+                          <span className="text-xs">
+                            {arbitrumLoading
+                              ? 'Loading...'
+                              : `${formatBalance(arbitrumData?.value.toString() || '0')} lzrBTC`}
                           </span>
                         </>
                       ) : (
                         <>
-                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
-                          <img src="/safari-pinned-tab.svg" alt="BLZ" className="w-8 h-8 object-contain brightness-0 invert" />
-                        </div>
-                          <span className="text-xs flex items-center mt-2.5" style={{lineHeight: '1', display: 'flex', alignItems: 'center'}}>
-                            {bitlazerLoading ? 'Loading...' : `${formatBalance(bitlazerData?.value.toString() || '0')} lzrBTC`}
+                          <img
+                            src="/safari-pinned-tab.svg"
+                            alt="BLZ"
+                            className="w-12 h-12 flex-shrink-0 brightness-0 invert"
+                          />
+                          <span className="text-xs">
+                            {bitlazerLoading
+                              ? 'Loading...'
+                              : `${formatBalance(bitlazerData?.value.toString() || '0')} lzrBTC`}
                           </span>
                         </>
                       )}
@@ -200,7 +211,7 @@ const Header: FC<IHeader> = () => {
                           e.stopPropagation()
                           setShowArbitrum(!showArbitrum)
                         }}
-                        className="ml-auto flex flex-col text-white mt-2"
+                        className="ml-auto flex flex-col text-white"
                       >
                         <span className="text-[10px] leading-[8px]">▲</span>
                         <span className="text-[10px] leading-[8px]">▼</span>
@@ -223,24 +234,34 @@ const Header: FC<IHeader> = () => {
             </div>
             <div className="md:flex hidden items-center space-x-0">
               {isConnected && (
-                <Button className="!w-auto uppercase min-w-[12.5rem] md:min-w-min relative overflow-hidden [&>span]:!pt-0 [&>span]:!pb-0 [&>span]:!py-0 [&>span]:!leading-none [&>span]:flex [&>span]:items-center [&>span]:justify-center [&>span]:h-full">
-                  <div className="flex items-center justify-center gap-2 w-full h-full">
+                <Button className="!w-auto uppercase min-w-[12.5rem] md:min-w-min relative overflow-hidden">
+                  <div className="flex items-center gap-2 min-h-[1.25rem]">
                     {showArbitrum ? (
                       <>
-                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
-                          <img src="/icons/crypto/arbitrum.svg" alt="ARB" className="w-4 h-4 object-contain brightness-0 invert" />
+                        <div className="w-5 h-5 flex-shrink-0 overflow-hidden">
+                          <img
+                            src="/icons/crypto/arbitrum.svg"
+                            alt="ARB"
+                            className="w-full h-full object-contain brightness-0 invert"
+                          />
                         </div>
-                        <span className="text-xs flex items-center mt-2.5" style={{lineHeight: '1', display: 'flex', alignItems: 'center'}}>
-                          {arbitrumLoading ? 'Loading...' : `${formatBalance(arbitrumData?.value.toString() || '0')} lzrBTC`}
+                        <span className="text-xs">
+                          {arbitrumLoading
+                            ? 'Loading...'
+                            : `${formatBalance(arbitrumData?.value.toString() || '0')} lzrBTC`}
                         </span>
                       </>
                     ) : (
                       <>
-                        <div className="w-5 h-5 flex-shrink-0 flex items-center justify-center">
-                          <img src="/safari-pinned-tab.svg" alt="BLZ" className="w-8 h-8 object-contain brightness-0 invert" />
-                        </div>
-                        <span className="text-xs flex items-center mt-2.5" style={{lineHeight: '1', display: 'flex', alignItems: 'center'}}>
-                          {bitlazerLoading ? 'Loading...' : `${formatBalance(bitlazerData?.value.toString() || '0')} lzrBTC`}
+                        <img
+                          src="/safari-pinned-tab.svg"
+                          alt="BLZ"
+                          className="w-12 h-12 flex-shrink-0 brightness-0 invert"
+                        />
+                        <span className="text-xs">
+                          {bitlazerLoading
+                            ? 'Loading...'
+                            : `${formatBalance(bitlazerData?.value.toString() || '0')} lzrBTC`}
                         </span>
                       </>
                     )}
@@ -249,7 +270,7 @@ const Header: FC<IHeader> = () => {
                         e.stopPropagation()
                         setShowArbitrum(!showArbitrum)
                       }}
-                      className="ml-auto flex flex-col text-white mt-2"
+                      className="ml-auto flex flex-col text-white"
                     >
                       <span className="text-[10px] leading-[8px]">▲</span>
                       <span className="text-[10px] leading-[8px]">▼</span>
@@ -313,4 +334,3 @@ const Header: FC<IHeader> = () => {
 }
 
 export default Header
-

@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 import React, { FC, useEffect, useState } from 'react'
 import BridgeDeposit from './wrap/BridgeWrap'
 import BridgeStake from './stake/BridgeStake'
@@ -122,9 +121,7 @@ const Bridge: FC<IBridge> = () => {
                         <span> ] </span>
                       </div>
                       <div className="tracking-[-0.06em] leading-[1.313rem] ">
-                        <p className="m-0">
-                          Securely bridge your lzrBTC in Arbitrum to Bitlazer
-                        </p>
+                        <p className="m-0">Securely bridge your lzrBTC in Arbitrum to Bitlazer</p>
                       </div>
                     </div>
                     <div className="flex flex-col gap-4">
@@ -146,9 +143,7 @@ const Bridge: FC<IBridge> = () => {
                         <span> ] </span>
                       </div>
                       <div className="tracking-[-0.06em] leading-[1.313rem] ">
-                        <p className="m-0">
-                          Unstake and unwrap your lzrBTC to claim your rewards
-                        </p>
+                        <p className="m-0">Unstake and unwrap your lzrBTC to claim your rewards</p>
                       </div>
                     </div>
                   </div>
