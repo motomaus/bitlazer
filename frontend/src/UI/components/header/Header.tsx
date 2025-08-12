@@ -129,17 +129,6 @@ const Header: FC<IHeader> = () => {
                   <ul className="flex md:flex-row flex-col items-center justify-center gap-8 md:gap-9 md:pt-3">
                     <li>
                       <Link
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        to="https://bitlazer.gitbook.io"
-                        className={`text-lightgreen-100  inline-block hover:scale-105 hover:line-through ${location.pathname === '/about' ? 'line-through pointer-events-none' : ''}`}
-                        onClick={closeMenu}
-                      >
-                        [DOCS]
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
                         to="/bridge"
                         className={`text-lightgreen-100 inline-block hover:scale-105 hover:line-through ${location.pathname === '/bridge' ? 'line-through pointer-events-none' : ''}`}
                         onClick={closeMenu}
@@ -168,6 +157,17 @@ const Header: FC<IHeader> = () => {
                         onClick={closeMenu}
                       >
                         [ECOSYSTEM]
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        to="https://bitlazer.gitbook.io"
+                        className={`text-lightgreen-100  inline-block hover:scale-105 hover:line-through ${location.pathname === '/about' ? 'line-through pointer-events-none' : ''}`}
+                        onClick={closeMenu}
+                      >
+                        [DOCS]
                       </Link>
                     </li>
                   </ul>

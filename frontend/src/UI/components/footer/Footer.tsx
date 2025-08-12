@@ -28,7 +28,7 @@ const Footer: FC<IFooter> = () => {
               <li>
                 <a
                   className="hover:scale-105 hover:line-through inline-block"
-                  href="https://explorer.testnet.bitlazer.io"
+                  href="https://bitlazer.calderaexplorer.xyz/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
